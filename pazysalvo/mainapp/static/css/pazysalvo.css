@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+    --color-principal: #39A900;
+    --color-secundario: #002b46;
+    --color-blanco: #ffffff;
+    --gris-claro: #f5f7fa;
+    --sombra: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--gris-claro);
+    padding: 40px 20px;
+    color: var(--color-secundario);
+}
+
+.container {
+    max-width: 850px;
+    margin: auto;
+    background-color: var(--color-blanco);
+    border-radius: 12px;
+    box-shadow: var(--sombra);
+    padding: 40px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 2rem;
+    color: var(--color-principal);
+}
+
+.header p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-secundario);
+}
+
+.section {
+    margin-top: 30px;
+}
+
+.section p {
+    margin: 10px 0;
+    font-size: 1rem;
+}
+
+.label {
+    font-weight: 600;
+    color: var(--color-secundario);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.95rem;
+}
+
+thead {
+    background-color: var(--color-secundario);
+    color: var(--color-blanco);
+}
+
+th, td {
+    border: 1px solid var(--color-secundario);
+    padding: 12px;
+    text-align: left;
+}
+
+tr:nth-child(even) {
+    background-color: #f0f8f0;
+}
+
+.download-btn {
+    display: inline-block;
+    margin-top: 40px;
+    background-color: var(--color-principal);
+    color: var(--color-blanco);
+    padding: 12px 30px;
+    font-size: 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.download-btn:hover {
+    background-color: #2d8700;
+}

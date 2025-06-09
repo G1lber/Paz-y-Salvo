@@ -1,0 +1,83 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Paz y Salvo Académico</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/pazysalvo.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Formato Paz y Salvo</h1>
+            <p>Académico - Administrativo</p>
+        </div>
+
+        <div class="section">
+            <p><span class="label">Nombre del Aprendiz:</span> ___________________________</p>
+            <p><span class="label">Documento de identidad:</span> ___________________________</p>
+            <p><span class="label">Programa:</span> ___________________________</p>
+            <p><span class="label">Ficha:</span> ___________________________</p>
+        </div>
+
+        <div class="section">
+            <h3 class="label">Revisión</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SERVIDOR PÚBLICO QUE <br>
+                            INTERVIENE EN EL DILIGENCIAMIENTO</th>
+                        <th>DESCRIPCION DEL TRAMITE</th>
+                        <th>NOMBRES Y APELLIDOS COMPLETOS</th>
+                        <th>FIRMA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>COORDINADOR ACADEMICO</td>
+                        <td>Verificar que estén registrados la totalidad de los juicios evaluativos en el aplicativo de gestión académico administrativo institucional (etapa lectiva y productiva)
+                        Verificar evidencia de presentación de la prueba Saber TyT (Tecnólogos).
+                        </td>
+                        <td><img src="{% static 'image/carafeliz.png' %}" alt="Logo" width="150"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>INSTRUCTOR SEGUIMIENTO ETAPA PRODUCTIVA</td>
+                        <td>Verificar el diligenciamiento del formato de seguimiento a etapa productiva
+                        Verificar la existencia de la bitácora del aprendiz en etapa productiva.</td>
+                        <td><img src="{% static 'image/caratriste.png' %}" alt="Logo" width="150"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>RESPONSABLE BIENESTAR AL APRENDIZ</td>
+                        <td>Verificar que se encuentre a paz y salvo con las actividades del programa de bienestar al aprendiz</td>
+                        <td><img src="{% static 'image/carafeliz.png' %}" alt="Logo" width="150"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>BIBLIOTECA</td>
+                        <td>Verificar que esta a paz y salvo con la biblioteca.</td>
+                        <td><img src="{% static 'image/caratriste.png' %}" alt="Logo" width="150"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>RESPONSABLE ALMACÉN</td>
+                        <td>Verificar que está a paz y salvo con almacén</td>
+                        <td><img src="{% static 'image/carafeliz.png' %}" alt="Logo" width="150"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>agencia pública de empleo</td>
+                        <td>Verificar que está a paz y salvo con almacén</td>
+                        <td><img src="{% static 'image/carafeliz.png' %}" alt="Logo" width="150"></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a  class="download-btn">Descargar Formato</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Iniciar Sesión</h1>
+            <p>Bienvenido de nuevo, ingresa tus credenciales.</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="username" placeholder="Usuario" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" placeholder="Contraseña" required>
+            </div>
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+</body>
+</html>

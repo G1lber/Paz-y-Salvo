@@ -1,0 +1,96 @@
+:root {
+  --color-principal: #39A900;
+  --color-secundario: #002b46;
+  --color-blanco: #ffffff;
+  --sombra: rgba(0, 0, 0, 0.2);
+  --borde-input: #dcdcdc;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, var(--color-secundario), #011c30);
+  color: var(--color-blanco);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  background-color: var(--color-blanco);
+  color: var(--color-secundario);
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px var(--sombra);
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.login-header h1 {
+  color: var(--color-principal);
+  margin-bottom: 10px;
+  font-size: 28px;
+}
+
+.login-header p {
+  font-size: 14px;
+  color: #555;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--borde-input);
+  border-radius: 8px;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-color: var(--color-principal);
+  box-shadow: 0 0 5px rgba(57, 169, 0, 0.3);
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--color-principal);
+  color: var(--color-blanco);
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #2c7d00;
+  transform: scale(1.02);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  } to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

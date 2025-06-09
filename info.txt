@@ -1,0 +1,5 @@
+
+Paleta de colores 
+Color principal #39A900;
+Color secundario #002b46;
+#ffffff;

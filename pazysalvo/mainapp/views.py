@@ -8,3 +8,6 @@ def custom_login(request):
 
 def pazysalvo(request):
     return render(request, 'pazysalvo.html')
+
+def prueba(request):
+    return render(request, 'dashboard.html')

@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inicio | Sistema de Información</title>
+  <link rel="stylesheet" href="{% static 'css/inicio.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <section class="dashboard">
+    <h1>Bienvenido al Sistema de Información</h1>
+    <p class="intro">
+      Accede rápidamente a las herramientas esenciales del sistema. Usa las opciones siguientes para navegar.
+    </p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>👤 Aprendices</h3>
+        <p>Gestiona los usuarios registrados, sus roles y permisos.</p>
+        <a href="#" class="btn">Ver usuarios</a>
+      </div>
+      <div class="card">
+        <h3>📊 Reportes</h3>
+        <p>Consulta estadísticas clave y genera informes automáticos.</p>
+        <a href="#" class="btn">Ver reportes</a>
+      </div>
+      <div class="card">
+        <h3>⚙️ Configuración</h3>
+        <p>Modifica parámetros del sistema y personaliza tu experiencia.</p>
+        <a href="#" class="btn">Configurar</a>
+      </div>
+      <div class="card">
+        <h3>📁 Estado critico</h3>
+        <p>Administra archivos y formatos importantes del sistema.</p>
+        <a href="#" class="btn">Ver documentos</a>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

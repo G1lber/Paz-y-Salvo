@@ -1,0 +1,132 @@
+:root {
+  --color-principal: #39A900;       /* Verde */
+  --color-secundario: #002b46;      /* Azul oscuro */
+  --color-blanco: #ffffff;
+  --color-fondo: #f4f7fa;
+  --color-texto: #002b46;
+  --color-hover: #2b8500;
+  --color-sombra: rgba(0, 0, 0, 0.08);
+}
+
+/* Estilo general */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  line-height: 1.6;
+}
+
+.dashboard {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard h1 {
+  color: var(--color-secundario);
+  font-size: 2.5rem;
+  margin-bottom: 30px; /* Aumentado (antes estaba en 10px) */
+  text-align: center;
+}
+
+.dashboard .intro {
+  color: #444;
+  font-size: 1.1rem;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+/* Tarjetas */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+.card {
+  background-color: var(--color-blanco);
+  border-left: 8px solid var(--color-principal);
+  padding: 30px 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px var(--color-sombra);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+  color: var(--color-secundario);
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+}
+
+.card p {
+  color: #555;
+  flex-grow: 1;
+  margin-bottom: 20px;
+}
+
+/* Botones */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: var(--color-principal);
+  color: var(--color-blanco);
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.btn:hover {
+  background-color: var(--color-hover);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Responsivo: Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 30px 15px;
+  }
+
+  .dashboard h1 {
+    font-size: 2rem;
+  }
+
+  .dashboard .intro {
+    font-size: 1rem;
+    margin-bottom: 30px;
+  }
+
+  .card {
+    padding: 25px 20px;
+  }
+
+  .card h3 {
+    font-size: 1.2rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard h1 {
+    font-size: 1.8rem;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}

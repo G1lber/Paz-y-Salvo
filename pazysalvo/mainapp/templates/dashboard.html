@@ -8,6 +8,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+  <header class="header">
+  <div class="logout-container">
+    <a href="{% url 'login' %}" class="logout-btn">Cerrar sesión</a>
+  </div>
+</header>
   <section class="dashboard">
     <h1>Bienvenido al Sistema de Información</h1>
     <p class="intro">
@@ -18,7 +23,7 @@
       <div class="card">
         <h3>👤 Aprendices</h3>
         <p>Gestiona los usuarios registrados, sus roles y permisos.</p>
-        <a href="#" class="btn">Ver usuarios</a>
+        <a  href="{% url 'aprendices' %}"class="btn">Ver Aprendices</a>
       </div>
       <div class="card">
         <h3>📊 Reportes</h3>
@@ -32,6 +37,26 @@
       </div>
       <div class="card">
         <h3>📁 Estado critico</h3>
+        <p>Administra archivos y formatos importantes del sistema.</p>
+        <a href="#" class="btn">Ver documentos</a>
+      </div>
+      <div class="card">
+        <h3>Prestar libro</h3>
+        <p>Administra archivos y formatos importantes del sistema.</p>
+        <a href="#" class="btn">Ver documentos</a>
+      </div>
+      <div class="card">
+        <h3>Prestar equipo Bienestar</h3>
+        <p>Administra archivos y formatos importantes del sistema.</p>
+        <a href="#" class="btn">Ver documentos</a>
+      </div>
+      <div class="card">
+        <h3>Almacen</h3>
+        <p>Administra archivos y formatos importantes del sistema.</p>
+        <a href="#" class="btn">Ver documentos</a>
+      </div>
+      <div class="card">
+        <h3>Pruebas TYT</h3>
         <p>Administra archivos y formatos importantes del sistema.</p>
         <a href="#" class="btn">Ver documentos</a>
       </div>

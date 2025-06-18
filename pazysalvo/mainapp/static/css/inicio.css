@@ -16,6 +16,33 @@ body {
   color: var(--color-texto);
   line-height: 1.6;
 }
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.logout-container {
+  margin-right: 20px;
+}
+
+.logout-btn {
+  padding: 10px 18px;
+  background-color: transparent;
+  border: 2px solid var(--color-secundario);
+  color: var(--color-secundario);
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: var(--color-secundario);
+  color: var(--color-blanco);
+}
 
 .dashboard {
   padding: 40px 20px;

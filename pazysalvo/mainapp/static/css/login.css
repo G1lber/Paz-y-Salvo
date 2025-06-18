@@ -2,15 +2,18 @@
   --color-principal: #39A900;
   --color-secundario: #002b46;
   --color-blanco: #ffffff;
-  --sombra: rgba(0, 0, 0, 0.2);
+  --color-fondo: #f4f7fa;
+  --color-texto: #002b46;
+  --color-hover: #2b8500;
+  --color-sombra: rgba(0, 0, 0, 0.08);
   --borde-input: #dcdcdc;
 }
 
 body {
   margin: 0;
-  font-family: 'Roboto', sans-serif;
-  background: linear-gradient(135deg, var(--color-secundario), #011c30);
-  color: var(--color-blanco);
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,34 +22,33 @@ body {
 
 .login-container {
   background-color: var(--color-blanco);
-  color: var(--color-secundario);
   padding: 40px 30px;
   border-radius: 16px;
-  box-shadow: 0 15px 40px var(--sombra);
+  box-shadow: 0 15px 40px var(--color-sombra);
   width: 100%;
-  max-width: 420px;
+  max-width: 400px;
   box-sizing: border-box;
   animation: fadeIn 0.8s ease-in-out;
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
 
 .login-header h1 {
   color: var(--color-principal);
   margin-bottom: 10px;
-  font-size: 28px;
+  font-size: 26px;
 }
 
 .login-header p {
   font-size: 14px;
-  color: #555;
+  color: #666;
 }
 
 .input-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 input[type="text"],
@@ -64,7 +66,7 @@ input[type="text"]:focus,
 input[type="password"]:focus {
   outline: none;
   border-color: var(--color-principal);
-  box-shadow: 0 0 5px rgba(57, 169, 0, 0.3);
+  box-shadow: 0 0 5px rgba(57, 169, 0, 0.25);
 }
 
 button {
@@ -77,20 +79,48 @@ button {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 button:hover {
-  background-color: #2c7d00;
+  background-color: var(--color-hover);
   transform: scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
-  } to {
+  }
+  to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 30px 20px;
+  }
+
+  .login-header h1 {
+    font-size: 22px;
+  }
+
+  button {
+    font-size: 15px;
+    padding: 12px;
+  }
+}
+.login-logo {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.login-logo img {
+  max-width: 70px;
+  height: auto;
 }

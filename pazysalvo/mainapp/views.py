@@ -9,5 +9,8 @@ def custom_login(request):
 def pazysalvo(request):
     return render(request, 'pazysalvo.html')
 
-def prueba(request):
+def inicio(request):
     return render(request, 'dashboard.html')
+
+def aprendices(request):
+    return render(request, 'aprendices.html')

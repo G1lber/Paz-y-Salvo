@@ -10,10 +10,16 @@
 </head>
 <body>
     <div class="login-container">
+        <!-- Imagen superior -->
+        <div class="login-logo">
+            <img src="{% static 'image/sena-logo.png' %}" alt="Logo" />
+        </div>
+
         <div class="login-header">
             <h1>Iniciar Sesión</h1>
             <p>Bienvenido de nuevo, ingresa tus credenciales.</p>
         </div>
+
         <form method="post">
             {% csrf_token %}
             <div class="input-group">
@@ -22,7 +28,7 @@
             <div class="input-group">
                 <input type="password" name="password" placeholder="Contraseña" required>
             </div>
-            <button type="submit">Entrar</button>
+            <button href="{% url 'inicio' %}">Entrar</button>
         </form>
     </div>
 </body>

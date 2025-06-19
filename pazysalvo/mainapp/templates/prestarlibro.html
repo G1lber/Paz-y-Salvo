@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Prestar Libro</title>
+  <link rel="stylesheet" href="{% static 'css/prestar_libro.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <section class="prestamo-libro">
+    <div class="barra-superior">
+      <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+      <h1>Prestar Libro</h1>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="aprendiz">Aprendiz</label>
+        <input type="text" id="aprendiz" name="aprendiz" placeholder="Nombre o documento del aprendiz" required>
+      </div>
+
+      <div class="form-group">
+        <label for="libro">Libro</label>
+        <input type="text" id="libro" name="libro" placeholder="Título del libro" required>
+      </div>
+
+      <div class="form-group">
+        <label for="fecha">Fecha de préstamo</label>
+        <input type="date" id="fecha" name="fecha" required>
+      </div>
+
+      <button type="submit" class="btn-submit">Registrar préstamo</button>
+    </form>
+  </section>
+</body>
+</html>

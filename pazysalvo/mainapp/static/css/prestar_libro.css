@@ -1,0 +1,91 @@
+:root {
+  --color-principal: #39A900;
+  --color-secundario: #002b46;
+  --color-blanco: #ffffff;
+  --color-fondo: #f4f7fa;
+  --color-texto: #002b46;
+  --color-hover: #2b8500;
+  --color-sombra: rgba(0, 0, 0, 0.08);
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  margin: 0;
+  padding: 40px 20px;
+}
+
+.prestamo-libro {
+  max-width: 600px;
+  margin: auto;
+  background-color: var(--color-blanco);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px var(--color-sombra);
+}
+
+.barra-superior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.barra-superior h1 {
+  font-size: 1.6rem;
+  color: var(--color-secundario);
+}
+
+.btn-volver {
+  background-color: transparent;
+  border: 2px solid var(--color-secundario);
+  color: var(--color-secundario);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn-volver:hover {
+  background-color: var(--color-secundario);
+  color: var(--color-blanco);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="date"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 15px;
+}
+
+.btn-submit {
+  background-color: var(--color-principal);
+  color: var(--color-blanco);
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+  background-color: var(--color-hover);
+}

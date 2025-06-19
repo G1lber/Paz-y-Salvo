@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Libros Pendientes</title>
+  <link rel="stylesheet" href="{% static 'css/pendientes.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <section class="libros-pendientes">
+    <div class="barra-superior">
+      <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+      <h1>Aprendices con Pendientes</h1>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Documento</th>
+          <th>Libro</th>
+          <th>Fecha de Préstamo</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Juan Pérez</td>
+          <td>123456789</td>
+          <td>“Fundamentos de Redes”</td>
+          <td>2025-06-10</td>
+          <td class="pendiente">Pendiente</td>
+        </tr>
+        <tr>
+          <td>Laura Martínez</td>
+          <td>987654321</td>
+          <td>“Programación en Python”</td>
+          <td>2025-06-05</td>
+          <td class="pendiente">Pendiente</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>

@@ -14,3 +14,9 @@ def inicio(request):
 
 def aprendices(request):
     return render(request, 'aprendices.html')
+
+def prestarlibro(request):
+    return render(request, 'prestarlibro.html')
+
+def pendientes(request):
+    return render(request, 'pendientes.html')

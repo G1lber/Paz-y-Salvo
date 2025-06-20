@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="top-right-button">
+        <a href="{% url 'login' %}" class="btn-secundario">Administrativo</a>
+    </div>
+    <div class="login-container">
+        <!-- Imagen superior -->
+        <div class="login-logo">
+            <img src="{% static 'image/sena-logo.png' %}" alt="Logo" />
+        </div>
+
+        <div class="login-header">
+            <h1>Iniciar Sesión</h1>
+            <p>Bienvenido de nuevo, ingresa tu numero de documento.</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="username" placeholder="Numero de documento" required>
+            </div>
+            <button href="{% url 'inicio' %}">Entrar</button>
+        </form>
+    </div>
+</body>
+</html>

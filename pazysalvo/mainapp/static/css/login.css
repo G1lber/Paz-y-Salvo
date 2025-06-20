@@ -9,6 +9,7 @@
   --borde-input: #dcdcdc;
 }
 
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -18,6 +19,26 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
+}
+.top-right-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.btn-secundario {
+  background-color: var(--color-principal);
+  color: var(--color-blanco);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-secundario:hover {
+  background-color: var(--color-hover);
+  transform: scale(1.03);
 }
 
 .login-container {

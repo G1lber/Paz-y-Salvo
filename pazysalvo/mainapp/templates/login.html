@@ -22,13 +22,20 @@
 
         <form method="post">
             {% csrf_token %}
+                {% if messages %}
+                <ul class="error-messages">
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             <div class="input-group">
-                <input type="text" name="username" placeholder="Usuario" required>
+                <input type="text" name="num_doc" placeholder="Numero de documento" required>
             </div>
             <div class="input-group">
                 <input type="password" name="password" placeholder="Contraseña" required>
             </div>
-            <button href="{% url 'inicio' %}">Entrar</button>
+            <button type="submit">Entrar</button>
         </form>
     </div>
 </body>

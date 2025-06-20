@@ -9,6 +9,30 @@
   --borde-input: #dcdcdc;
 }
 
+/* Importante eliminar cuando ya funcione el login de aprendiz */
+a.btn {
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+  padding: 14px;
+  background-color: var(--color-principal);
+  color: var(--color-blanco);
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+a.btn:hover {
+  background-color: var(--color-hover);
+  transform: scale(1.02);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+}
+/* ------------- */
 
 body {
   margin: 0;
@@ -39,6 +63,12 @@ body {
 .btn-secundario:hover {
   background-color: var(--color-hover);
   transform: scale(1.03);
+}
+
+.error-messages {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 15px;
 }
 
 .login-container {

@@ -119,6 +119,11 @@ body {
   box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
+.card h3 i {
+  margin-right: 8px;
+  color: var(--color-secundario); /* o cualquier color que uses */
+}
+
 /* Responsivo: Ajustes para pantallas pequeñas */
 @media (max-width: 768px) {
   .dashboard {

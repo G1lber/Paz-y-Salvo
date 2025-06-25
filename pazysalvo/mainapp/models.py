@@ -75,3 +75,56 @@ class PazYSalvo(models.Model):
 
     def __str__(self):
         return f'Paz y Salvo {self.id} - {self.tramite}'
+
+class ControlPazYSalvo(models.Model):
+    id_control = models.AutoField(primary_key=True)
+    id_usuario_FK = models.ForeignKey(Usuario, on_delete=models.CASCADE, null=True)
+    id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return f'Creado para {self.id_usuario_FK} de la ficha {self.id_ficha_FK}'
+
+class ReporteCoordinacion(models.Model):
+    id_usuario_FK = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.CASCADE)
+    paz_y_salvo = models.BooleanField(default=False)
+    observaciones = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Coordinación - {self.id_usuario_FK}'
+
+class ReporteBienestar(models.Model):
+    id_usuario_FK = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.CASCADE)
+    paz_y_salvo = models.BooleanField(default=False)
+    observaciones = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Bienestar - {self.id_usuario_FK}'
+
+class ReporteBiblioteca(models.Model):
+    id_usuario_FK = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.CASCADE)
+    paz_y_salvo = models.BooleanField(default=False)
+    observaciones = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Biblioteca - {self.id_usuario_FK}'
+
+class ReporteAlmacen(models.Model):
+    id_usuario_FK = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.CASCADE)
+    paz_y_salvo = models.BooleanField(default=False)
+    observaciones = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Almacén - {self.id_usuario_FK}'
+    
+class ReporteSeguimiento(models.Model):
+    id_usuario_FK = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.CASCADE)
+    paz_y_salvo = models.BooleanField(default=False)
+    observaciones = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Seguimiento - {self.id_usuario_FK}'

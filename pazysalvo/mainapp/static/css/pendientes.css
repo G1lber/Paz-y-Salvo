@@ -84,6 +84,21 @@ tbody tr:hover {
   font-weight: bold;
 }
 
+.btn-quitar {
+  background-color: var(--color-principal);
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-quitar:hover {
+  background-color: var(--color-hover);
+}
 /* Responsive */
 @media (max-width: 768px) {
   .barra-superior {

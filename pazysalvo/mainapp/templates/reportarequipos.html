@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reportar Equipos Prestados</title>
+  <link rel="stylesheet" href="{% static 'css/reportarequipos.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <section class="prestamo-libro">
+    <div class="barra-superior" style="flex-direction: column; align-items: flex-start;">
+      <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+      <h1 class="titulo">Reportar Equipos Prestados</h1>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <!-- Reporte individual -->
+      <div class="form-group">
+        <label for="aprendiz">Usuario</label>
+        <input type="text" id="aprendiz" name="aprendiz" placeholder="Documento del usuario" required>
+      </div>
+
+      <div class="form-group">
+        <label for="equipo">Equipo</label>
+        <input type="text" id="equipo" name="equipo" placeholder="Nombre del equipo (ej. portátil, cámara)" required>
+      </div>
+
+      <div class="form-group">
+        <label for="serial">Serial del equipo</label>
+        <input type="text" id="serial" name="serial" placeholder="Código o serial del equipo" required>
+      </div>
+
+      <div class="form-group">
+        <label for="fecha">Fecha de préstamo</label>
+        <input type="date" id="fecha" name="fecha" required>
+      </div>
+
+      <button type="submit" class="btn-submit">Registrar préstamo de equipo</button>
+
+      <hr>
+
+      <!-- Subida masiva desde Excel -->
+      <div class="form-group">
+        <label for="archivo_excel">Subir Excel de equipos prestados</label>
+        <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls">
+      </div>
+
+      <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de equipos</button>
+    </form>
+  </section>
+</body>
+</html>

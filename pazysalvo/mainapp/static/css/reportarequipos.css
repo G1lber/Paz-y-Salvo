@@ -1,0 +1,139 @@
+:root {
+  --color-principal: #39A900;
+  --color-secundario: #002b46;
+  --color-blanco: #ffffff;
+  --color-fondo: #f4f7fa;
+  --color-texto: #002b46;
+  --color-hover: #2b8500;
+  --color-sombra: rgba(0, 0, 0, 0.08);
+  --color-borde: #e0e0e0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  margin: 0;
+  padding: 40px 20px;
+}
+
+.prestamo-libro {
+  max-width: 600px;
+  margin: auto;
+  background-color: var(--color-blanco);
+  padding: 30px 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px var(--color-sombra);
+  transition: all 0.3s ease-in-out;
+}
+
+.barra-superior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.barra-superior h1 {
+  font-size: 1.8rem;
+  color: var(--color-secundario);
+  margin: 0;
+  font-weight: bold;
+}
+
+.titulo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--color-secundario);
+  margin-top: 10px;
+}
+
+.btn-volver {
+  background-color: transparent;
+  border: 2px solid var(--color-secundario);
+  color: var(--color-secundario);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.btn-volver:hover {
+  background-color: var(--color-secundario);
+  color: var(--color-blanco);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: var(--color-secundario);
+}
+
+input[type="text"],
+input[type="date"],
+input[type="file"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  box-sizing: border-box;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: var(--color-principal);
+}
+
+.btn-submit {
+  background-color: var(--color-principal);
+  color: var(--color-blanco);
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 5px;
+}
+
+.btn-submit:hover {
+  background-color: var(--color-hover);
+}
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: var(--color-borde);
+  margin: 30px 0;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .prestamo-libro {
+    padding: 20px 15px;
+  }
+
+  .barra-superior {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .barra-superior h1 {
+    font-size: 1.4rem;
+  }
+}

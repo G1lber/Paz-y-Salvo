@@ -52,5 +52,11 @@ def aprendices(request):
 def prestarlibro(request):
     return render(request, 'prestarlibro.html')
 
-def pendientes(request):
-    return render(request, 'pendientes.html')
+def pendientes_biblioteca(request):
+    return render(request, 'pendientes-biblioteca.html')
+
+def reportar_equipos(request):
+    return render(request, 'reportarequipos.html')
+
+def pendientes_almacen(request):
+    return render(request, 'pendientes-almacen.html')

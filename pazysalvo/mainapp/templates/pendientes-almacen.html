@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reportes de Equipos</title>
+  <link rel="stylesheet" href="{% static 'css/pendientes.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <section class="libros-pendientes">
+    <div class="barra-superior">
+      <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+      <h1>Reportes de Equipos Prestados</h1>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Documento</th>
+          <th>Equipo</th>
+          <th>Serial</th>
+          <th>Fecha de Préstamo</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Camila Rodríguez</td>
+          <td>1029384756</td>
+          <td>Portátil HP</td>
+          <td>SN-HP3482</td>
+          <td>2025-06-15</td>
+          <td class="pendiente">Pendiente</td>
+          <td>
+            <form method="post" action="#">
+              {% csrf_token %}
+              <button type="submit" class="btn-quitar">Quitar</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>Esteban Gómez</td>
+          <td>1092837465</td>
+          <td>Cámara Canon</td>
+          <td>CAM-0032</td>
+          <td>2025-06-10</td>
+          <td class="pendiente">Pendiente</td>
+          <td>
+            <form method="post" action="#">
+              {% csrf_token %}
+              <button type="submit" class="btn-quitar">Quitar</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>Sofía Mendoza</td>
+          <td>1056728391</td>
+          <td>Tablet Samsung</td>
+          <td>TAB-SM992</td>
+          <td>2025-06-08</td>
+          <td class="pendiente">Pendiente</td>
+          <td>
+            <form method="post" action="#">
+              {% csrf_token %}
+              <button type="submit" class="btn-quitar">Quitar</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>

@@ -47,7 +47,7 @@
           <div class="card">
             <h3><i class="fas fa-chart-bar"></i> Reportes de Juicios y Pruebas TYT</h3>
             <p>Consulta estadísticas clave y genera informes automáticos.</p>
-            <a href="{% url 'pendientes' %}" class="btn">Ver reportes</a>
+            <a href="" class="btn">Ver reportes</a>
           </div>
 
           <div class="card">
@@ -57,33 +57,33 @@
           </div>
 
           <div class="card">
-            <h3><i class="fas fa-book-reader"></i> Reportes por Libros</h3>
+            <h3><i class="fas fa-book-reader"></i> Reportes por Biblioteca</h3>
             <p>Consulta reportes de libros prestados.</p>
-            <a href="{% url 'pendientes' %}" class="btn">Ver reportes</a>
+            <a href="{% url 'pendientes-biblioteca' %}" class="btn">Ver reportes</a>
           </div>
 
           <div class="card">
             <h3><i class="fas fa-clock"></i> Subir Horas de Bienestar</h3>
-            <p>Gestiona el préstamo de equipos.</p>
+            <p>Gestionar horas ludicas.</p>
             <a href="#" class="btn">Ver documentos</a>
           </div>
 
           <div class="card">
             <h3><i class="fas fa-heart"></i> Reportes de Aprendices Bienestar</h3>
             <p>Consulta estadísticas y reportes de libros prestados.</p>
-            <a href="{% url 'pendientes' %}" class="btn">Ver reportes</a>
+            <a href="" class="btn">Ver reportes</a>
           </div>
 
           <div class="card">
             <h3><i class="fas fa-laptop"></i> Reportar Equipos Prestados</h3>
             <p>Administra reportes de equipos prestados.</p>
-            <a href="#" class="btn">Reportar</a>
+            <a href="{% url 'reportarequipos' %}" class="btn">Reportar</a>
           </div>
 
           <div class="card">
             <h3><i class="fas fa-desktop"></i> Reportes de Equipos en Deuda</h3>
             <p>Consulta estadísticas y reportes de libros prestados.</p>
-            <a href="{% url 'pendientes' %}" class="btn">Ver reportes</a>
+            <a href="{% url 'pendientes-almacen' %}" class="btn">Ver reportes</a>
           </div>
 
           <div class="card">
@@ -95,7 +95,7 @@
           <div class="card">
             <h3><i class="fas fa-folder-open"></i> Reportes de Bitácoras</h3>
             <p>Consulta estadísticas y reportes de libros prestados.</p>
-            <a href="{% url 'pendientes' %}" class="btn">Ver reportes</a>
+            <a href="" class="btn">Ver reportes</a>
           </div>
 
 
@@ -120,33 +120,35 @@
           <div class="card">
           <h3>📊 Reportes de Juicios y Pruebas TYT</h3>
           <p>Consulta estadísticas clave y genera informes automáticos.</p>
-          <a href="{% url 'pendientes' %}" class="btn">Ver reportes</a>
+          <a href="" class="btn">Ver reportes</a>
         </div>
         {% endif %}
 
         {% if rol == "Biblioteca" %}
           <div class="card">
-            <h3>Reportar por libro</h3>
+            <h3><i class="fas fa-book"></i> Reportar por Libro</h3>
             <p>Reportar aprendices con mora en libros</p>
             <a href="{% url 'prestar-libro' %}" class="btn">Reportar</a>
           </div>
+
           <div class="card">
-            <h3>📊 Reportes por libros</h3>
+            <h3><i class="fas fa-book-reader"></i> Reportes por Biblioteca</h3>
             <p>Consulta reportes de libros prestados.</p>
-            <a href="{% url 'pendientes' %}" class="btn">Ver reportes</a>
+            <a href="{% url 'pendientes-biblioteca' %}" class="btn">Ver reportes</a>
           </div>
         {% endif %}
 
         {% if rol == "Responsable Bienestar" %}
           <div class="card">
-            <h3>Subir horas de Bienestar</h3>
-            <p>Gestiona el préstamo de equipos.</p>
-            <a href="#" class="btn">Ver documentos</a>
+            <h3><i class="fas fa-laptop"></i> Reportar Equipos Prestados</h3>
+            <p>Administra reportes de equipos prestados.</p>
+            <a href="{% url 'reportarequipos' %}" class="btn">Reportar</a>
           </div>
+
           <div class="card">
-            <h3>📊 Reportes de aprendices Bienestar</h3>
+            <h3><i class="fas fa-desktop"></i> Reportes de Equipos en Deuda</h3>
             <p>Consulta estadísticas y reportes de libros prestados.</p>
-            <a href="{% url 'pendientes' %}" class="btn">Ver reportes</a>
+            <a href="{% url 'pendientes-almacen' %}" class="btn">Ver reportes</a>
           </div>
         {% endif %}
 
@@ -159,7 +161,7 @@
           <div class="card">
             <h3>📊 Reportes de equipos en deuda</h3>
             <p>Consulta estadísticas y reportes de libros prestados.</p>
-            <a href="{% url 'pendientes' %}" class="btn">Ver reportes</a>
+            <a href="" class="btn">Ver reportes</a>
           </div>
         {% endif %}
 
@@ -172,7 +174,7 @@
            <div class="card">
             <h3>📊 Reportes de Bitacoras</h3>
             <p>Consulta estadísticas y reportes de libros prestados.</p>
-            <a href="{% url 'pendientes' %}" class="btn">Ver reportes</a>
+            <a href="" class="btn">Ver reportes</a>
           </div>
         {% endif %}
       {% endif %}

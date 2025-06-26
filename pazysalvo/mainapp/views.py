@@ -60,3 +60,25 @@ def reportar_equipos(request):
 
 def pendientes_almacen(request):
     return render(request, 'pendientes-almacen.html')
+
+def reportar_bitacoras(request):
+    return render(request, 'reportarbitacoras.html')
+
+def pendientes_bitacoras(request):
+    return render(request, 'pendientes-bitacoras.html')
+
+def reportar_horas(request):
+    return render(request, 'reportarhoras.html')
+
+def pendientes_horas(request):
+    return render(request, 'pendientes-horas.html')
+
+def reportar_juicios(request):
+    return render(request, 'reportarjuicios.html')
+
+def reportar_tyt(request):
+    return render(request, 'reportartyt.html')
+
+def pendientes_juiciostyt(request):
+    return render(request, 'pendientes-juicios-tyt.html')
+

@@ -12,4 +12,11 @@ urlpatterns = [
     path('pendientes-biblioteca/', views.pendientes_biblioteca, name='pendientes-biblioteca'),
     path('reportar-equipo/', views.reportar_equipos, name='reportarequipos'),
     path('pendientes-almacen/', views.pendientes_almacen, name='pendientes-almacen'),
+    path('reportar-bitacoras/', views.reportar_bitacoras, name='reportarbitacoras'),
+    path('pendientes-bitacoras/', views.pendientes_bitacoras, name='pendientes-bitacoras'),
+    path('reportar-horas/', views.reportar_horas, name='reportarhoras'),
+    path('pendientes-horas/', views.pendientes_horas, name='pendienteshoras'),
+    path('reportar-juicios/', views.reportar_juicios, name='reportarjuicios'),
+    path('reportar-tyt/', views.reportar_tyt, name='reportartyt'),
+    path('pendientes-juicios-tyt/', views.pendientes_juiciostyt, name='pendientesjuiciostyt'),
 ]

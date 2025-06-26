@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reportes de Bitácoras</title>
+  <link rel="stylesheet" href="{% static 'css/pendientes.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <section class="libros-pendientes">
+    <div class="barra-superior">
+      <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+      <h1>Aprendices con Bitácoras Pendientes</h1>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Documento</th>
+          <th>Ficha</th>
+          <th>Actividad</th>
+          <th>Fecha esperada</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Andrés Ramírez</td>
+          <td>1034567890</td>
+          <td>2456789</td>
+          <td>Entrega de Bitácora 1</td>
+          <td>2025-06-12</td>
+          <td class="pendiente">Pendiente</td>
+          <td>
+            <form method="post" action="#">
+              {% csrf_token %}
+              <button type="submit" class="btn-quitar">Quitar</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>Valentina Pérez</td>
+          <td>1098765432</td>
+          <td>2467890</td>
+          <td>Entrega de Bitácora Final</td>
+          <td>2025-06-10</td>
+          <td class="pendiente">Pendiente</td>
+          <td>
+            <form method="post" action="#">
+              {% csrf_token %}
+              <button type="submit" class="btn-quitar">Quitar</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>David Moreno</td>
+          <td>1087654321</td>
+          <td>2451234</td>
+          <td>Seguimiento Semanal</td>
+          <td>2025-06-08</td>
+          <td class="pendiente">Pendiente</td>
+          <td>
+            <form method="post" action="#">
+              {% csrf_token %}
+              <button type="submit" class="btn-quitar">Quitar</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>

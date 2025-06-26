@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reportar Pruebas TYT</title>
+  <link rel="stylesheet" href="{% static 'css/prestar_libro.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <section class="prestamo-libro">
+    <div class="barra-superior" style="flex-direction: column; align-items: flex-start;">
+      <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+      <h1 class="titulo">Reportar Pruebas TYT</h1>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <!-- Registro individual -->
+      <div class="form-group">
+        <label for="aprendiz">Aprendiz</label>
+        <input type="text" id="aprendiz" name="aprendiz" placeholder="Documento del aprendiz" required>
+      </div>
+
+      <div class="form-group">
+        <label for="prueba">Tipo de prueba</label>
+        <input type="text" id="prueba" name="prueba" placeholder="Ej: Lectura crítica, matemáticas, etc." required>
+      </div>
+
+      <div class="form-group">
+        <label for="resultado">Resultado</label>
+        <input type="text" id="resultado" name="resultado" placeholder="Ej: Bajo, aceptable, no presentó" required>
+      </div>
+
+      <div class="form-group">
+        <label for="observacion">Observación</label>
+        <input type="text" id="observacion" name="observacion" placeholder="Observación adicional (opcional)">
+      </div>
+
+      <button type="submit" class="btn-submit">Registrar resultado</button>
+
+      <hr style="margin: 30px 0;">
+
+      <!-- Subida de Excel -->
+      <div class="form-group">
+        <label for="archivo_excel">Subir Excel con resultados de TYT</label>
+        <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls">
+      </div>
+
+      <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir resultados</button>
+    </form>
+  </section>
+</body>
+</html>

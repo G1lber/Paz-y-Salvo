@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reportar Bitácoras</title>
+  <link rel="stylesheet" href="{% static 'css/prestar_libro.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <section class="prestamo-libro">
+    <div class="barra-superior" style="flex-direction: column; align-items: flex-start;">
+      <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+      <h1 class="titulo">Reportar Bitácoras Pendientes</h1>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <!-- Reporte individual de bitácora -->
+      <div class="form-group">
+        <label for="aprendiz">Aprendiz</label>
+        <input type="text" id="aprendiz" name="aprendiz" placeholder="Documento del aprendiz" required>
+      </div>
+
+      <div class="form-group">
+        <label for="actividad">Actividad o nombre de la bitácora</label>
+        <input type="text" id="actividad" name="actividad" placeholder="Ej. Bitácora semanal, final, etc." required>
+      </div>
+
+      <div class="form-group">
+        <label for="fecha">Fecha esperada de entrega</label>
+        <input type="date" id="fecha" name="fecha" required>
+      </div>
+
+      <button type="submit" class="btn-submit">Registrar reporte</button>
+
+      <hr style="margin: 30px 0;">
+
+      <!-- Subir archivo Excel -->
+      <div class="form-group">
+        <label for="archivo_excel">Subir Excel de aprendices con bitácoras pendientes</label>
+        <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls">
+      </div>
+
+      <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de bitácoras</button>
+    </form>
+  </section>
+</body>
+</html>

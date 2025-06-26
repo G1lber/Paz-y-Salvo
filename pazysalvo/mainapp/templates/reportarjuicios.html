@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reportar Juicios Evaluativos</title>
+  <link rel="stylesheet" href="{% static 'css/prestar_libro.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <section class="prestamo-libro">
+    <div class="barra-superior" style="flex-direction: column; align-items: flex-start;">
+      <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+      <h1 class="titulo">Reportar Juicios Evaluativos</h1>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <!-- Registro individual -->
+      <div class="form-group">
+        <label for="aprendiz">Aprendiz</label>
+        <input type="text" id="aprendiz" name="aprendiz" placeholder="Documento del aprendiz" required>
+      </div>
+
+      <div class="form-group">
+        <label for="competencia">Competencia</label>
+        <input type="text" id="competencia" name="competencia" placeholder="Nombre de la competencia evaluada" required>
+      </div>
+
+      <div class="form-group">
+        <label for="juicio">Juicio evaluativo</label>
+        <input type="text" id="juicio" name="juicio" placeholder="Ej: No supera, en proceso..." required>
+      </div>
+
+      <div class="form-group">
+        <label for="observacion">Observación</label>
+        <input type="text" id="observacion" name="observacion" placeholder="Observaciones opcionales">
+      </div>
+
+      <button type="submit" class="btn-submit">Registrar juicio</button>
+
+      <hr style="margin: 30px 0;">
+
+      <!-- Subida masiva -->
+      <div class="form-group">
+        <label for="archivo_excel">Subir Excel de juicios evaluativos</label>
+        <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls">
+      </div>
+
+      <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de juicios</button>
+    </form>
+  </section>
+</body>
+</html>

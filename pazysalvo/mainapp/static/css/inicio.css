@@ -63,7 +63,15 @@ body {
   margin-bottom: 40px;
   text-align: center;
 }
-
+.detalles-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  min-height: 100vh;
+  text-align: center;
+  padding: 2rem;
+}
 /* Tarjetas */
 .cards {
   display: grid;
@@ -162,3 +170,107 @@ body {
     grid-template-columns: 1fr;
   }
 }
+/* Ajuste al contenedor principal */
+.roles-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+/* Sección por rol */
+.rol-section {
+  margin: 0;
+  background: #ffffff;
+  border: 2px solid var(--color-principal);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1rem; 
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+/* Encabezado del desplegable */
+.rol-section summary {
+  padding: 16px 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: var(--color-principal);
+  color: white;
+  list-style: none;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.6rem;
+  position: relative;
+}
+
+.rol-section summary i {
+  font-size: 1.2rem;
+}
+
+/* Flechas */
+.rol-section summary::after {
+  content: "▼";
+  position: absolute;
+  right: 20px;
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.rol-section[open] summary::after {
+  content: "▲";
+}
+
+/* Hover */
+.rol-section summary:hover {
+  background-color: var(--color-hover);
+}
+
+/* Ocultar flecha nativa */
+.rol-section summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Contenido expandido */
+.rol-section[open] .cards-container {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animación suave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Contenedor de tarjetas */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  justify-items: center; /* Centra las tarjetas en su celda */
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: #f8fafc;
+}
+
+/* Tarjeta individual */
+.card {
+  width: 220px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+

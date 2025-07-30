@@ -23,167 +23,145 @@
     </p>
 
     <div class="cards">
+      <div class="detalles-container">
       {% with rol=request.session.usuario_rol %}
       
       {% if rol == "Admin" %}
+      
+       <details class="rol-section">
+        <summary><i class="fas fa-user-shield"></i> Opciones de Administrador</summary>
+        <div class="cards-container">
           <div class="card">
-            <h3><i class="fas fa-user-graduate"></i> Aprendices</h3>
+            <h3><i class="fas fa-user-graduate"></i> Usuarios</h3>
             <p>Gestiona los aprendices registrados.</p>
-            <a href="{% url 'aprendices' %}" class="btn">Ver Aprendices</a>
+            <a href="{% url 'aprendices' %}" class="btn">Ver Usuarios</a>
           </div>
 
           <div class="card">
-            <h3><i class="fas fa-pen"></i> Reportar por Juicios Evaluativos</h3>
+            <h3><i class="fas fa-pen"></i> Reportes</h3>
             <p>Modifica parámetros evaluativos.</p>
-            <a href="{% url 'reportarjuicios' %}"class="btn">Verificar</a>
+            <a href="{% url 'reportarjuicios' %}"class="btn">Ver reportesr</a>
           </div>
-
-          <div class="card">
-            <h3><i class="fas fa-book-open"></i> Reportar por Pruebas TYT</h3>
-            <p>Administra información TYT.</p>
-            <a href="{% url 'reportartyt' %}" class="btn">Ver documentos</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-chart-bar"></i> Reportes de Juicios y Pruebas TYT</h3>
-            <p>Consulta personas que no estan al día.</p>
-            <a href="{% url 'pendientesjuiciostyt' %}" class="btn">Ver reportes</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-book"></i> Reportar por Libro</h3>
-            <p>Reportar aprendices con mora en libros</p>
-            <a href="{% url 'prestar-libro' %}" class="btn">Reportar</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-book-reader"></i> Personas con pendientes en Biblioteca</h3>
-            <p>Consulta reportes de libros prestados.</p>
-            <a href="{% url 'pendientes-biblioteca' %}" class="btn">Ver reportes</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-clock"></i> Subir Horas de Bienestar</h3>
-            <p>Gestionar horas ludicas.</p>
-            <a href="{% url 'reportarhoras'%}" class="btn">Ver documentos</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-heart"></i> Aprendices con horas pendientes en Bienestar</h3>
-            <p>Consulta reportes de personas con horas ludicas pendiente.</p>
-            <a href="{% url 'pendienteshoras'%}" class="btn">Ver reportes</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-laptop"></i> Reportar por Equipos Prestados</h3>
-            <p>Administra reportes de equipos prestados.</p>
-            <a href="{% url 'reportarequipos' %}" class="btn">Reportar</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-desktop"></i> Personas con pendientes en almacen</h3>
-            <p>Consulta reportes de almacen, por mora de equipos.</p>
-            <a href="{% url 'pendientes-almacen' %}" class="btn">Ver reportes</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-file-alt"></i> Reportar por Bitácoras</h3>
-            <p>Personas que faltan por presentar evidencia</p>
-            <a href="{% url 'reportarbitacoras' %}" class="btn">Reportar Bitácoras</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-folder-open"></i> Personas que deben Bitácoras</h3>
-            <p>Consulta aprendices que faltan de bitacoras.</p>
-            <a href="{% url 'pendientes-bitacoras' %}" class="btn">Ver reportes</a>
-          </div>
-
-
-      {% else %}
-        <!-- Resto de roles según permisos individuales -->
-        {% if rol == "Coordinador Academico" %}
-          <div class="card">
-            <h3><i class="fas fa-user-graduate"></i> Aprendices</h3>
-            <p>Gestiona los aprendices registrados.</p>
-            <a href="{% url 'aprendices' %}" class="btn">Ver Aprendices</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-pen"></i> Reportar por Juicios Evaluativos</h3>
-            <p>Modifica parámetros evaluativos.</p>
-            <a href="{% url 'reportarjuicios' %}"class="btn">Verificar</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-book-open"></i> Reportar por Pruebas TYT</h3>
-            <p>Administra información TYT.</p>
-            <a href="{% url 'reportartyt' %}" class="btn">Ver documentos</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-chart-bar"></i> Reportes de Juicios y Pruebas TYT</h3>
-            <p>Consulta personas que no estan al día.</p>
-            <a href="{% url 'pendientesjuiciostyt' %}" class="btn">Ver reportes</a>
-          </div>
-        {% endif %}
-
-        {% if rol == "Biblioteca" %}
-          <div class="card">
-            <h3><i class="fas fa-book"></i> Reportar por Libro</h3>
-            <p>Reportar aprendices con mora en libros</p>
-            <a href="{% url 'prestar-libro' %}" class="btn">Reportar</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-book-reader"></i> Personas con pendientes en Biblioteca</h3>
-            <p>Consulta reportes de libros prestados.</p>
-            <a href="{% url 'pendientes-biblioteca' %}" class="btn">Ver reportes</a>
-          </div>
-        {% endif %}
-
-        {% if rol == "Responsable Bienestar" %}
-          <div class="card">
-            <h3><i class="fas fa-heart"></i> Aprendices con horas pendientes en Bienestar</h3>
-            <p>Consulta reportes de personas con horas ludicas pendiente.</p>
-            <a href="{% url 'pendienteshoras'%}" class="btn">Ver reportes</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-laptop"></i> Reportar por Equipos Prestados</h3>
-            <p>Administra reportes de equipos prestados.</p>
-            <a href="{% url 'reportarequipos' %}" class="btn">Reportar</a>
-          </div>
-        {% endif %}
-
-        {% if rol == "Responsable Almacen" %}
-          <div class="card">
-            <h3><i class="fas fa-laptop"></i> Reportar Equipos Prestados</h3>
-            <p>Administra reportes de equipos prestados.</p>
-            <a href="{% url 'reportarequipos' %}" class="btn">Reportar</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-desktop"></i> Personas con pendientes en almacen</h3>
-            <p>Consulta reportes de almacen, por mora de equipos.</p>
-            <a href="{% url 'pendientes-almacen' %}" class="btn">Ver reportes</a>
-          </div>
-        {% endif %}
-
-        {% if rol == "Instructor Seguimiento" %}
-          <div class="card">
-            <h3><i class="fas fa-file-alt"></i> Reportar por Bitácoras</h3>
-            <p>Personas que faltan por presentar evidencia</p>
-            <a href="{% url 'reportarbitacoras' %}" class="btn">Reportar Bitácoras</a>
-          </div>
-
-          <div class="card">
-            <h3><i class="fas fa-folder-open"></i> Personas que deben Bitácoras</h3>
-            <p>Consulta aprendices que faltan de bitacoras.</p>
-            <a href="{% url 'pendientes-bitacoras' %}" class="btn">Ver reportes</a>
-          </div>
-        {% endif %}
+        </div>
+      </details>
       {% endif %}
+        <!-- Resto de roles según permisos individuales -->
+        {% if rol == "Coordinador Academico" or rol == "Admin" %}
+          <details class="rol-section">
+          <summary><i class="fas fa-chalkboard-teacher"></i> Opciones del Coordinador</summary>
+            <div class="cards-container">
+              <!-- cards del Coordinador -->
+              <div class="card">
+                <h3><i class="fas fa-user-graduate"></i> Aprendices</h3>
+                <p>Gestiona los aprendices registrados.</p>
+                <a href="{% url 'aprendices' %}" class="btn">Ver Aprendices</a>
+              </div>
+
+              <div class="card">
+                <h3><i class="fas fa-pen"></i> Reportar por Juicios Evaluativos</h3>
+                <p>Modifica parámetros evaluativos.</p>
+                <a href="{% url 'reportarjuicios' %}"class="btn">Verificar</a>
+              </div>
+
+              <div class="card">
+                <h3><i class="fas fa-book-open"></i> Reportar por Pruebas TYT</h3>
+                <p>Administra información TYT.</p>
+                <a href="{% url 'reportartyt' %}" class="btn">Ver documentos</a>
+              </div>
+
+              <div class="card">
+                <h3><i class="fas fa-chart-bar"></i> Reportes de Juicios y Pruebas TYT</h3>
+                <p>Consulta personas que no estan al día.</p>
+                <a href="{% url 'pendientesjuiciostyt' %}" class="btn">Ver reportes</a>
+              </div>
+            </div>
+        </details>
+          
+        {% endif %}
+
+        {% if rol == "Biblioteca" or rol == "Admin" %}
+          <details class="rol-section">
+          <summary><i class="fas fa-book"></i> Opciones de Biblioteca</summary>
+          <div class="cards-container">
+            <!-- cards de biblioteca -->
+            <div class="card">
+              <h3><i class="fas fa-book"></i> Reportar por Libro</h3>
+              <p>Reportar aprendices con mora en libros</p>
+              <a href="{% url 'prestar-libro' %}" class="btn">Reportar</a>
+            </div>
+
+            <div class="card">
+              <h3><i class="fas fa-book-reader"></i> Personas con pendientes en Biblioteca</h3>
+              <p>Consulta reportes de libros prestados.</p>
+              <a href="{% url 'pendientes-biblioteca' %}" class="btn">Ver reportes</a>
+            </div>
+          </div>
+        </details>
+         
+        {% endif %}
+
+        {% if rol == "Responsable Bienestar" or rol == "Admin" %}
+          <details class="rol-section">
+            <summary><i class="fas fa-heart"></i> Opciones de Bienestar</summary>
+            <div class="cards-container">
+              <!-- cards de Bienestar -->
+               <div class="card">
+                <h3><i class="fas fa-heart"></i> Aprendices con horas pendientes en Bienestar</h3>
+                <p>Consulta reportes de personas con horas ludicas pendiente.</p>
+                <a href="{% url 'pendienteshoras'%}" class="btn">Ver reportes</a>
+              </div>
+
+              <div class="card">
+                <h3><i class="fas fa-laptop"></i> Reportar por Equipos Prestados</h3>
+                <p>Administra reportes de equipos prestados.</p>
+                <a href="{% url 'reportarequipos' %}" class="btn">Reportar</a>
+              </div>
+            </div>
+          </details>
+          
+        {% endif %}
+
+        {% if rol == "Responsable Almacen" or rol == "Admin"%}
+            <details class="rol-section">
+              <summary><i class="fas fa-box"></i> Opciones de Almacén</summary>
+              <div class="cards-container">
+                <!-- cards de Almacén -->
+                  <div class="card">
+                    <h3><i class="fas fa-laptop"></i> Reportar Equipos Prestados</h3>
+                    <p>Administra reportes de equipos prestados.</p>
+                    <a href="{% url 'reportarequipos' %}" class="btn">Reportar</a>
+                  </div>
+
+                  <div class="card">
+                    <h3><i class="fas fa-desktop"></i> Personas con pendientes en almacen</h3>
+                    <p>Consulta reportes de almacen, por mora de equipos.</p>
+                    <a href="{% url 'pendientes-almacen' %}" class="btn">Ver reportes</a>
+                  </div>
+              </div>
+            </details>
+        {% endif %}
+
+        {% if rol == "Instructor Seguimiento" or rol == "Admin" %}
+          <details class="rol-section">
+            <summary><i class="fas fa-clipboard-list"></i> Opciones de Seguimiento</summary>
+            <div class="cards-container">
+              <!-- cards de Instructor -->
+               <div class="card">
+                <h3><i class="fas fa-file-alt"></i> Reportar por Bitácoras</h3>
+                <p>Personas que faltan por presentar evidencia</p>
+                <a href="{% url 'reportarbitacoras' %}" class="btn">Reportar Bitácoras</a>
+              </div>
+
+              <div class="card">
+                <h3><i class="fas fa-folder-open"></i> Personas que deben Bitácoras</h3>
+                <p>Consulta aprendices que faltan de bitacoras.</p>
+                <a href="{% url 'pendientes-bitacoras' %}" class="btn">Ver reportes</a>
+              </div>
+            </div>
+          </details>
+        {% endif %}
       {% endwith %}
+      </div>
     </div>
   </section>
 </body>

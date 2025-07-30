@@ -1,0 +1,51 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+
+<div class="aprendices-container">
+
+  <div class="barra-superior">
+    <a  href="{% url 'inicio' %}" class="btn-volver"> Volver</a>
+    <h1>Lista de Usuarios</h1>
+    <a href="#" class="btn-crear">+ Crear Usuario</a>
+  </div>
+
+  <input type="text" id="busqueda" placeholder="Buscar por nombre o documento...">
+
+  <table id="tabla-aprendices">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Documento</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Carlitos</td>
+        <td>123456789</td>
+        <td>Instructor</td>
+        <td><a href="#" class="btn-editar">Editar</a></td>
+      </tr>
+      <tr>
+        <td>Jesús</td>
+        <td>987654321</td>
+        <td>Aprendiz</td>
+        <td><a href="#" class="btn-editar">Editar</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  const inputBusqueda = document.getElementById('busqueda');
+  const filas = document.querySelectorAll('#tabla-aprendices tbody tr');
+
+  inputBusqueda.addEventListener('keyup', () => {
+    const valor = inputBusqueda.value.toLowerCase();
+    filas.forEach(fila => {
+      const texto = fila.innerText.toLowerCase();
+      fila.style.display = texto.includes(valor) ? '' : 'none';
+    });
+  });
+</script>

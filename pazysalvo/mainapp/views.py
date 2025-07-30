@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from mainapp.models import Usuario, Login
+from .forms import UsuarioForm
 
 # Create your views here.
 def index(request):
@@ -45,6 +46,9 @@ def pazysalvo(request):
 
 def inicio(request):
     return render(request, 'dashboard.html')
+
+def usuarios(request):
+    return render(request, 'usuarios.html')
 
 def aprendices(request):
     return render(request, 'aprendices.html')

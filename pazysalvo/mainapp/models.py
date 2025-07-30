@@ -49,6 +49,7 @@ class Usuario(models.Model):
     id_tipodoc_FK = models.ForeignKey(TipoDoc, on_delete=models.SET_NULL, null=True)
     id_rol_FK = models.ForeignKey(Roles, on_delete=models.SET_NULL, null=True)
     id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.SET_NULL, null=True)
+    es_patrocinado = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.nombre} {self.apellidos}'
@@ -128,3 +129,20 @@ class ReporteSeguimiento(models.Model):
 
     def __str__(self):
         return f'Seguimiento - {self.id_usuario_FK}'
+    
+class Seguimiento(models.Model):
+    id_aprendiz = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True, related_name='seguimientos_como_aprendiz')
+    id_instructor = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True, related_name='seguimientos_como_instructor')
+
+    pruebas_tyt = models.BooleanField(null=True)
+    juicios_evaluativos = models.BooleanField(null=True)
+    formato_etapaproductiva = models.BooleanField(null=True)
+    bitacora_etapaproductiva = models.BooleanField(null=True)
+    actividades_bienestar = models.BooleanField(null=True)
+    pazysalvo_biblioteca = models.BooleanField(null=True)
+
+    observaciones = models.CharField(max_length=250, null=True, blank=True)
+    fecha_seguimiento = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Seguimiento {self.id} - Aprendiz: {self.id_aprendiz} - Instructor: {self.id_instructor}'

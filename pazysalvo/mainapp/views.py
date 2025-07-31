@@ -90,6 +90,7 @@ def aprendices(request):
     if request.method == 'POST':
         if 'crear' in request.POST:
             form_crear = UsuarioForm(request.POST)
+            print(form_crear)
             if form_crear.is_valid():
                 # Obtener el instructor seleccionado del formulario
                 id_instructor2 = form_crear.cleaned_data.get('id_instructor')

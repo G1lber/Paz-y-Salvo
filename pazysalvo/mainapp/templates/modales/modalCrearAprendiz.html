@@ -1,25 +1,17 @@
-<!-- Modal para Crear -->
-    <div class="modal fade" id="crearModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form method="POST" action="{% url 'aprendices' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="crear" value="true">
-                    
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">Nuevo Aprendiz</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    
-                    <div class="modal-body">
-                        {{ form_crear.as_p }}
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+<!-- Modal Crear Usuario -->
+<div id="modal-crear" class="modal" style="display: none;">
+  <div class="modal-contenido">
+    <h3>Crear Nuevo Aprendiz</h3>
+    <form method="POST" action="{% url 'aprendices' %}">
+      {% csrf_token %}
+      <input type="hidden" name="crear" value="true"/>
+        {{ form_crear.as_p }}
+      <div class="modal-botones">
+        <button type="button" id="btn-cancelar" class="btn-cancelar">Cancelar</button>
+        <button type="submit" class="btn-verde">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+     

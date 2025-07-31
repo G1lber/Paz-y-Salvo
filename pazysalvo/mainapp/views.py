@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Prefetch, Max
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from mainapp.models import Usuario, Login, Roles
-
+from .models import Usuario, Login, Roles
 from .forms import UsuarioForm
+from django.db.models import Q
+
 
 # Create your views here.
 def index(request):
@@ -51,43 +52,55 @@ def inicio(request):
 
 
 def aprendices(request):
-    # Manejar creación
-    if 'crear' in request.POST:
-        form_crear = UsuarioForm(request.POST)
-        if form_crear.is_valid():
-            usuario = form_crear.save(commit=False)
-            usuario.id_rol_FK = Roles.objects.get(id=7)  # Rol aprendiz
-            usuario.save()
-            messages.success(request, 'Aprendiz creado correctamente!')
-            return redirect('aprendices')
-        else:
-            for error in form_crear.errors.values():
-                messages.error(request, error)
+    busqueda = request.GET.get('busqueda', '')
+    aprendices = Usuario.objects.filter(id_rol_FK=7)
+    if busqueda:
+        aprendices = aprendices.filter(
+            Q(nombre__icontains=busqueda) |
+            Q(apellidos__icontains=busqueda) |
+            Q(num_doc__icontains=busqueda)
+        )
+    aprendices = aprendices.order_by('apellidos', 'nombre')
 
-    # Manejar edición
-    elif 'editar' in request.POST:
-        usuario_id = request.POST.get('usuario_id')
-        usuario = get_object_or_404(Usuario, pk=usuario_id)
-        form_editar = UsuarioForm(request.POST, instance=usuario)
-        if form_editar.is_valid():
-            form_editar.save()
-            messages.success(request, 'Cambios guardados correctamente!')
-            return redirect('aprendices')
-        else:
-            for error in form_editar.errors.values():
-                messages.error(request, error)
+    form_crear = UsuarioForm()
+    form_editar = UsuarioForm()
 
-    # Obtener lista de aprendices
-    aprendices = Usuario.objects.filter(id_rol_FK=7).order_by('apellidos', 'nombre')
-    form_crear = UsuarioForm()  # Formulario vacío para crear
-    form_editar = UsuarioForm() # Formulario vacío para editar (se llenará con JS)
+    # POST - crear aprendiz
+    if request.method == 'POST':
+        if 'crear' in request.POST:
+            form_crear = UsuarioForm(request.POST)
+            if form_crear.is_valid():
+                id_instructor = form_crear.cleaned_data.get('id_instructor')
+                usuario = form_crear.save(commit=False)
+                usuario.id_rol_FK = Roles.objects.get(id=7)  # Rol aprendiz
+                usuario = usuario.save()  
+                formSeguimiento = 
+                messages.success(request, 'Aprendiz creado correctamente!')
+                return redirect('aprendices')
+            else:
+                for error in form_crear.errors.values():
+                    messages.error(request, error)
 
+        elif 'editar' in request.POST:
+            usuario_id = request.POST.get('usuario_id')
+            if usuario_id:
+                usuario = get_object_or_404(Usuario, pk=usuario_id)
+                form_editar = UsuarioForm(request.POST, instance=usuario)
+                if form_editar.is_valid():
+                    form_editar.save()
+                    messages.success(request, 'Cambios guardados correctamente!')
+                    return redirect('aprendices')
+                else:
+                    for error in form_editar.errors.values():
+                        messages.error(request, error)
+
+    # Siempre devolver render
     return render(request, 'aprendices.html', {
         'aprendices': aprendices,
         'form_crear': form_crear,
-        'form_editar': form_editar
+        'form_editar': form_editar,
+        'busqueda': busqueda
     })
-AQUIII
 
 
 def prestarlibro(request):

@@ -1,13 +1,14 @@
 from django import forms
 from .models import Usuario
 
-from django import forms
-from .models import Usuario
-
-from django import forms
-from .models import Usuario
-
 class UsuarioForm(forms.ModelForm):
+    id_instructor = forms.ModelChoiceField(
+        # pylint: disable=no-member
+        queryset=Usuario.objects.filter(id_rol_FK_id=2),  # o el rol de instructor de seguimiento
+        required=False,
+        label='Instructor de Seguimiento',
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'instructor'})
+    )
     class Meta:
         model = Usuario
         fields = ['nombre', 'apellidos', 'num_doc', 'id_tipodoc_FK', 'id_ficha_FK', 'es_patrocinado']
@@ -18,6 +19,8 @@ class UsuarioForm(forms.ModelForm):
             'id_tipodoc_FK': 'Tipo de documento',
             'id_ficha_FK': 'Ficha',
             'es_patrocinado': '¿Es patrocinado?',
+            
+            
         }
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
@@ -35,3 +38,5 @@ class UsuarioForm(forms.ModelForm):
         self.fields['num_doc'].widget.attrs.update({'class': 'form-control'})
         
 
+
+        }

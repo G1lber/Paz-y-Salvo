@@ -12,7 +12,7 @@
   </div>
 
     <form method="get" class="mb-4 flex gap-2">
-        <input type="text" name="busqueda" placeholder="Buscar por nombre o documento" class="p-2 border rounded w-64" value="{{ request.GET.busqueda }}">
+        <input type="text" id="busqueda" name="busqueda" placeholder="Buscar por nombre o documento" class="p-2 border rounded w-64" value="{{ request.GET.busqueda }}">
         <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Buscar</button>
     </form>
 
@@ -36,10 +36,19 @@
         <td>{{ aprendiz.num_doc}}</td>
         <td>{{aprendiz.id_ficha_FK}}</td>
         <td>✅</td>
-        <td><a href="#" class="btn-editar" onclick="cargarDatosEdicion({{ aprendiz.id }}, '{{ aprendiz.nombre }}', '{{ aprendiz.apellidos }}', '{{ aprendiz.num_doc }}')"
-                            data-bs-toggle="modal" 
-                            data-bs-target="#editarModal">
-                        <i class="fas fa-edit"></i>Editar</a></td>
+        <td>
+            <!-- <a href="#" id= "btn-abrir-editar" class="btn-editar" 
+             onclick="cargarDatosEdicion({{ aprendiz.id }}, '{{ aprendiz.nombre }}', '{{ aprendiz.apellidos }}', '{{ aprendiz.num_doc }}')"
+                data-bs-toggle="modal" 
+                data-bs-target="#editarModal">
+            <i class="fas fa-edit"></i>Editar</a> -->
+            <a href="#" class="btn-abrir-editar btn-crear"
+                onclick="cargarDatosEdicion('{{ aprendiz.id }}', '{{ aprendiz.nombre }}', '{{ aprendiz.apellidos }}', '{{ aprendiz.num_doc }}')"
+             
+            >
+            <i class="fas fa-plus"></i>Editar
+            </a>
+        </td>
       </tr>
       {% endfor %}
     </tbody>
@@ -47,35 +56,7 @@
 </div>
 
 {% include 'modales/modalCrearAprendiz.html' %}
-
-    <!-- Modal para Editar -->
-    <!-- <div class="modal fade" id="editarModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form method="POST" action="{% url 'aprendices' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="editar" value="true">
-                    <input type="hidden" name="usuario_id" id="usuario_id">
-                    
-                    <div class="modal-header bg-warning text-dark">
-                        <h5 class="modal-title">Editar Aprendiz</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    
-                    <div class="modal-body">
-                        <div id="formularioEdicion">
-                            {{ form_editar.as_p }}
-                        </div>
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-warning">Actualizar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div> -->
+{% include 'modales/modalEditarAprendiz.html' %}
 </div>
 
 <script>
@@ -91,11 +72,7 @@ function cargarDatosEdicion(id, nombre, apellidos, num_doc) {
 </script>
 
 <style>
-/* Estilos para diferenciar los modales */
-#crearModal .modal-header {
-    background-color: #0d6efd;
-    color: white;
-}
+
 #editarModal .modal-header {
     background-color: #ffc107;
     color: black;
@@ -114,6 +91,8 @@ function cargarDatosEdicion(id, nombre, apellidos, num_doc) {
     });
   });
 </script>
+
+<!-- Script para abrir modal -->
 <script>
   const modal = document.getElementById('modal-crear');
   const btnAbrir = document.getElementById('btn-abrir-modal');
@@ -126,4 +105,21 @@ function cargarDatosEdicion(id, nombre, apellidos, num_doc) {
   btnCancelar.addEventListener('click', () => {
     modal.style.display = 'none';
   });
+</script>
+
+<script>
+const botonesEditar = document.querySelectorAll('.btn-abrir-editar');
+const modalEditar = document.getElementById('editarModal');
+const btnCancelarEditar = document.getElementById('btn-cancelar-editar');
+
+botonesEditar.forEach(btn => {
+  btn.addEventListener('click', () => {
+    modalEditar.style.display = 'flex';
+  });
+});
+
+btnCancelarEditar.addEventListener('click', () => {
+  modalEditar.style.display = 'none';
+});
+
 </script>

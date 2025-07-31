@@ -1,0 +1,15 @@
+ <!-- Modal Crear Usuario -->
+<div id="editarModal" class="modal" style="display: none;">
+  <div class="modal-contenido">
+    <h3>Editar Aprendiz</h3>
+    <form method="POST" action="{% url 'aprendices' %}">
+      {% csrf_token %}
+      <input type="hidden" name="editar" value="true"/>
+        {{ form_editar.as_p }}
+      <div class="modal-botones">
+        <button type="button" id="btn-cancelar-editar" class="btn-cancelar">Cancelar</button>
+        <button type="submit" class="btn-verde">Actualizar</button>
+      </div>
+    </form>
+  </div>
+</div>

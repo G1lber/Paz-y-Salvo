@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Prefetch, Max
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .models import Usuario, Login, Roles
-from .forms import UsuarioForm
+from .models import Usuario, Login, Roles, Seguimiento
+from .forms import UsuarioForm, SeguimientoForm
 from django.db.models import Q
 
 
@@ -91,11 +91,18 @@ def aprendices(request):
         if 'crear' in request.POST:
             form_crear = UsuarioForm(request.POST)
             if form_crear.is_valid():
-                id_instructor = form_crear.cleaned_data.get('id_instructor')
+                # Obtener el instructor seleccionado del formulario
+                id_instructor2 = form_crear.cleaned_data.get('id_instructor')
+
+                # Guardar el nuevo usuario como aprendiz
                 usuario = form_crear.save(commit=False)
                 usuario.id_rol_FK = Roles.objects.get(id=7)  # Rol aprendiz
-                usuario = usuario.save()  
-                formSeguimiento = 
+                usuario.save()  # OJO: ahora sí estás guardando correctamente
+                # Crear el seguimiento
+                seguimiento = Seguimiento.objects.create(
+                    id_aprendiz=usuario,
+                    id_instructor=id_instructor2
+                )
                 messages.success(request, 'Aprendiz creado correctamente!')
                 return redirect('aprendices')
             else:

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Usuario
+from .models import Usuario, Seguimiento
 
 class UsuarioForm(forms.ModelForm):
 
@@ -12,7 +12,7 @@ class UsuarioForm(forms.ModelForm):
     )
     class Meta:
         model = Usuario
-        fields = ['nombre', 'apellidos', 'num_doc', 'id_tipodoc_FK', 'id_ficha_FK', 'es_patrocinado']
+        fields = ['nombre', 'apellidos', 'num_doc', 'id_tipodoc_FK', 'id_ficha_FK', 'es_patrocinado', 'id_instructor']  
         labels = {
             'nombre': 'Nombre',
             'apellidos': 'Apellidos',
@@ -40,4 +40,12 @@ class UsuarioForm(forms.ModelForm):
         
 
 
-        
+class SeguimientoForm(forms.ModelForm):
+    class Meta:
+        model = Seguimiento  # ✅ Aquí va Seguimiento, no Usuario
+        fields = ['id_aprendiz', 'id_instructor']
+        labels = {
+            'id_aprendiz': 'Aprendiz',
+            'id_instructor': 'Instructor',
+        }
+ 

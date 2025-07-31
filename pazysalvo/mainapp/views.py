@@ -12,6 +12,7 @@ from django.db.models import Q
 def index(request):
     return render(request, 'index.html')
 
+
 def login_view(request):
     if request.method == 'POST':
         num_doc = request.POST.get('num_doc')
@@ -44,6 +45,10 @@ def login_view(request):
             messages.error(request, 'Usuario sin credenciales asignadas.')
 
     return render(request, 'login.html')
+# TODO: MODULO USUARIO
+def usuarios(request):
+    return render(request, 'usuarios.html')
+
 
 def crear_usuario(request):
     if request.method == 'POST':
@@ -60,19 +65,18 @@ def crear_usuario(request):
         )
         return redirect('usuarios')
     return redirect('usuarios')
-
+# TODO: FIN MODULO USUARIO
 def pazysalvo(request):
     return render(request, 'pazysalvo.html')
+
 
 def inicio(request):
     return render(request, 'dashboard.html')
 
 
-def usuarios(request):
-    return render(request, 'usuarios.html')
-
-
+# TODO: MODULO APRENDICES 
 def aprendices(request):
+    #FUNCION de busquedad
     busqueda = request.GET.get('busqueda', '')
     aprendices = Usuario.objects.filter(id_rol_FK=7)
     if busqueda:
@@ -88,9 +92,8 @@ def aprendices(request):
 
     # POST - crear aprendiz
     if request.method == 'POST':
-        if 'crear' in request.POST:
+        if 'crear' in request.POST: #FUNCIÓN de crear aprendices
             form_crear = UsuarioForm(request.POST)
-            print(form_crear)
             if form_crear.is_valid():
                 # Obtener el instructor seleccionado del formulario
                 id_instructor2 = form_crear.cleaned_data.get('id_instructor')
@@ -111,7 +114,7 @@ def aprendices(request):
                     messages.error(request, error)
 
         elif 'editar' in request.POST:
-            usuario_id = request.POST.get('usuario_id')
+            usuario_id = request.POST.get('usuario_id') #FUNCIÓN de editar aprendices
             if usuario_id:
                 usuario = get_object_or_404(Usuario, pk=usuario_id)
                 form_editar = UsuarioForm(request.POST, instance=usuario)
@@ -130,7 +133,7 @@ def aprendices(request):
         'form_editar': form_editar,
         'busqueda': busqueda
     })
-
+# TODO: FIN MODULO APRENDICES
 
 def prestarlibro(request):
     return render(request, 'prestarlibro.html')

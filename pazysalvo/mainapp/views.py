@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from mainapp.models import Usuario, Login
 from .forms import UsuarioForm
+from .models import Usuario 
 
 # Create your views here.
 def index(request):
@@ -40,6 +41,22 @@ def login_view(request):
             messages.error(request, 'Usuario sin credenciales asignadas.')
 
     return render(request, 'login.html')
+
+def crear_usuario(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        apellidos = request.POST.get('apellidos')
+        documento = request.POST.get('documento')
+        rol = request.POST.get('rol')
+
+        Usuario.objects.create(
+            nombre=nombre,
+            apellidos=apellidos,
+            documento=documento,
+            rol=rol
+        )
+        return redirect('usuarios')
+    return redirect('usuarios')
 
 def pazysalvo(request):
     return render(request, 'pazysalvo.html')
@@ -85,4 +102,5 @@ def reportar_tyt(request):
 
 def pendientes_juiciostyt(request):
     return render(request, 'pendientes-juicios-tyt.html')
+
 

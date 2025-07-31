@@ -1,12 +1,18 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+<!-- CSS Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- JS Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
 <div class="aprendices-container">
 
   <div class="barra-superior">
     <a  href="{% url 'inicio' %}" class="btn-volver"> Volver</a>
     <h1>Lista de Aprendices</h1>
-    <a href="#" class="btn-crear">+ Crear Aprendiz</a>
+    <a href="#" type="button"  class="btn-crear" data-bs-toggle="modal" data-bs-target="#crearModal">
+        <i class="fas fa-plus"></i>+ Crear Aprendiz</a>
   </div>
 
   <input type="text" id="busqueda" placeholder="Buscar por nombre o documento...">
@@ -22,23 +28,102 @@
       </tr>
     </thead>
     <tbody>
+      {% for aprendiz in aprendices %}
       <tr>
-        <td>Juan Pérez</td>
-        <td>123456789</td>
-        <td>2487632</td>
+        <td>{{ aprendiz.nombre }}</td>
+        <td>{{ aprendiz.num_doc}}</td>
+        <td>{{aprendiz.id_ficha_FK}}</td>
         <td>✅</td>
-        <td><a href="#" class="btn-editar">Editar</a></td>
+        <td><a href="#" class="btn-editar" onclick="cargarDatosEdicion({{ aprendiz.id }}, '{{ aprendiz.nombre }}', '{{ aprendiz.apellidos }}', '{{ aprendiz.num_doc }}')"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#editarModal">
+                        <i class="fas fa-edit"></i>Editar</a></td>
       </tr>
-      <tr>
-        <td>Laura Rodríguez</td>
-        <td>987654321</td>
-        <td>1374928</td>
-        <td>❌</td>
-        <td><a href="#" class="btn-editar">Editar</a></td>
-      </tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>
+
+
+<!-- Modal para Crear -->
+    <div class="modal fade" id="crearModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'aprendices' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="crear" value="true">
+                    
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Nuevo Aprendiz</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        {{ form_crear.as_p }}
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Editar -->
+    <div class="modal fade" id="editarModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'aprendices' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="editar" value="true">
+                    <input type="hidden" name="usuario_id" id="usuario_id">
+                    
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title">Editar Aprendiz</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div id="formularioEdicion">
+                            {{ form_editar.as_p }}
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Función para cargar datos en el modal de edición
+function cargarDatosEdicion(id, nombre, apellidos, num_doc) {
+    document.getElementById('usuario_id').value = id;
+    document.querySelector('#editarModal input[name="nombre"]').value = nombre;
+    document.querySelector('#editarModal input[name="apellidos"]').value = apellidos;
+    document.querySelector('#editarModal input[name="num_doc"]').value = num_doc;
+    
+    // Actualizar otros campos según sea necesario
+}
+</script>
+
+<style>
+/* Estilos para diferenciar los modales */
+#crearModal .modal-header {
+    background-color: #0d6efd;
+    color: white;
+}
+#editarModal .modal-header {
+    background-color: #ffc107;
+    color: black;
+} holiiii
+</style>
 
 <script>
   const inputBusqueda = document.getElementById('busqueda');

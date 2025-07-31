@@ -1,7 +1,10 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Prefetch, Max
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from mainapp.models import Usuario, Login
+from mainapp.models import Usuario, Login, Roles
+
+from .forms import UsuarioForm
 
 # Create your views here.
 def index(request):
@@ -46,8 +49,46 @@ def pazysalvo(request):
 def inicio(request):
     return render(request, 'dashboard.html')
 
+
 def aprendices(request):
-    return render(request, 'aprendices.html')
+    # Manejar creación
+    if 'crear' in request.POST:
+        form_crear = UsuarioForm(request.POST)
+        if form_crear.is_valid():
+            usuario = form_crear.save(commit=False)
+            usuario.id_rol_FK = Roles.objects.get(id=7)  # Rol aprendiz
+            usuario.save()
+            messages.success(request, 'Aprendiz creado correctamente!')
+            return redirect('aprendices')
+        else:
+            for error in form_crear.errors.values():
+                messages.error(request, error)
+
+    # Manejar edición
+    elif 'editar' in request.POST:
+        usuario_id = request.POST.get('usuario_id')
+        usuario = get_object_or_404(Usuario, pk=usuario_id)
+        form_editar = UsuarioForm(request.POST, instance=usuario)
+        if form_editar.is_valid():
+            form_editar.save()
+            messages.success(request, 'Cambios guardados correctamente!')
+            return redirect('aprendices')
+        else:
+            for error in form_editar.errors.values():
+                messages.error(request, error)
+
+    # Obtener lista de aprendices
+    aprendices = Usuario.objects.filter(id_rol_FK=7).order_by('apellidos', 'nombre')
+    form_crear = UsuarioForm()  # Formulario vacío para crear
+    form_editar = UsuarioForm() # Formulario vacío para editar (se llenará con JS)
+
+    return render(request, 'aprendices.html', {
+        'aprendices': aprendices,
+        'form_crear': form_crear,
+        'form_editar': form_editar
+    })
+AQUIII
+
 
 def prestarlibro(request):
     return render(request, 'prestarlibro.html')

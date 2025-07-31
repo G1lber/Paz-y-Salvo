@@ -6,6 +6,7 @@
   --color-texto: #002b46;
   --color-hover: #2b8500;
   --color-sombra: rgba(0, 0, 0, 0.08);
+  --color-eliminar: #d9534f;
 }
 
 body {
@@ -97,6 +98,7 @@ tbody tr:hover {
   font-size: 14px;
   text-decoration: none;
   transition: background-color 0.3s ease;
+  gap: 30px;
 }
 
 .btn-editar:hover {
@@ -122,5 +124,128 @@ tbody tr:hover {
 
   th, td {
     padding: 10px;
+  }
+}
+
+.btn-eliminar {
+  background-color: var(--color-eliminar);
+  color: var(--color-blanco);
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  background-color: #a71d2a;
+}
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* ===== Modal fondo general ===== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 43, 70, 0.4); /* Oscuro translúcido */
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== Contenido del Modal ===== */
+.modal-contenido {
+  background-color: var(--color-blanco);
+  padding: 30px 35px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 8px 24px var(--color-sombra);
+  font-family: 'Segoe UI', sans-serif;
+  color: var(--color-texto);
+}
+
+/* ===== Encabezado del Modal ===== */
+.modal-contenido h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--color-secundario);
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+/* ===== Inputs ===== */
+.modal-contenido input[type="text"],
+.modal-contenido input[type="email"],
+.modal-contenido input[type="password"],
+.modal-contenido select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+/* ===== Botones del Modal ===== */
+.modal-contenido button {
+  padding: 10px 16px;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  margin-right: 10px;
+}
+
+.modal-contenido .btn-guardar {
+  background-color: var(--color-principal);
+  color: var(--color-blanco);
+}
+
+.modal-contenido .btn-guardar:hover {
+  background-color: var(--color-hover);
+}
+
+.modal-contenido .btn-cancelar {
+  background-color: var(--color-eliminar);
+  color: var(--color-blanco);
+}
+
+.modal-contenido .btn-cancelar:hover {
+  background-color: #c9302c;
+}
+
+/* ===== Responsive Modal ===== */
+@media (max-width: 600px) {
+  .modal-contenido {
+    padding: 20px;
+  }
+
+  .modal-contenido h2 {
+    font-size: 1.3rem;
+  }
+
+  .modal-contenido button {
+    width: 100%;
+    margin-bottom: 10px;
   }
 }

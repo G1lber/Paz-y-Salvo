@@ -7,6 +7,7 @@ from .forms import UsuarioForm
 from django.db.models import Q
 
 
+
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
@@ -44,11 +45,31 @@ def login_view(request):
 
     return render(request, 'login.html')
 
+def crear_usuario(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        apellidos = request.POST.get('apellidos')
+        documento = request.POST.get('documento')
+        rol = request.POST.get('rol')
+
+        Usuario.objects.create(
+            nombre=nombre,
+            apellidos=apellidos,
+            documento=documento,
+            rol=rol
+        )
+        return redirect('usuarios')
+    return redirect('usuarios')
+
 def pazysalvo(request):
     return render(request, 'pazysalvo.html')
 
 def inicio(request):
     return render(request, 'dashboard.html')
+
+
+def usuarios(request):
+    return render(request, 'usuarios.html')
 
 
 def aprendices(request):
@@ -135,4 +156,5 @@ def reportar_tyt(request):
 
 def pendientes_juiciostyt(request):
     return render(request, 'pendientes-juicios-tyt.html')
+
 

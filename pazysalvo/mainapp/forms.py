@@ -2,6 +2,7 @@ from django import forms
 from .models import Usuario
 
 class UsuarioForm(forms.ModelForm):
+
     id_instructor = forms.ModelChoiceField(
         # pylint: disable=no-member
         queryset=Usuario.objects.filter(id_rol_FK_id=2),  # o el rol de instructor de seguimiento
@@ -39,4 +40,4 @@ class UsuarioForm(forms.ModelForm):
         
 
 
-        }
+        

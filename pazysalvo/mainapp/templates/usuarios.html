@@ -1,0 +1,121 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+
+<div class="aprendices-container">
+
+  <div class="barra-superior">
+    <a  href="{% url 'inicio' %}" class="btn-volver"> Volver</a>
+    <h1>Lista de Usuarios</h1>
+    <a href="#" id="btn-abrir-modal" class="btn-crear">+ Crear Usuario</a>
+
+  </div>
+
+  <input type="text" id="busqueda" placeholder="Buscar por nombre o documento...">
+
+<table id="tabla-aprendices">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Documento</th>
+      <th>Rol</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Carlitos</td>
+      <td>123456789</td>
+      <td>Instructor</td>
+      <td>
+        <a href="#" class="btn-editar">Editar</a>
+        <a href="#" class="btn-eliminar">Eliminar</a>
+      </td>
+    </tr>
+    <tr>
+      <td>Jesús</td>
+      <td>987654321</td>
+      <td>Aprendiz</td>
+      <td>
+        <a href="#" class="btn-editar">Editar</a>
+        <a href="#" class="btn-eliminar">Eliminar</a>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<!-- Modal Crear Usuario -->
+<div id="modal-crear" class="modal" style="display: none;">
+  <div class="modal-contenido">
+    <h3>Crear Nuevo Usuario</h3>
+    <form method="post" action="{% url 'crear_usuario' %}">
+      {% csrf_token %}
+      <div class="form-grupo">
+        <label for="nombre">Nombre</label>
+        <input type="text" name="nombre" class="form-control" required>
+      </div>
+      <div class="form-grupo">
+        <label for="apellidos">Apellidos</label>
+        <input type="text" name="apellidos" class="form-control" required>
+      </div>
+      <div class="form-grupo">
+        <label for="num_doc">Documento</label>
+        <input type="number" name="num_doc" class="form-control" required>
+      </div>
+      <div class="form-grupo">
+        <label for="id_tipodoc_FK">Tipo de Documento</label>
+        <select name="id_tipodoc_FK" class="form-control">
+          {% for tipo in tipos_doc %}
+            <option value="{{ tipo.id }}">{{ tipo.nombre_tipo }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-grupo">
+        <label for="id_rol_FK">Rol</label>
+        <select name="id_rol_FK" class="form-control">
+          {% for rol in roles %}
+            <option value="{{ rol.id }}">{{ rol.nombre_rol }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-grupo">
+        <label for="id_ficha_FK">Ficha</label>
+        <select name="id_ficha_FK" class="form-control">
+          {% for ficha in fichas %}
+            <option value="{{ ficha.num_ficha }}">{{ ficha.num_ficha }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="modal-botones">
+        <button type="button" id="btn-cancelar" class="btn-cancelar">Cancelar</button>
+        <button type="submit" class="btn-verde">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+</div>
+
+<script>
+  const inputBusqueda = document.getElementById('busqueda');
+  const filas = document.querySelectorAll('#tabla-aprendices tbody tr');
+
+  inputBusqueda.addEventListener('keyup', () => {
+    const valor = inputBusqueda.value.toLowerCase();
+    filas.forEach(fila => {
+      const texto = fila.innerText.toLowerCase();
+      fila.style.display = texto.includes(valor) ? '' : 'none';
+    });
+  });
+</script>
+<script>
+  const modal = document.getElementById('modal-crear');
+  const btnAbrir = document.getElementById('btn-abrir-modal');
+  const btnCancelar = document.getElementById('btn-cancelar');
+
+  btnAbrir.addEventListener('click', () => {
+    modal.style.display = 'flex';
+  });
+
+  btnCancelar.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+</script>

@@ -42,55 +42,8 @@
     </tr>
   </tbody>
 </table>
-<!-- Modal Crear Usuario -->
-<div id="modal-crear" class="modal" style="display: none;">
-  <div class="modal-contenido">
-    <h3>Crear Nuevo Usuario</h3>
-    <form method="post" action="{% url 'crear_usuario' %}">
-      {% csrf_token %}
-      <div class="form-grupo">
-        <label for="nombre">Nombre</label>
-        <input type="text" name="nombre" class="form-control" required>
-      </div>
-      <div class="form-grupo">
-        <label for="apellidos">Apellidos</label>
-        <input type="text" name="apellidos" class="form-control" required>
-      </div>
-      <div class="form-grupo">
-        <label for="num_doc">Documento</label>
-        <input type="number" name="num_doc" class="form-control" required>
-      </div>
-      <div class="form-grupo">
-        <label for="id_tipodoc_FK">Tipo de Documento</label>
-        <select name="id_tipodoc_FK" class="form-control">
-          {% for tipo in tipos_doc %}
-            <option value="{{ tipo.id }}">{{ tipo.nombre_tipo }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="form-grupo">
-        <label for="id_rol_FK">Rol</label>
-        <select name="id_rol_FK" class="form-control">
-          {% for rol in roles %}
-            <option value="{{ rol.id }}">{{ rol.nombre_rol }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="form-grupo">
-        <label for="id_ficha_FK">Ficha</label>
-        <select name="id_ficha_FK" class="form-control">
-          {% for ficha in fichas %}
-            <option value="{{ ficha.num_ficha }}">{{ ficha.num_ficha }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="modal-botones">
-        <button type="button" id="btn-cancelar" class="btn-cancelar">Cancelar</button>
-        <button type="submit" class="btn-verde">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
+
+{% include 'modales/modalCrearUsuario.html' %}
 
 </div>
 

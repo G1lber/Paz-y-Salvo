@@ -48,32 +48,7 @@
   </table>
 </div>
 
-
-<!-- Modal para Crear -->
-    <div class="modal fade" id="crearModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <form method="POST" action="{% url 'aprendices' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="crear" value="true">
-                    
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">Nuevo Aprendiz</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    
-                    <div class="modal-body">
-                        {{ form_crear.as_p }}
-                    </div>
-                    
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+{% include 'modales/modalCrearAprendiz.html' %}
 
     <!-- Modal para Editar -->
     <div class="modal fade" id="editarModal" tabindex="-1" aria-hidden="true">

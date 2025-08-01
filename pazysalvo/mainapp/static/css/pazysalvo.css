@@ -78,10 +78,6 @@ th, td {
     text-align: left;
 }
 
-tr:nth-child(even) {
-    background-color: #f0f8f0;
-}
-
 .download-btn {
     display: inline-block;
     margin-top: 40px;

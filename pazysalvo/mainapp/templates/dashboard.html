@@ -57,29 +57,28 @@
                 <a href="{% url 'aprendices' %}" class="btn">Ver Aprendices</a>
               </div>
 
+              <div class="card">
+                <h3><i class="fas fa-pen"></i> Reportar por Juicios Evaluativos</h3>
+                <p>Modifica parámetros evaluativos.</p>
+                <a href="{% url 'reportarjuicios' %}"class="btn">Verificar</a>
+              </div>
+
+              <div class="card">
+                <h3><i class="fas fa-book-open"></i> Reportar por Pruebas TYT</h3>
+                <p>Administra información TYT.</p>
+                <a href="{% url 'reportartyt' %}" class="btn">Ver documentos</a>
+              </div>
+
+              <div class="card">
+                <h3><i class="fas fa-chart-bar"></i> Reportes de Juicios y Pruebas TYT</h3>
+                <p>Consulta personas que no estan al día.</p>
+                <a href="{% url 'pendientesjuiciostyt' %}" class="btn">Ver reportes</a>
+              </div>
+            </div>
         </details>
           
         {% endif %}
-        
-        {% if rol == "Instructor Seguimiento" or rol == "Admin" %}
-          <details class="rol-section">
-            <summary><i class="fas fa-clipboard-list"></i> Opciones de Seguimiento</summary>
-            <div class="cards-container">
-              <!-- cards de Instructor -->
-               <div class="card">
-                <h3><i class="fas fa-user-graduate"></i> Aprendices</h3>
-                <p>Gestiona los aprendices registrados.</p>
-                <a href="{% url 'aprendices' %}" class="btn">Ver Aprendices</a>
-              </div>
-               <div class="card">
-                <h3><i class="fas fa-file-alt"></i> Enviar solicitud</h3>
-                <p>Personas que faltan por presentar evidencia</p>
-                <a href="{% url 'reportarbitacoras' %}" class="btn">Realizar</a>
-              </div>
-            </div>
-          </details>
-        {% endif %}
-        
+
         {% if rol == "Biblioteca" or rol == "Admin" %}
           <details class="rol-section">
           <summary><i class="fas fa-book"></i> Opciones de Biblioteca</summary>
@@ -101,11 +100,11 @@
          
         {% endif %}
 
-        <!-- {% if rol == "Responsable Bienestar" or rol == "Admin" %}
+        {% if rol == "Responsable Bienestar" or rol == "Admin" %}
           <details class="rol-section">
             <summary><i class="fas fa-heart"></i> Opciones de Bienestar</summary>
             <div class="cards-container">
-              
+              <!-- cards de Bienestar -->
                <div class="card">
                 <h3><i class="fas fa-heart"></i> Aprendices con horas pendientes en Bienestar</h3>
                 <p>Consulta reportes de personas con horas ludicas pendiente.</p>
@@ -120,13 +119,13 @@
             </div>
           </details>
           
-        {% endif %} -->
+        {% endif %}
 
-        <!-- {% if rol == "Responsable Almacen" or rol == "Admin"%}
+        {% if rol == "Responsable Almacen" or rol == "Admin"%}
             <details class="rol-section">
               <summary><i class="fas fa-box"></i> Opciones de Almacén</summary>
               <div class="cards-container">
-              
+                <!-- cards de Almacén -->
                   <div class="card">
                     <h3><i class="fas fa-laptop"></i> Reportar Equipos Prestados</h3>
                     <p>Administra reportes de equipos prestados.</p>
@@ -140,8 +139,27 @@
                   </div>
               </div>
             </details>
-        {% endif %} -->
+        {% endif %}
 
+        {% if rol == "Instructor Seguimiento" or rol == "Admin" %}
+          <details class="rol-section">
+            <summary><i class="fas fa-clipboard-list"></i> Opciones de Seguimiento</summary>
+            <div class="cards-container">
+              <!-- cards de Instructor -->
+               <div class="card">
+                <h3><i class="fas fa-file-alt"></i> Reportar por Bitácoras</h3>
+                <p>Personas que faltan por presentar evidencia</p>
+                <a href="{% url 'reportarbitacoras' %}" class="btn">Reportar Bitácoras</a>
+              </div>
+
+              <div class="card">
+                <h3><i class="fas fa-folder-open"></i> Personas que deben Bitácoras</h3>
+                <p>Consulta aprendices que faltan de bitacoras.</p>
+                <a href="{% url 'pendientes-bitacoras' %}" class="btn">Ver reportes</a>
+              </div>
+            </div>
+          </details>
+        {% endif %}
       {% endwith %}
       </div>
     </div>

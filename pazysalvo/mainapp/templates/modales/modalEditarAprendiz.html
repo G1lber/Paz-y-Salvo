@@ -5,6 +5,7 @@
     <form method="POST" action="{% url 'aprendices' %}">
       {% csrf_token %}
       <input type="hidden" name="editar" value="true"/>
+      <input type="hidden" id="usuario_id" name="usuario_id">
         {{ form_editar.as_p }}
       <div class="modal-botones">
         <button type="button" id="btn-cancelar-editar" class="btn-cancelar">Cancelar</button>

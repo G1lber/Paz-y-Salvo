@@ -37,17 +37,19 @@
         <td>{{aprendiz.id_ficha_FK}}</td>
         <td>✅</td>
         <td>
-            <!-- <a href="#" id= "btn-abrir-editar" class="btn-editar" 
-             onclick="cargarDatosEdicion({{ aprendiz.id }}, '{{ aprendiz.nombre }}', '{{ aprendiz.apellidos }}', '{{ aprendiz.num_doc }}')"
-                data-bs-toggle="modal" 
-                data-bs-target="#editarModal">
-            <i class="fas fa-edit"></i>Editar</a> -->
             <a href="#" class="btn-abrir-editar btn-crear"
-                onclick="cargarDatosEdicion('{{ aprendiz.id }}', '{{ aprendiz.nombre }}', '{{ aprendiz.apellidos }}', '{{ aprendiz.num_doc }}')"
-             
+              onclick="cargarDatosEdicion(
+                  '{{ aprendiz.id }}', 
+                  '{{ aprendiz.nombre }}', 
+                  '{{ aprendiz.apellidos }}', 
+                  '{{ aprendiz.num_doc }}', 
+                  '{{ aprendiz.id_tipodoc_FK.id }}', 
+                  '{{ aprendiz.id_ficha_FK.id }}', 
+                  '{{ aprendiz.es_patrocinado }}')"
             >
-            <i class="fas fa-plus"></i>Editar
+              Editar
             </a>
+
         </td>
       </tr>
       {% endfor %}
@@ -61,23 +63,28 @@
 
 <script>
 // Función para cargar datos en el modal de edición
-function cargarDatosEdicion(id, nombre, apellidos, num_doc) {
+function cargarDatosEdicion(id, nombre, apellidos, num_doc, id_tipodoc_FK, id_ficha_FK, es_patrocinado) {
+    console.log("ID:", id);
+    console.log("Nombre:", nombre);
+    console.log("Apellidos:", apellidos);
+    console.log("Num doc:", num_doc);
+    console.log("Tipo doc ID:", id_tipodoc_FK);
+    console.log("Ficha ID:", id_ficha_FK);
+    console.log("Patrocinado:", es_patrocinado);
+
+    // Rellenar los campos correctamente
     document.getElementById('usuario_id').value = id;
     document.querySelector('#editarModal input[name="nombre"]').value = nombre;
     document.querySelector('#editarModal input[name="apellidos"]').value = apellidos;
     document.querySelector('#editarModal input[name="num_doc"]').value = num_doc;
-    
+    document.querySelector('#editarModal select[name="id_tipodoc_FK"]').value = id_tipodoc_FK;
+    document.querySelector('#editarModal select[name="id_ficha_FK"]').value = id_ficha_FK;
+    document.querySelector('#editarModal input[name="es_patrocinado"]').checked = es_patrocinado === 'True' || es_patrocinado === true;
+}
+
     // Actualizar otros campos según sea necesario
-}
+
 </script>
-
-<style>
-
-#editarModal .modal-header {
-    background-color: #ffc107;
-    color: black;
-}
-</style>
 
 <script>
   const inputBusqueda = document.getElementById('busqueda');

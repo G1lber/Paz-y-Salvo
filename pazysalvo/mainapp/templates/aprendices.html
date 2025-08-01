@@ -31,28 +31,32 @@
     </thead>
     <tbody>
       {% for aprendiz in aprendices %}
-      <tr>
-        <td>{{ aprendiz.nombre }}</td>
-        <td>{{ aprendiz.num_doc}}</td>
-        <td>{{aprendiz.id_ficha_FK}}</td>
-        <td>✅</td>
-        <td>
-            <a href="#" class="btn-abrir-editar btn-crear"
-              onclick="cargarDatosEdicion(
-                  '{{ aprendiz.id }}', 
-                  '{{ aprendiz.nombre }}', 
-                  '{{ aprendiz.apellidos }}', 
-                  '{{ aprendiz.num_doc }}', 
-                  '{{ aprendiz.id_tipodoc_FK.id }}', 
-                  '{{ aprendiz.id_ficha_FK.id }}', 
-                  '{{ aprendiz.es_patrocinado }}')"
-            >
-              Editar
-            </a>
+        <tr>
+          <td>{{ aprendiz.nombre }}</td>
+          <td>{{ aprendiz.num_doc }}</td>
+          <td>{{ aprendiz.id_ficha_FK }}</td>
+          <td>✅</td>
+          <td>
+            {% with aprendiz.seguimientos_como_aprendiz.first as seguimiento %}
+              <a href="#" class="btn-abrir-editar btn-editar"
+                onclick="cargarDatosEdicion(
+                    '{{ aprendiz.id }}',
+                    '{{ aprendiz.nombre }}',
+                    '{{ aprendiz.apellidos }}',
+                    '{{ aprendiz.num_doc }}',
+                    '{{ aprendiz.id_tipodoc_FK.id }}',
+                    '{{ aprendiz.id_ficha_FK }}',
+                    '{{ aprendiz.es_patrocinado }}',
+                    '{% if seguimiento %}{{ seguimiento.id_instructor.id }}{% else %}''{% endif %}'
+                )">
+                Editar
+              </a>
+            {% endwith %}
 
-        </td>
-      </tr>
+          </td>
+        </tr>
       {% endfor %}
+
     </tbody>
   </table>
 </div>
@@ -63,16 +67,7 @@
 
 <script>
 // Función para cargar datos en el modal de edición
-function cargarDatosEdicion(id, nombre, apellidos, num_doc, id_tipodoc_FK, id_ficha_FK, es_patrocinado) {
-    console.log("ID:", id);
-    console.log("Nombre:", nombre);
-    console.log("Apellidos:", apellidos);
-    console.log("Num doc:", num_doc);
-    console.log("Tipo doc ID:", id_tipodoc_FK);
-    console.log("Ficha ID:", id_ficha_FK);
-    console.log("Patrocinado:", es_patrocinado);
-
-    // Rellenar los campos correctamente
+function cargarDatosEdicion(id, nombre, apellidos, num_doc, id_tipodoc_FK, id_ficha_FK, es_patrocinado, instSeguimiento) {
     document.getElementById('usuario_id').value = id;
     document.querySelector('#editarModal input[name="nombre"]').value = nombre;
     document.querySelector('#editarModal input[name="apellidos"]').value = apellidos;
@@ -80,7 +75,12 @@ function cargarDatosEdicion(id, nombre, apellidos, num_doc, id_tipodoc_FK, id_fi
     document.querySelector('#editarModal select[name="id_tipodoc_FK"]').value = id_tipodoc_FK;
     document.querySelector('#editarModal select[name="id_ficha_FK"]').value = id_ficha_FK;
     document.querySelector('#editarModal input[name="es_patrocinado"]').checked = es_patrocinado === 'True' || es_patrocinado === true;
+
+    if (instSeguimiento) {
+        document.querySelector('#editarModal select[name="id_instructor"]').value = instSeguimiento;
+    }
 }
+
 
     // Actualizar otros campos según sea necesario
 

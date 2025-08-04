@@ -1,0 +1,56 @@
+<div id="modal-editar" class="modal">
+  <div class="modal-contenido">
+    <h2>Editar Usuario</h2>
+    <form id="form-editar" method="post">
+      {% csrf_token %}
+      <input type="hidden" name="usuario_id" id="editar-usuario-id">
+
+      <div class="form-group">
+        <label for="editar-nombre">Nombre</label>
+        <input type="text" id="editar-nombre" name="nombre" required>
+      </div>
+
+      <div class="form-group">
+        <label for="editar-apellidos">Apellidos</label>
+        <input type="text" id="editar-apellidos" name="apellidos" required>
+      </div>
+
+      <div class="form-group">
+        <label for="editar-num_doc">Número de Documento</label>
+        <input type="text" id="editar-num_doc" name="num_doc" required>
+      </div>
+
+      <div class="form-group">
+        <label for="editar-id_tipodoc">Tipo de Documento</label>
+        <select name="id_tipodoc_FK" id="editar-id_tipodoc" required>
+          {% for tipo in tipos_doc %}
+            <option value="{{ tipo.id }}">{{ tipo.nombre_tipo }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="editar-id_rol">Rol</label>
+        <select name="id_rol_FK" id="editar-id_rol" required>
+          {% for rol in roles %}
+            <option value="{{ rol.id }}">{{ rol.nombre_rol }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="editar-id_ficha">Ficha</label>
+        <select name="id_ficha_FK" id="editar-id_ficha" required>
+          {% for ficha in fichas %}
+            <option value="{{ ficha.id }}">{{ ficha.numero_ficha }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="modal-botones">
+        <button type="submit" class="btn-guardar">Guardar Cambios</button>
+        <button type="button" id="btn-cancelar-editar" class="btn-cancelar">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

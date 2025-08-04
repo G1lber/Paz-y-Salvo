@@ -4,6 +4,14 @@
 <div class="aprendices-container">
 
   <div class="barra-superior">
+    {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
     <a  href="{% url 'inicio' %}" class="btn-volver"> Volver</a>
     <h1>Lista de Usuarios</h1>
     <a href="#" id="btn-abrir-modal" class="btn-crear">+ Crear Usuario</a>
@@ -22,28 +30,42 @@
     </tr>
   </thead>
   <tbody>
+  {% for usuario in usuarios %}
     <tr>
-      <td>Carlitos</td>
-      <td>123456789</td>
-      <td>Instructor</td>
+      <td>{{ usuario.nombre }} {{ usuario.apellidos }}</td>
+      <td>{{ usuario.num_doc }}</td>
+      <td>{{ usuario.id_rol_FK.nombre_rol }}</td>
       <td>
-        <a href="#" class="btn-editar">Editar</a>
-        <a href="#" class="btn-eliminar">Eliminar</a>
+        <a href="#" class="btn-editar" 
+          data-id="{{ usuario.id }}"
+          data-nombre="{{ usuario.nombre }}"
+          data-apellidos="{{ usuario.apellidos }}"
+          data-num_doc="{{ usuario.num_doc }}"
+          data-tipodoc="{{ usuario.id_tipodoc_FK.id }}"
+          data-rol="{{ usuario.id_rol_FK.id }}"
+          data-ficha="{{ usuario.id_ficha_FK.id }}">
+          Editar
+        </a>
+
+        <form method="post" action="{% url 'eliminar_usuario' usuario.id %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este usuario?')">Eliminar</button>
+        </form>
+
       </td>
     </tr>
+  {% empty %}
     <tr>
-      <td>Jesús</td>
-      <td>987654321</td>
-      <td>Aprendiz</td>
-      <td>
-        <a href="#" class="btn-editar">Editar</a>
-        <a href="#" class="btn-eliminar">Eliminar</a>
-      </td>
+      <td colspan="4">No hay usuarios registrados.</td>
     </tr>
-  </tbody>
+  {% endfor %}
+</tbody>
+
 </table>
 
 {% include 'modales/modalCrearUsuario.html' %}
+{% include 'modales/modalEditarUsuario.html' %}
+
 
 </div>
 
@@ -72,3 +94,41 @@
     modal.style.display = 'none';
   });
 </script>
+<script>
+  const modalEditar = document.getElementById('modal-editar');
+  const btnsEditar = document.querySelectorAll('.btn-editar');
+  const btnCancelarEditar = document.getElementById('btn-cancelar-editar');
+  const formEditar = document.getElementById('form-editar');
+
+  btnsEditar.forEach(btn => {
+    btn.addEventListener('click', function () {
+      const id = this.dataset.id;
+      const nombre = this.dataset.nombre;
+      const apellidos = this.dataset.apellidos;
+      const num_doc = this.dataset.num_doc;
+      const tipodoc = this.dataset.tipodoc;
+      const rol = this.dataset.rol;
+      const ficha = this.dataset.ficha;
+
+      document.getElementById('editar-usuario-id').value = id;
+      document.getElementById('editar-nombre').value = nombre;
+      document.getElementById('editar-apellidos').value = apellidos;
+      document.getElementById('editar-num_doc').value = num_doc;
+      document.getElementById('editar-id_tipodoc').value = tipodoc;
+      document.getElementById('editar-id_rol').value = rol;
+      document.getElementById('editar-id_ficha').value = ficha;
+
+      // Cambiar acción del formulario
+      formEditar.action = `/usuarios/editar/${id}/`;
+
+      modalEditar.style.display = 'flex';
+    });
+  });
+
+  btnCancelarEditar.addEventListener('click', () => {
+    modalEditar.style.display = 'none';
+  });
+</script>
+</div>
+
+

@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Prefetch, Max
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .models import Usuario, Login, Roles, Seguimiento
+from .models import Usuario, Login, Roles, Seguimiento, TipoDoc, Ficha
 from .forms import UsuarioForm, SeguimientoForm
 from django.db.models import Q
-
+from django.db import IntegrityError
 
 
 # Create your views here.
@@ -46,25 +46,84 @@ def login_view(request):
 
     return render(request, 'login.html')
 # TODO: MODULO USUARIO
-def usuarios(request):
-    return render(request, 'usuarios.html')
-
 
 def crear_usuario(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         apellidos = request.POST.get('apellidos')
-        documento = request.POST.get('documento')
-        rol = request.POST.get('rol')
+        num_doc = request.POST.get('num_doc')
+        id_tipodoc = request.POST.get('id_tipodoc_FK')
+        id_rol = request.POST.get('id_rol_FK')
+        id_ficha = request.POST.get('id_ficha_FK')
 
-        Usuario.objects.create(
-            nombre=nombre,
-            apellidos=apellidos,
-            documento=documento,
-            rol=rol
-        )
-        return redirect('usuarios')
-    return redirect('usuarios')
+        # Validar si ya existe el número de documento
+        if Usuario.objects.filter(num_doc=num_doc).exists():
+            messages.error(request, 'Ya existe un usuario con ese número de documento.')
+            return redirect('usuarios')  # O donde tengas tu lista/creación
+
+        try:
+            Usuario.objects.create(
+                nombre=nombre,
+                apellidos=apellidos,
+                num_doc=num_doc,
+                id_tipodoc_FK_id=id_tipodoc,
+                id_rol_FK_id=id_rol,
+                id_ficha_FK_id=id_ficha
+            )
+            messages.success(request, 'Usuario creado exitosamente.')
+        except IntegrityError:
+            messages.error(request, 'Error de integridad: datos duplicados.')
+
+        return redirect('usuarios')  # Ajusta si tienes otro nombre en tu urls.py
+    
+def editar_usuario(request, usuario_id):
+    usuario = get_object_or_404(Usuario, pk=usuario_id)
+    tipos_doc = TipoDoc.objects.all()
+    roles = Roles.objects.all()
+    fichas = Ficha.objects.all()
+
+    if request.method == 'POST':
+        usuario.nombre = request.POST.get('nombre')
+        usuario.apellidos = request.POST.get('apellidos')
+        usuario.num_doc = request.POST.get('num_doc')
+        usuario.id_tipodoc_FK_id = request.POST.get('id_tipodoc_FK')
+        usuario.id_rol_FK_id = request.POST.get('id_rol_FK')
+        usuario.id_ficha_FK_id = request.POST.get('id_ficha_FK')
+        usuario.save()
+
+        return redirect('lista_usuarios')
+
+    return render(request, 'editar_usuario.html', {
+        'usuario': usuario,
+        'tipos_doc': tipos_doc,
+        'roles': roles,
+        'fichas': fichas,
+    })
+    
+def eliminar_usuario(request, usuario_id):
+    usuario = get_object_or_404(Usuario, pk=usuario_id)
+
+    if request.method == 'POST':
+        usuario.delete()
+        messages.success(request, 'Usuario eliminado correctamente.')
+        return redirect('usuarios')  # <- Asegúrate de que diga 'usuarios' aquí
+
+    return render(request, 'eliminar_usuario.html', {'usuario': usuario})
+
+    
+def lista_usuarios(request):
+    usuarios = Usuario.objects.all()
+    tipos_doc = TipoDoc.objects.all()
+    roles = Roles.objects.all()
+    fichas = Ficha.objects.all()
+
+    return render(request, 'usuarios.html', {
+        'usuarios': usuarios,
+        'tipos_doc': tipos_doc,
+        'roles': roles,
+        'fichas': fichas,
+    })
+
 # TODO: FIN MODULO USUARIO
 def pazysalvo(request):
     return render(request, 'pazysalvo.html')

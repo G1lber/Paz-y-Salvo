@@ -137,7 +137,7 @@ def inicio(request):
 def aprendices(request):
     #FUNCION de busquedad
     busqueda = request.GET.get('busqueda', '')
-    aprendices = Usuario.objects.filter(id_rol_FK=7)
+    aprendices = Usuario.objects.filter(id_rol_FK=7).prefetch_related('seguimientos_como_aprendiz')
     if busqueda:
         aprendices = aprendices.filter(
             Q(nombre__icontains=busqueda) |
@@ -148,7 +148,7 @@ def aprendices(request):
 
     form_crear = UsuarioForm()
     form_editar = UsuarioForm()
-
+    instSeguimiento = None  # 👈 Inicialización segura aquí
     # POST - crear aprendiz
     if request.method == 'POST':
         if 'crear' in request.POST: #FUNCIÓN de crear aprendices

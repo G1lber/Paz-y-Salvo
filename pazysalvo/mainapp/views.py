@@ -86,9 +86,9 @@ def editar_usuario(request, usuario_id):
         usuario.nombre = request.POST.get('nombre')
         usuario.apellidos = request.POST.get('apellidos')
         usuario.num_doc = request.POST.get('num_doc')
-        usuario.id_tipodoc_FK_id = request.POST.get('id_tipodoc_FK')
-        usuario.id_rol_FK_id = request.POST.get('id_rol_FK')
-        usuario.id_ficha_FK_id = request.POST.get('id_ficha_FK')
+        usuario.id_tipodoc_FK= request.POST.get('id_tipodoc_FK')
+        usuario.id_rol_FK= request.POST.get('id_rol_FK')
+        usuario.id_ficha_FK= request.POST.get('id_ficha_FK')
         usuario.save()
 
         return redirect('lista_usuarios')

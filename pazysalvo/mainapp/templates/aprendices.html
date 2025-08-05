@@ -47,7 +47,7 @@
                     '{{ aprendiz.id_tipodoc_FK.id }}',
                     '{{ aprendiz.id_ficha_FK }}',
                     '{{ aprendiz.es_patrocinado }}',
-                    '{% if seguimiento %}{{ seguimiento.id_instructor.id }}{% else %}''{% endif %}'
+                    '{% if seguimiento %}{{ seguimiento.id_instructor.id }}{% else %}null{% endif %}'
                 )">
                 Editar
               </a>
@@ -78,6 +78,13 @@ function cargarDatosEdicion(id, nombre, apellidos, num_doc, id_tipodoc_FK, id_fi
 
     if (instSeguimiento) {
         document.querySelector('#editarModal select[name="id_instructor"]').value = instSeguimiento;
+    }
+    const selector = document.querySelector('#editarModal select[name="id_instructor_FK"]');
+    selector.value = "";
+
+    // Si hay instructor en el seguimiento, asignarlo
+    if (instSeguimiento && instSeguimiento !== "None") {
+        selector.value = instSeguimiento;
     }
 }
 

@@ -1,4 +1,4 @@
-<div id="modal-editar" class="modal">
+<div id="modal-editar" class="modal" style="display: none;">
   <div class="modal-contenido">
     <h2>Editar Usuario</h2>
     <form id="form-editar" method="post">
@@ -7,22 +7,22 @@
 
       <div class="form-group">
         <label for="editar-nombre">Nombre</label>
-        <input type="text" id="editar-nombre" name="nombre" required>
+        <input type="text" id="editar-nombre" name="nombre"  class="form-control" required>
       </div>
 
       <div class="form-group">
         <label for="editar-apellidos">Apellidos</label>
-        <input type="text" id="editar-apellidos" name="apellidos" required>
+        <input type="text" id="editar-apellidos" name="apellidos" class="form-control" required>
       </div>
 
       <div class="form-group">
         <label for="editar-num_doc">Número de Documento</label>
-        <input type="text" id="editar-num_doc" name="num_doc" required>
+        <input type="text" id="editar-num_doc" name="num_doc" class="form-control" required>
       </div>
 
       <div class="form-group">
         <label for="editar-id_tipodoc">Tipo de Documento</label>
-        <select name="id_tipodoc_FK" id="editar-id_tipodoc" required>
+        <select name="id_tipodoc_FK" id="editar-id_tipodoc" class="form-control" required>
           {% for tipo in tipos_doc %}
             <option value="{{ tipo.id }}">{{ tipo.nombre_tipo }}</option>
           {% endfor %}
@@ -31,7 +31,7 @@
 
       <div class="form-group">
         <label for="editar-id_rol">Rol</label>
-        <select name="id_rol_FK" id="editar-id_rol" required>
+        <select name="id_rol_FK" id="editar-id_rol"  class="form-control" required>
           {% for rol in roles %}
             <option value="{{ rol.id }}">{{ rol.nombre_rol }}</option>
           {% endfor %}
@@ -40,7 +40,7 @@
 
       <div class="form-group">
         <label for="editar-id_ficha">Ficha</label>
-        <select name="id_ficha_FK" id="editar-id_ficha" required>
+        <select name="id_ficha_FK" id="editar-id_ficha"  class="form-control" required>
           {% for ficha in fichas %}
             <option value="{{ ficha.id }}">{{ ficha.numero_ficha }}</option>
           {% endfor %}

@@ -6,6 +6,8 @@ from .models import Usuario, Login, Roles, Seguimiento, TipoDoc, Ficha
 from .forms import UsuarioForm, SeguimientoForm
 from django.db.models import Q
 from django.db import IntegrityError
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
 
 
 # Create your views here.
@@ -18,12 +20,10 @@ def login_view(request):
         num_doc = request.POST.get('num_doc')
         password = request.POST.get('password')
 
-        # Validación de campos vacíos
         if not num_doc or not password:
             messages.error(request, 'Debe ingresar el número de documento y la contraseña.')
             return render(request, 'login.html')
 
-        # Validar que el número de documento sea un número entero
         if not num_doc.isdigit():
             messages.error(request, 'El número de documento debe ser numérico.')
             return render(request, 'login.html')
@@ -32,13 +32,14 @@ def login_view(request):
             usuario = Usuario.objects.get(num_doc=int(num_doc))
             login_data = Login.objects.get(id_usuario_FK=usuario)
 
-            if login_data.password == password:
+            if check_password(password, login_data.password):
                 request.session['usuario_id'] = usuario.id
                 request.session['usuario_nombre'] = f"{usuario.nombre} {usuario.apellidos}"
                 request.session['usuario_rol'] = usuario.id_rol_FK.nombre_rol
-                return redirect('inicio')  # cambia esto por la vista principal
+                return redirect('inicio')
             else:
                 messages.error(request, 'Contraseña incorrecta.')
+
         except Usuario.DoesNotExist:
             messages.error(request, 'Usuario no encontrado.')
         except Login.DoesNotExist:
@@ -74,11 +75,11 @@ def crear_usuario(request):
             )
 
             # Si el rol NO es aprendiz, se crea el Login con contraseña
-            if id_rol != '7':  # Asegúrate de que '1' sea el ID del rol "Aprendiz"
+            if id_rol != '5':  # Asegúrate de que '5' sea el ID del rol "Aprendiz"
                 if password:
                     Login.objects.create(
                         id_usuario_FK=usuario,
-                        password=password  # Recomendado: usar make_password(password)
+                        password=make_password(password) # Recomendado: usar make_password(password)
                     )
                 else:
                     messages.warning(request, 'Contraseña no proporcionada para un rol que la requiere.')
@@ -97,15 +98,44 @@ def editar_usuario(request, usuario_id):
     fichas = Ficha.objects.all()
 
     if request.method == 'POST':
-        usuario.nombre = request.POST.get('nombre')
-        usuario.apellidos = request.POST.get('apellidos')
-        usuario.num_doc = request.POST.get('num_doc')
-        usuario.id_tipodoc_FK= request.POST.get('id_tipodoc_FK')
-        usuario.id_rol_FK= request.POST.get('id_rol_FK')
-        usuario.id_ficha_FK= request.POST.get('id_ficha_FK')
+        nombre = request.POST.get('nombre')
+        apellidos = request.POST.get('apellidos')
+        num_doc = request.POST.get('num_doc')
+        id_tipodoc = request.POST.get('id_tipodoc_FK')
+        id_rol = request.POST.get('id_rol_FK')
+        id_ficha = request.POST.get('id_ficha_FK')
+        password = request.POST.get('password')
+
+        # Actualizar datos básicos
+        usuario.nombre = nombre
+        usuario.apellidos = apellidos
+        usuario.num_doc = num_doc
+        usuario.id_tipodoc_FK = TipoDoc.objects.get(pk=id_tipodoc)
+        usuario.id_rol_FK = Roles.objects.get(pk=id_rol)
+
+        # Solo asigna ficha si el rol es aprendiz (por ejemplo ID = 5)
+        if id_rol == '5' and id_ficha:
+            usuario.id_ficha_FK = Ficha.objects.get(pk=id_ficha)
+        else:
+            usuario.id_ficha_FK = None
+
         usuario.save()
 
-        return redirect('lista_usuarios')
+        # Manejo de contraseña solo si el rol NO es aprendiz
+        if id_rol != '5' and password:
+            login = Login.objects.filter(id_usuario_FK=usuario).first()
+            if login:
+                login.password = make_password(password)
+                login.save()
+            else:
+                Login.objects.create(
+                    id_usuario_FK=usuario,
+                    contraseña=make_password(password)
+                )
+            messages.success(request, 'Contraseña actualizada.')
+
+        messages.success(request, 'Usuario actualizado exitosamente.')
+        return redirect('usuarios')
 
     return render(request, 'editar_usuario.html', {
         'usuario': usuario,
@@ -113,7 +143,6 @@ def editar_usuario(request, usuario_id):
         'roles': roles,
         'fichas': fichas,
     })
-    
 def eliminar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)
 

@@ -105,7 +105,7 @@
          
         {% endif %}
 
-        {% if rol == "Responsable Bienestar" or rol == "Admin" %}
+        {% comment %} {% if rol == "Responsable Bienestar" or rol == "Admin" %}
           <details class="rol-section">
             <summary><i class="fas fa-heart"></i> Opciones de Bienestar</summary>
             <div class="cards-container">
@@ -124,9 +124,9 @@
             </div>
           </details>
           
-        {% endif %}
+        {% endif %} {% endcomment %}
 
-        {% if rol == "Responsable Almacen" or rol == "Admin"%}
+        {% comment %} {% if rol == "Responsable Almacen" or rol == "Admin"%}
             <details class="rol-section">
               <summary><i class="fas fa-box"></i> Opciones de Almacén</summary>
               <div class="cards-container">
@@ -144,7 +144,7 @@
                   </div>
               </div>
             </details>
-        {% endif %}
+        {% endif %} {% endcomment %}
 
         {% if rol == "Instructor Seguimiento" or rol == "Admin" %}
           <details class="rol-section">

@@ -180,7 +180,7 @@ def inicio(request):
 def aprendices(request):
     #FUNCION de busquedad
     busqueda = request.GET.get('busqueda', '')
-    aprendices = Usuario.objects.filter(id_rol_FK=7).prefetch_related('seguimientos_como_aprendiz')
+    aprendices = Usuario.objects.filter(id_rol_FK=5).prefetch_related('seguimientos_como_aprendiz')
     if busqueda:
         aprendices = aprendices.filter(
             Q(nombre__icontains=busqueda) |
@@ -202,7 +202,7 @@ def aprendices(request):
 
                 # Guardar el nuevo usuario como aprendiz
                 usuario = form_crear.save(commit=False)
-                usuario.id_rol_FK = Roles.objects.get(id=7)  # Rol aprendiz
+                usuario.id_rol_FK = Roles.objects.get(id=5)  # Rol aprendiz
                 usuario.save()  # OJO: ahora sí estás guardando correctamente
                 # Crear el seguimiento
                 seguimiento = Seguimiento.objects.create(

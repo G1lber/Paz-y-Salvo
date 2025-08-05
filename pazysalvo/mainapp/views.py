@@ -173,24 +173,35 @@ def aprendices(request):
                     messages.error(request, error)
 
         elif 'editar' in request.POST:
-            usuario_id = request.POST.get('usuario_id') #FUNCIÓN de editar aprendices
+            usuario_id = request.POST.get('usuario_id')
             if usuario_id:
                 usuario = get_object_or_404(Usuario, pk=usuario_id)
                 form_editar = UsuarioForm(request.POST, instance=usuario)
                 if form_editar.is_valid():
                     form_editar.save()
+
+                    # Obtener instructor nuevo del formulario
+                    id_instructor_nuevo = request.POST.get('id_instructor')
+                    if id_instructor_nuevo:
+                        # Obtener o crear el seguimiento existente
+                        seguimiento, creado = Seguimiento.objects.get_or_create(id_aprendiz=usuario)
+                        seguimiento.id_instructor_id = id_instructor_nuevo
+                        seguimiento.save()
+
                     messages.success(request, 'Cambios guardados correctamente!')
                     return redirect('aprendices')
                 else:
                     for error in form_editar.errors.values():
                         messages.error(request, error)
 
+
     # Siempre devolver render
     return render(request, 'aprendices.html', {
         'aprendices': aprendices,
         'form_crear': form_crear,
         'form_editar': form_editar,
-        'busqueda': busqueda
+        'busqueda': busqueda,
+        'instructores': Usuario.objects.filter(id_rol_FK=2),
     })
 # TODO: FIN MODULO APRENDICES
 

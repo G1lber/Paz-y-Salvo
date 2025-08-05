@@ -54,27 +54,41 @@ def crear_usuario(request):
         num_doc = request.POST.get('num_doc')
         id_tipodoc = request.POST.get('id_tipodoc_FK')
         id_rol = request.POST.get('id_rol_FK')
-        id_ficha = request.POST.get('id_ficha_FK')
+        id_ficha = request.POST.get('id_ficha_FK')  # Puede ser None si no aplica
+        password = request.POST.get('password')  # Solo llegará si no es aprendiz
 
         # Validar si ya existe el número de documento
         if Usuario.objects.filter(num_doc=num_doc).exists():
             messages.error(request, 'Ya existe un usuario con ese número de documento.')
-            return redirect('usuarios')  # O donde tengas tu lista/creación
+            return redirect('usuarios')
 
         try:
-            Usuario.objects.create(
+            # Crear el usuario
+            usuario = Usuario.objects.create(
                 nombre=nombre,
                 apellidos=apellidos,
                 num_doc=num_doc,
                 id_tipodoc_FK_id=id_tipodoc,
                 id_rol_FK_id=id_rol,
-                id_ficha_FK_id=id_ficha
+                id_ficha_FK_id=id_ficha if id_rol == '1' else None  # Ficha solo si es aprendiz
             )
-            messages.success(request, 'Usuario creado exitosamente.')
-        except IntegrityError:
-            messages.error(request, 'Error de integridad: datos duplicados.')
 
-        return redirect('usuarios')  # Ajusta si tienes otro nombre en tu urls.py
+            # Si el rol NO es aprendiz, se crea el Login con contraseña
+            if id_rol != '7':  # Asegúrate de que '1' sea el ID del rol "Aprendiz"
+                if password:
+                    Login.objects.create(
+                        id_usuario_FK=usuario,
+                        password=password  # Recomendado: usar make_password(password)
+                    )
+                else:
+                    messages.warning(request, 'Contraseña no proporcionada para un rol que la requiere.')
+
+            messages.success(request, 'Usuario creado exitosamente.')
+
+        except IntegrityError:
+            messages.error(request, 'Error de integridad al crear el usuario.')
+
+        return redirect('usuarios')
     
 def editar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)

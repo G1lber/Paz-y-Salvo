@@ -26,13 +26,15 @@
       </div>
       <div class="form-grupo">
         <label for="id_rol_FK">Rol</label>
-        <select name="id_rol_FK" class="form-control">
+        <select name="id_rol_FK" id="id_rol_FK" class="form-control">
           {% for rol in roles %}
             <option value="{{ rol.id }}">{{ rol.nombre_rol }}</option>
           {% endfor %}
         </select>
       </div>
-      <div class="form-grupo">
+
+      <!-- Campo Ficha (solo para rol Aprendiz) -->
+      <div class="form-grupo" id="grupo-ficha" style="display: none;">
         <label for="id_ficha_FK">Ficha</label>
         <select name="id_ficha_FK" class="form-control">
           {% for ficha in fichas %}
@@ -40,6 +42,13 @@
           {% endfor %}
         </select>
       </div>
+
+      <!-- Campo Contraseña (para otros roles) -->
+      <div class="form-grupo" id="grupo-password" style="display: none;">
+        <label for="password">Contraseña</label>
+        <input type="password" name="password" class="form-control" minlength="4">
+      </div>
+
       <div class="modal-botones">
         <button type="button" id="btn-cancelar" class="btn-cancelar">Cancelar</button>
         <button type="submit" class="btn-verde">Guardar</button>
@@ -47,3 +56,29 @@
     </form>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const rolSelect = document.getElementById('id_rol_FK');
+    const fichaGrupo = document.getElementById('grupo-ficha');
+    const passwordGrupo = document.getElementById('grupo-password');
+
+    const mostrarCamposSegunRol = () => {
+      const selectedRolText = rolSelect.options[rolSelect.selectedIndex].text.toLowerCase();
+
+      if (selectedRolText === 'aprendiz') {
+        fichaGrupo.style.display = 'block';
+        passwordGrupo.style.display = 'none';
+      } else {
+        fichaGrupo.style.display = 'none';
+        passwordGrupo.style.display = 'block';
+      }
+    };
+
+    // Detectar cambio en el select
+    rolSelect.addEventListener('change', mostrarCamposSegunRol);
+
+    // Ejecutar una vez al cargar por si hay un rol preseleccionado
+    mostrarCamposSegunRol();
+  });
+</script>

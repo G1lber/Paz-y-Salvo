@@ -249,7 +249,7 @@ def aprendices(request):
 # TODO: FIN MODULO APRENDICES
 
 def prestarlibro(request):
-    return render(request, 'aprendiz/prestarlibro.html')
+    return render(request, 'biblioteca/prestarlibro.html')
 
 def pendientes_biblioteca(request):
     return render(request, 'biblioteca/pendientes-biblioteca.html')

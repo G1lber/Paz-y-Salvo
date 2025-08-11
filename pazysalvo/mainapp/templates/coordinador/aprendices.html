@@ -6,6 +6,26 @@
   <div class="barra-superior">
     <a  href="{% url 'inicio' %}" class="btn-volver"> Volver</a>
     <h1>Lista de Aprendices</h1>
+    <div>
+    {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        <script>
+        // Desaparecer después de 4 segundos con animación
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(el => {
+                el.classList.add('fade-out');
+                setTimeout(() => el.remove(), 500); // Remueve tras animación
+            });
+        }, 3000);
+        </script>
+      {% endif %}
+    </div>
        <a href="#" id="btn-abrir-modal" class="btn-crear">
         <i class="fas fa-plus"></i>+ Crear Aprendiz
     </a>

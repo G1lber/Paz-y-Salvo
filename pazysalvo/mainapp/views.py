@@ -253,6 +253,8 @@ def prestarlibro(request):
 
 def pendientes_biblioteca(request):
     return render(request, 'biblioteca/pendientes-biblioteca.html')
+def fichas(request):
+    return render(request, 'coordinador/fichas.html')
 
 
 

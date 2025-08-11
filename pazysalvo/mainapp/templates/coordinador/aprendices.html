@@ -6,6 +6,24 @@
   <div class="barra-superior">
     <a  href="{% url 'inicio' %}" class="btn-volver"> Volver</a>
     <h1>Lista de Aprendices</h1>
+    {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+        <script>
+        // Desaparecer después de 4 segundos con animación
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(el => {
+                el.classList.add('fade-out');
+                setTimeout(() => el.remove(), 500); // Remueve tras animación
+            });
+        }, 3000);
+        </script>
+      {% endif %}
        <a href="#" id="btn-abrir-modal" class="btn-crear">
         <i class="fas fa-plus"></i>+ Crear Aprendiz
     </a>
@@ -16,9 +34,7 @@
         <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Buscar</button>
     </form>
 
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
+    
   <table id="tabla-aprendices">
     <thead>
       <tr>

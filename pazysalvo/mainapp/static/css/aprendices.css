@@ -104,7 +104,7 @@ tbody tr:hover {
 .btn-editar {
   background-color: var(--color-secundario);
   color: var(--color-blanco);
-  padding: 6px 12px;
+  padding: 8px 12px;
   border-radius: 5px;
   font-size: 14px;
   text-decoration: none;

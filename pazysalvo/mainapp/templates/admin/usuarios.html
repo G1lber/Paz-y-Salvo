@@ -62,7 +62,7 @@
           Editar
         </a>
 
-        <form method="post" action="{% url 'eliminar_usuario' usuario.id %}" style="display:inline;">
+        <form method="post" action="{% url 'eliminar_usuario' usuario.id %}" style="display:inline;" class=>
           {% csrf_token %}
           <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este usuario?')">Eliminar</button>
         </form>

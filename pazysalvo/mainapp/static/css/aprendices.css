@@ -142,11 +142,13 @@ tbody tr:hover {
 .btn-eliminar {
   background-color: var(--color-eliminar);
   color: var(--color-blanco);
-  padding: 6px 12px;
+  padding: 8px 12px;
   border-radius: 5px;
   font-size: 14px;
   text-decoration: none;
+  border: none;
   transition: background-color 0.3s ease;
+  margin-left: 1rem;
 }
 
 .btn-eliminar:hover {

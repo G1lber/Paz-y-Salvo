@@ -63,7 +63,6 @@ body {
   width: 100%;
   padding: 12px;
   font-size: 15px;
-  margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
   box-sizing: border-box;
@@ -90,6 +89,18 @@ tbody tr:hover {
   background-color: #f0f5f5;
 }
 
+.box{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.box input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .btn-editar {
   background-color: var(--color-secundario);
   color: var(--color-blanco);
@@ -97,6 +108,7 @@ tbody tr:hover {
   border-radius: 5px;
   font-size: 14px;
   text-decoration: none;
+  border: none;
   transition: background-color 0.3s ease;
   gap: 30px;
 }

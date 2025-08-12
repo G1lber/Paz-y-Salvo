@@ -8,6 +8,10 @@ from django.db.models import Q
 from django.db import IntegrityError
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
+from .models import Ficha, Programa
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+from django.utils import timezone
 
 
 # Create your views here.
@@ -263,9 +267,94 @@ def prestarlibro(request):
 
 def pendientes_biblioteca(request):
     return render(request, 'biblioteca/pendientes-biblioteca.html')
+
 def fichas(request):
-    return render(request, 'coordinador/fichas.html')
+    fichas = Ficha.objects.all().select_related('programa_FK')
+    programas = Programa.objects.all()
+    return render(request, 'coordinador/fichas.html', {
+        'fichas': fichas,
+        'programas': programas
+    })
 
+def crear_ficha(request):
+    programas = Programa.objects.all()
+    
+    if request.method == "POST":
+        num_ficha = request.POST.get("codigo_ficha")
+        fecha_inicio = request.POST.get("fecha_inicio")
+        fecha_fin = request.POST.get("fecha_fin")
+        programa_id = request.POST.get("programa")
 
+        try:
+            # Validar fechas
+            if fecha_inicio and fecha_fin:
+                if fecha_inicio > fecha_fin:
+                    raise ValidationError("La fecha de inicio debe ser anterior a la fecha de fin")
+                
+                if fecha_fin < timezone.now().date():
+                    raise ValidationError("La fecha de fin no puede ser en el pasado")
 
+            programa = Programa.objects.get(id_programa=programa_id)
+            
+            Ficha.objects.create(
+                num_ficha=num_ficha,
+                fecha_inicio=fecha_inicio,
+                fecha_fin=fecha_fin,
+                programa_FK=programa
+            )
 
+            messages.success(request, "Ficha creada con éxito")
+            return redirect('fichas')
+            
+        except Programa.DoesNotExist:
+            messages.error(request, "El programa seleccionado no existe")
+        except ValueError as ve:
+            messages.error(request, f"Error en los datos: {str(ve)}")
+        except ValidationError as ve:
+            messages.error(request, str(ve))
+        except IntegrityError:
+            messages.error(request, "Error al crear la ficha. Verifica los datos.")
+    
+    return render(request, 'coordinador/modals/modal_crear_ficha.html', {
+        'programas': programas
+    })
+
+def editar_ficha(request, ficha_id):
+    ficha = get_object_or_404(Ficha, num_ficha=ficha_id)
+    programas = Programa.objects.all()
+
+    if request.method == "POST":
+        num_ficha = request.POST.get("codigo_ficha")
+        fecha_inicio = request.POST.get("fecha_inicio")
+        fecha_fin = request.POST.get("fecha_fin")
+        programa_id = request.POST.get("programa")
+
+        try:
+            programa = Programa.objects.get(id_programa=programa_id)
+
+            ficha.num_ficha = num_ficha
+            ficha.fecha_inicio = fecha_inicio
+            ficha.fecha_fin = fecha_fin
+            ficha.programa_FK = programa
+            ficha.save()
+
+            messages.success(request, "Ficha editada con éxito")
+            return redirect('fichas')
+        except (Programa.DoesNotExist, ValueError):
+            messages.error(request, "El programa seleccionado no es válido")
+
+    return render(request, 'coordinador/modals/modal_editar_ficha.html', {
+        'ficha': ficha,
+        'programas': programas
+    })
+
+def eliminar_ficha(request, ficha_id):
+    if request.method == "POST":
+        try:
+            ficha = Ficha.objects.get(num_ficha=ficha_id)
+            ficha.delete()
+            messages.success(request, "Ficha eliminada con éxito")
+        except Ficha.DoesNotExist:
+            messages.error(request, "La ficha no existe")
+    
+    return redirect('fichas')

@@ -1,139 +1,251 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gestión de Fichas</title>
+    <link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+    <!-- REMOVER: <link rel="stylesheet" href="{% static 'css/modalCrearFicha.css' %}"> -->
+</head>
+<body>
+    <div class="aprendices-container">
+        <div class="barra-superior">
+            <a href="{% url 'inicio' %}" class="btn-volver"> Volver</a>
+            <h1>Listado de fichas</h1>
+            <button id="btn-abrir-modal-crear" class="btn-crear">Crear Ficha</button>
+        </div>
 
-<div class="aprendices-container">
+        <!-- Mensajes -->
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
 
-  <div class="barra-superior">
-    <a  href="{% url 'inicio' %}" class="btn-volver"> Volver</a>
-    <h1>Listado de fichas</h1>
-       <a href="#" id="btn-abrir-modal" class="btn-crear">
-        <i class="fas fa-plus"></i>+ Crear Fichas
-    </a>
-  </div>
+        <!-- Búsqueda -->
+        <form method="get" class="mb-4 flex gap-2">
+            <input type="text" id="busqueda" name="busqueda" placeholder="Buscar por número de ficha o programa" 
+                   class="p-2 border rounded w-64" value="{{ request.GET.busqueda }}">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Buscar</button>
+        </form>
 
-    <form method="get" class="box">
-        <input type="text" id="busqueda" name="busqueda" placeholder="Buscar por nombre o documento" class="p-2 border rounded w-64" value="{{ request.GET.busqueda }}">
-        <button type="submit" class="btn-editar">Buscar</button>
-    </form>
+        <!-- Tabla -->
+        <table id="tabla-aprendices">
+            <thead>
+                <tr>
+                    <th>N. Ficha</th>
+                    <th>Programa</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ficha in fichas %}
+                    <tr>
+                        <td>{{ ficha.num_ficha }}</td>
+                        <td>{{ ficha.programa_FK.nombre }}</td>
+                        <td>{{ ficha.fecha_inicio|date:"d/m/Y" }}</td>
+                        <td>{{ ficha.fecha_fin|date:"d/m/Y" }}</td>
+                        <td>
+                            <button class="btn-editar"
+                                    data-ficha-id="{{ ficha.num_ficha }}"
+                                    data-programa="{{ ficha.programa_FK.id_programa }}"
+                                    data-fecha-inicio="{{ ficha.fecha_inicio|date:'Y-m-d' }}"
+                                    data-fecha-fin="{{ ficha.fecha_fin|date:'Y-m-d' }}">
+                                Editar
+                            </button>
 
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  <table id="tabla-aprendices">
-    <thead>
-      <tr>
-        <th>N. Ficha</th>
-        <th>Programa</th>
-        <th>Centro de formación</th>
-         <th>Fecha Fin</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for aprendiz in aprendices %}
-        <tr>
-          <td>{{ aprendiz.nombre }}</td>
-          <td>{{ aprendiz.num_doc }}</td>
-          <td>{{ aprendiz.id_ficha_FK }}</td>
-          <td>✅</td>
-          <td>
-            {% with aprendiz.seguimientos_como_aprendiz.first as seguimiento %}
-              <a href="#" class="btn-abrir-editar btn-editar"
-                onclick="cargarDatosEdicion(
-                    '{{ aprendiz.id }}',
-                    '{{ aprendiz.nombre }}',
-                    '{{ aprendiz.apellidos }}',
-                    '{{ aprendiz.num_doc }}',
-                    '{{ aprendiz.id_tipodoc_FK.id }}',
-                    '{{ aprendiz.id_ficha_FK }}',
-                    '{{ aprendiz.es_patrocinado }}',
-                    '{% if seguimiento %}{{ seguimiento.id_instructor.id }}{% else %}null{% endif %}'
-                )">
-                Editar
-              </a>
-            {% endwith %}
+                            <button class="btn-eliminar"
+                                    data-ficha-id="{{ ficha.num_ficha }}">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No hay fichas registradas</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-          </td>
-        </tr>
-      {% endfor %}
+    <!-- Modal Crear Ficha -->
+    <div id="modalCrearFicha" class="modal">
+        <div class="modal-contenido">
+            <span class="close-btn" title="Cerrar">&times;</span>
+            <h2>Crear Ficha</h2>
+            <form method="post" action="{% url 'crear_ficha' %}" id="form-crear-ficha">
+                {% csrf_token %}
+                <label for="create_codigoFicha">Código de Ficha</label>
+                <input type="text" id="create_codigoFicha" name="codigo_ficha" placeholder="Ingrese el código" required>
 
-    </tbody>
-  </table>
-</div>
+                <label for="create_programa">Programa</label>
+                <select id="create_programa" name="programa" required>
+                    <option value="" disabled selected>Seleccione un programa</option>
+                    {% for programa in programas %}
+                        <option value="{{ programa.id_programa }}">{{ programa.nombre_programa }}</option>
+                    {% endfor %}
+                </select>
 
-{% include 'modales/modalCrearFicha.html' %}
-{% include 'modales/modalEditarAprendiz.html' %}
-</div>
+                <label for="create_fechaInicio">Fecha de Inicio</label>
+                <input type="date" id="create_fechaInicio" name="fecha_inicio" required>
 
-<script>
-// Función para cargar datos en el modal de edición
-function cargarDatosEdicion(id, nombre, apellidos, num_doc, id_tipodoc_FK, id_ficha_FK, es_patrocinado, instSeguimiento) {
-    document.getElementById('usuario_id').value = id;
-    document.querySelector('#editarModal input[name="nombre"]').value = nombre;
-    document.querySelector('#editarModal input[name="apellidos"]').value = apellidos;
-    document.querySelector('#editarModal input[name="num_doc"]').value = num_doc;
-    document.querySelector('#editarModal select[name="id_tipodoc_FK"]').value = id_tipodoc_FK;
-    document.querySelector('#editarModal select[name="id_ficha_FK"]').value = id_ficha_FK;
-    document.querySelector('#editarModal input[name="es_patrocinado"]').checked = es_patrocinado === 'True' || es_patrocinado === true;
+                <label for="create_fechaFin">Fecha de Fin</label>
+                <input type="date" id="create_fechaFin" name="fecha_fin" required>
 
-    if (instSeguimiento) {
-        document.querySelector('#editarModal select[name="id_instructor"]').value = instSeguimiento;
-    }
-    const selector = document.querySelector('#editarModal select[name="id_instructor_FK"]');
-    selector.value = "";
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-guardar">Guardar</button>
+                    <button type="button" class="btn-cancelar" onclick="closeModal('modalCrearFicha')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    // Si hay instructor en el seguimiento, asignarlo
-    if (instSeguimiento && instSeguimiento !== "None") {
-        selector.value = instSeguimiento;
-    }
-}
+    <!-- Modal Editar Ficha (rellenado por JS) -->
+    <div id="modalEditarFicha" class="modal">
+        <div class="modal-contenido">
+            <span class="close-btn" title="Cerrar">&times;</span>
+            <h2>Editar Ficha</h2>
+            <!-- action con placeholder '0' que JS reemplazará -->
+            <form method="post" action="{% url 'editar_ficha' 0 %}" id="form-editar-ficha">
+                {% csrf_token %}
+                <label for="edit_codigoFicha">Código de Ficha</label>
+                <input type="text" id="edit_codigoFicha" name="codigo_ficha" required>
 
+                <label for="edit_programa">Programa</label>
+                <select id="edit_programa" name="programa" required>
+                    <option value="" disabled>Seleccione un programa</option>
+                    {% for programa in programas %}
+                        <option value="{{ programa.id_programa }}">{{ programa.nombre_programa }}</option>
+                    {% endfor %}
+                </select>
 
-    // Actualizar otros campos según sea necesario
+                <label for="edit_fechaInicio">Fecha de Inicio</label>
+                <input type="date" id="edit_fechaInicio" name="fecha_inicio" required>
 
-</script>
+                <label for="edit_fechaFin">Fecha de Fin</label>
+                <input type="date" id="edit_fechaFin" name="fecha_fin" required>
 
-<script>
-  const inputBusqueda = document.getElementById('busqueda');
-  const filas = document.querySelectorAll('#tabla-aprendices tbody tr');
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-guardar">Guardar</button>
+                    <button type="button" class="btn-cancelar" onclick="closeModal('modalEditarFicha')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-  inputBusqueda.addEventListener('keyup', () => {
-    const valor = inputBusqueda.value.toLowerCase();
-    filas.forEach(fila => {
-      const texto = fila.innerText.toLowerCase();
-      fila.style.display = texto.includes(valor) ? '' : 'none';
-    });
-  });
-</script>
+    <!-- Modal Eliminar Ficha -->
+    <div id="modalEliminarFicha" class="modal">
+        <div class="modal-contenido">
+            <span class="close-btn" title="Cerrar">&times;</span>
+            <h3>Confirmar Eliminación</h3>
+            <p>¿Estás seguro de eliminar esta ficha?</p>
+            <form method="post" action="{% url 'eliminar_ficha' 0 %}" id="form-eliminar-ficha">
+                {% csrf_token %}
+                <input type="hidden" name="ficha_id" id="ficha-id-eliminar">
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-guardar">Eliminar</button>
+                    <button type="button" class="btn-cancelar" onclick="closeModal('modalEliminarFicha')">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<!-- Script para abrir modal -->
-<script>
-  const modal = document.getElementById('modal-crear');
-  const btnAbrir = document.getElementById('btn-abrir-modal');
-  const btnCancelar = document.getElementById('btn-cancelar');
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Abrir/cerrar modales (uso simple)
+        function openModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.style.display = 'flex';
+        }
+        function closeModal(id) {
+            const m = document.getElementById(id);
+            if (m) m.style.display = 'none';
+        }
 
-  btnAbrir.addEventListener('click', () => {
-    modal.style.display = 'flex';
-  });
+        // Cerrar con botones .close-btn
+        document.querySelectorAll('.modal .close-btn').forEach(cb => {
+            cb.addEventListener('click', (e) => {
+                const modal = e.target.closest('.modal');
+                if (modal) modal.style.display = 'none';
+            });
+        });
 
-  btnCancelar.addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
-</script>
+        // Cerrar al hacer clic fuera del contenido
+        window.addEventListener('click', (e) => {
+            document.querySelectorAll('.modal').forEach(modal => {
+                if (e.target === modal) modal.style.display = 'none';
+            });
+        });
 
-<script>
-const botonesEditar = document.querySelectorAll('.btn-abrir-editar');
-const modalEditar = document.getElementById('editarModal');
-const btnCancelarEditar = document.getElementById('btn-cancelar-editar');
+        // Fecha actual en formato YYYY-MM-DD
+        function getCurrentDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
 
-botonesEditar.forEach(btn => {
-  btn.addEventListener('click', () => {
-    modalEditar.style.display = 'flex';
-  });
-});
+        // Abrir modal crear y setear fecha inicio
+        const btnCrear = document.getElementById('btn-abrir-modal-crear');
+        if (btnCrear) {
+            btnCrear.addEventListener('click', () => {
+                document.getElementById('create_fechaInicio').value = getCurrentDate();
+                openModal('modalCrearFicha');
+            });
+        }
 
-btnCancelarEditar.addEventListener('click', () => {
-  modalEditar.style.display = 'none';
-});
+        // Editar: llenar modal con data-* del botón
+        document.querySelectorAll('.btn-editar').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const fichaId = this.dataset.fichaId;
+                const programa = this.dataset.programa;
+                const fechaInicio = this.dataset.fechaInicio;
+                const fechaFin = this.dataset.fechaFin;
 
-</script>
+                // Llenar inputs edit
+                document.getElementById('edit_codigoFicha').value = fichaId;
+                document.getElementById('edit_programa').value = programa;
+                document.getElementById('edit_fechaInicio').value = fechaInicio;
+                document.getElementById('edit_fechaFin').value = fechaFin;
+
+                // Actualizar action del form (reemplaza el '0' placeholder)
+                const formEditar = document.getElementById('form-editar-ficha');
+                if (formEditar) formEditar.action = formEditar.action.replace('0', fichaId);
+
+                openModal('modalEditarFicha');
+            });
+        });
+
+        // Eliminar
+        document.querySelectorAll('.btn-eliminar').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const fichaId = this.dataset.fichaId;
+                document.getElementById('ficha-id-eliminar').value = fichaId;
+
+                const formEliminar = document.getElementById('form-eliminar-ficha');
+                if (formEliminar) formEliminar.action = formEliminar.action.replace('0', fichaId);
+
+                openModal('modalEliminarFicha');
+            });
+        });
+
+        // Búsqueda en tiempo real (manteniendo tu código)
+        const inputBusqueda = document.getElementById('busqueda');
+        const filas = document.querySelectorAll('#tabla-aprendices tbody tr');
+
+        if (inputBusqueda) {
+            inputBusqueda.addEventListener('keyup', () => {
+                const valor = inputBusqueda.value.toLowerCase();
+                filas.forEach(fila => {
+                    const texto = fila.innerText.toLowerCase();
+                    fila.style.display = texto.includes(valor) ? '' : 'none';
+                });
+            });
+        }
+    </script>
+</body>
+</html>

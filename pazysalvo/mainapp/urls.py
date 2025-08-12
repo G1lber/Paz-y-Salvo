@@ -15,6 +15,9 @@ urlpatterns = [
     path('usuarios/eliminar/<int:usuario_id>/', views.eliminar_usuario, name='eliminar_usuario'),
 
     path('fichas/', views.fichas, name='fichas'),
+    path('fichas/crear/', views.crear_ficha, name='crear_ficha'),
+    path('fichas/editar/<int:ficha_id>/', views.editar_ficha, name='editar_ficha'),
+    path('fichas/eliminar/<int:ficha_id>/', views.eliminar_ficha, name='eliminar_ficha'),
 
     # Otros módulos
     path('prestarlibro/', views.prestarlibro, name='prestar-libro'),

@@ -37,6 +37,11 @@ class UsuarioForm(forms.ModelForm):
         self.fields['nombre'].widget.attrs.update({'class': 'form-control'})
         self.fields['apellidos'].widget.attrs.update({'class': 'form-control'})
         self.fields['num_doc'].widget.attrs.update({'class': 'form-control'})
+
+        # Cambiar mensaje de error de campo único
+        self.fields['num_doc'].error_messages.update({
+            'unique': 'Ya existe un usuario con este número de documento.'
+        })
         
 
 

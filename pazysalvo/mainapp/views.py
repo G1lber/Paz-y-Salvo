@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Prefetch, Max
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .models import Usuario, Login, Roles, Seguimiento, TipoDoc, Ficha
+from .models import Usuario, Login, Roles, Seguimiento, TipoDoc, Ficha, InstructorxAprendiz
 from .forms import UsuarioForm, SeguimientoForm
 from django.db.models import Q
 from django.db import IntegrityError
@@ -180,7 +180,7 @@ def inicio(request):
 def aprendices(request):
     #FUNCION de busquedad
     busqueda = request.GET.get('busqueda', '')
-    aprendices = Usuario.objects.filter(id_rol_FK=5).prefetch_related('seguimientos_como_aprendiz')
+    aprendices = Usuario.objects.filter(id_rol_FK__nombre_rol="Aprendiz").prefetch_related('seguimientos_como_aprendiz')
     if busqueda:
         aprendices = aprendices.filter(
             Q(nombre__icontains=busqueda) |
@@ -191,7 +191,7 @@ def aprendices(request):
 
     form_crear = UsuarioForm()
     form_editar = UsuarioForm()
-    instSeguimiento = None  # 👈 Inicialización segura aquí
+    instSeguimiento = None  
     # POST - crear aprendiz
     if request.method == 'POST':
         if 'crear' in request.POST: #FUNCIÓN de crear aprendices
@@ -202,12 +202,17 @@ def aprendices(request):
 
                 # Guardar el nuevo usuario como aprendiz
                 usuario = form_crear.save(commit=False)
-                usuario.id_rol_FK = Roles.objects.get(id=5)  # Rol aprendiz
+                usuario.id_rol_FK = Roles.objects.get(nombre_rol="Aprendiz")  # Rol aprendiz
                 usuario.save()  # OJO: ahora sí estás guardando correctamente
                 # Crear el seguimiento
                 seguimiento = Seguimiento.objects.create(
                     id_aprendiz=usuario,
                     id_instructor=id_instructor2
+                )
+                # Guardar también en InstructorxAprendiz
+                InstructorxAprendiz.objects.create(
+                    id_instructor_FK=id_instructor2,
+                    id_aprendiz_FK=usuario
                 )
                 messages.success(request, 'Aprendiz creado correctamente!')
                 return redirect('aprendices')
@@ -226,10 +231,15 @@ def aprendices(request):
                     # Obtener instructor nuevo del formulario
                     id_instructor_nuevo = request.POST.get('id_instructor')
                     if id_instructor_nuevo:
-                        # Obtener o crear el seguimiento existente
-                        seguimiento, creado = Seguimiento.objects.get_or_create(id_aprendiz=usuario)
+                        # Actualizar/crear seguimiento
+                        seguimiento, _ = Seguimiento.objects.get_or_create(id_aprendiz=usuario)
                         seguimiento.id_instructor_id = id_instructor_nuevo
                         seguimiento.save()
+
+                         # Actualizar/crear instructorxaprendiz
+                        instxapr, _ = InstructorxAprendiz.objects.get_or_create(id_aprendiz_FK=usuario)
+                        instxapr.id_instructor_FK_id = id_instructor_nuevo
+                        instxapr.save()
 
                     messages.success(request, 'Cambios guardados correctamente!')
                     return redirect('aprendices')
@@ -244,7 +254,7 @@ def aprendices(request):
         'form_crear': form_crear,
         'form_editar': form_editar,
         'busqueda': busqueda,
-        'instructores': Usuario.objects.filter(id_rol_FK=2),
+        'instructores': Usuario.objects.filter(id_rol_FK__nombre_rol="Instructor"),
     })
 # TODO: FIN MODULO APRENDICES
 

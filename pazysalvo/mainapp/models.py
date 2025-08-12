@@ -153,3 +153,10 @@ class Seguimiento(models.Model):
 
     def __str__(self):
         return f'Seguimiento {self.id} - Aprendiz: {self.id_aprendiz} - Instructor: {self.id_instructor}'
+
+class InstructorxAprendiz(models.Model):
+    id_instructor_FK = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True, related_name='instructor_de_seguimiento')
+    id_aprendiz_FK = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True, related_name='aprendiz_en_seguimiento')
+
+    def __str__(self):
+        return f'Instructor: {self.id_instructor_FK} - Aprendiz: {self.id_aprendiz_FK}'

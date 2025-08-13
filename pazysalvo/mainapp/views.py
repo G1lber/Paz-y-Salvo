@@ -12,6 +12,7 @@ from .models import Ficha, Programa
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
+from datetime import datetime, date
 
 
 # Create your views here.
@@ -277,45 +278,19 @@ def fichas(request):
     })
 
 def crear_ficha(request):
+    if request.method == 'POST':
+        codigo_ficha = request.POST.get('codigo_ficha')
+        programa_id = request.POST.get('programa')
+
+        # Guarda la ficha
+        programa = Programa.objects.get(id=programa_id)
+        Ficha.objects.create(codigo_ficha=codigo_ficha, programa=programa)
+
+        return redirect('lista_fichas')  # Ajusta al nombre real de tu ruta/listado
+
+    # Si es GET, carga el modal
     programas = Programa.objects.all()
-    
-    if request.method == "POST":
-        num_ficha = request.POST.get("codigo_ficha")
-        fecha_inicio = request.POST.get("fecha_inicio")
-        fecha_fin = request.POST.get("fecha_fin")
-        programa_id = request.POST.get("programa")
-
-        try:
-            # Validar fechas
-            if fecha_inicio and fecha_fin:
-                if fecha_inicio > fecha_fin:
-                    raise ValidationError("La fecha de inicio debe ser anterior a la fecha de fin")
-                
-                if fecha_fin < timezone.now().date():
-                    raise ValidationError("La fecha de fin no puede ser en el pasado")
-
-            programa = Programa.objects.get(id_programa=programa_id)
-            
-            Ficha.objects.create(
-                num_ficha=num_ficha,
-                fecha_inicio=fecha_inicio,
-                fecha_fin=fecha_fin,
-                programa_FK=programa
-            )
-
-            messages.success(request, "Ficha creada con éxito")
-            return redirect('fichas')
-            
-        except Programa.DoesNotExist:
-            messages.error(request, "El programa seleccionado no existe")
-        except ValueError as ve:
-            messages.error(request, f"Error en los datos: {str(ve)}")
-        except ValidationError as ve:
-            messages.error(request, str(ve))
-        except IntegrityError:
-            messages.error(request, "Error al crear la ficha. Verifica los datos.")
-    
-    return render(request, 'coordinador/modals/modal_crear_ficha.html', {
+    return render(request, 'modales/modalCrearFicha.html', {
         'programas': programas
     })
 

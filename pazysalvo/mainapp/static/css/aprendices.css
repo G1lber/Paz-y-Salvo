@@ -113,9 +113,27 @@ tbody tr:hover {
   gap: 30px;
 }
 
+
 .btn-editar:hover {
   background-color: #01446f;
 }
+.btn-buscar {
+  background-color: var(--color-secundario);
+  color: var(--color-blanco);
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  text-decoration: none;
+  border: none;
+  transition: background-color 0.3s ease;
+  gap: 30px;
+}
+
+
+.btn-buscar:hover {
+  background-color: #01446f;
+}
+
 
 /* Responsive */
 @media (max-width: 768px) {

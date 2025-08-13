@@ -1,5 +1,7 @@
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
 <!DOCTYPE html>
+
 <html>
 <head>
     <title>Gestión de Fichas</title>
@@ -22,10 +24,9 @@
         {% endfor %}
 
         <!-- Búsqueda -->
-        <form method="get" class="mb-4 flex gap-2">
-            <input type="text" id="busqueda" name="busqueda" placeholder="Buscar por número de ficha o programa" 
-                   class="p-2 border rounded w-64" value="{{ request.GET.busqueda }}">
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Buscar</button>
+        <form method="get" class="box">
+            <input type="text" id="busqueda" name="busqueda" placeholder="Buscar por nombre o documento" class="p-2 border rounded w-64" value="{{ request.GET.busqueda }}">
+            <button  class="btn-buscar">Buscar</button>
         </form>
 
         <!-- Tabla -->

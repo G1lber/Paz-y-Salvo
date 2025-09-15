@@ -17,6 +17,7 @@ urlpatterns = [
     path('fichas/', views.fichas, name='fichas'),
 
     # Otros módulos
+    path('horasludicas/', views.horasludicas, name='horas-ludicas'),
     path('prestarlibro/', views.prestarlibro, name='prestar-libro'),
     path('pendientes-biblioteca/', views.pendientes_biblioteca, name='pendientes-biblioteca'),
     

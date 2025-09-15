@@ -258,9 +258,10 @@ def aprendices(request):
     })
 # TODO: FIN MODULO APRENDICES
 
+def horasludicas(request):
+    return render(request, 'bienestar/horas-ludicas.html')
 def prestarlibro(request):
     return render(request, 'biblioteca/prestarlibro.html')
-
 def pendientes_biblioteca(request):
     return render(request, 'biblioteca/pendientes-biblioteca.html')
 def fichas(request):

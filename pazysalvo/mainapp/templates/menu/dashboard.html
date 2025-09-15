@@ -87,7 +87,7 @@
          
         {% endif %}
 
-        {% comment %} {% if rol == "Responsable Bienestar" or rol == "Admin" %}
+        {% if rol == "Responsable Bienestar" or rol == "Admin" %}
           <details class="rol-section">
             <summary><i class="fas fa-heart"></i> Opciones de Bienestar</summary>
             <div class="cards-container">
@@ -95,20 +95,20 @@
                <div class="card">
                 <h3><i class="fas fa-heart"></i> Aprendices con horas pendientes en Bienestar</h3>
                 <p>Consulta reportes de personas con horas ludicas pendiente.</p>
-                <a href="{% url 'pendienteshoras'%}" class="btn">Ver reportes</a>
+                <a href="#" class="btn">Ver reportes</a>
               </div>
 
               <div class="card">
                 <h3><i class="fas fa-laptop"></i> Reportar por Equipos Prestados</h3>
                 <p>Administra reportes de equipos prestados.</p>
-                <a href="{% url 'reportarequipos' %}" class="btn">Reportar</a>
+                <a href="#" class="btn">Reportar</a>
               </div>
             </div>
           </details>
           
-        {% endif %} {% endcomment %}
+        {% endif %}
 
-        {% comment %} {% if rol == "Responsable Almacen" or rol == "Admin"%}
+        {% if rol == "Responsable Almacen" or rol == "Admin"%}
             <details class="rol-section">
               <summary><i class="fas fa-box"></i> Opciones de Almacén</summary>
               <div class="cards-container">
@@ -116,17 +116,17 @@
                   <div class="card">
                     <h3><i class="fas fa-laptop"></i> Reportar Equipos Prestados</h3>
                     <p>Administra reportes de equipos prestados.</p>
-                    <a href="{% url 'reportarequipos' %}" class="btn">Reportar</a>
+                    <a href="#" class="btn">Reportar</a>
                   </div>
 
                   <div class="card">
                     <h3><i class="fas fa-desktop"></i> Personas con pendientes en almacen</h3>
                     <p>Consulta reportes de almacen, por mora de equipos.</p>
-                    <a href="{% url 'pendientes-almacen' %}" class="btn">Ver reportes</a>
+                    <a href="#" class="btn">Ver reportes</a>
                   </div>
               </div>
             </details>
-        {% endif %} {% endcomment %}
+        {% endif %} 
 
         {% if rol == "Instructor Seguimiento" or rol == "Admin" %}
           <details class="rol-section">

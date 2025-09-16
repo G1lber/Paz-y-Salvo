@@ -11,13 +11,13 @@
   <section class="prestamo-libro">
     <div class="barra-superior" style="flex-direction: column; align-items: flex-start;">
       <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
-      <h1 class="titulo">Prestar Libro</h1>
+      <h1 class="titulo">Registrar Horas</h1>
     </div>
 
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
       
-      <!-- Formulario para prestar libro individualmente -->
+      <!-- Formulario para registrar horas individualmente -->
       <div class="form-group">
         <label for="aprendiz">Aprendiz</label>
         <input type="text" id="aprendiz" name="aprendiz" placeholder="Documento del usuario" required>
@@ -28,22 +28,22 @@
         <input type="number" id="horas" name="horas" required>
       </div>
 
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="fecha">Fecha de préstamo</label>
         <input type="date" id="fecha" name="fecha" required>
-      </div>
+      </div> -->
 
-      <button type="submit" class="btn-submit">Registrar préstamo</button>
+      <button type="submit" class="btn-submit">Registrar Horas</button>
 
       <hr style="margin: 30px 0;">
 
       <!-- Sección para subir archivo Excel -->
       <div class="form-group">
-        <label for="archivo_excel">Subir Excel de morosos</label>
+        <label for="archivo_excel">Subir Excel de horas</label>
         <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls">
       </div>
 
-      <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de morosos</button>
+      <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de Horas</button>
     </form>
   </section>
 </body>

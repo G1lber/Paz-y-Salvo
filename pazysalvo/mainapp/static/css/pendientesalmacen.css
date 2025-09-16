@@ -11,33 +11,36 @@
 
 /* Estilos generales */
 body {
-  font-family: Arial, sans-serif;
-  background: var(--color-blanco);
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--color-fondo);
   margin: 0;
   padding: 0;
   color: #333;
 }
 
 
+/* Card */
 .container {
   max-width: 1000px;
   margin: 2rem auto;
   background: var(--color-blanco);
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Título de la card */
+.card-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.4rem;
+  color: var(--color-texto);
+}
 
-/* Barra superior */
+/* Barra de búsqueda */
 .toolbar {
-  max-width: 1000px;
-  margin: 1rem auto;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  padding: 0 1rem;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
 }
 
 #search {
@@ -48,31 +51,38 @@ body {
   font-size: 1rem;
 }
 
-/* Botones de filtro */
 .filters {
-  display: flex;
-  gap: 0.5rem;
+    width: 100%;        
+    display: flex;
+    justify-content: center;     /* centrado horizontal */
+    gap: 0.8rem;                 /* separación entre botones */
+    margin: 0.9rem 0 1.6rem 0;   /* margen superior e inferior */
+    flex-wrap: wrap;             
 }
 
 .filter-btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  background: var(--color-blanco);
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0.55rem 1.1rem;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    background: var(--color-sombra);
+    cursor: pointer;
+    font-weight: 600;
+    color: #0f2b23;
+    transition: all .15s ease;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02);
 }
-
 .filter-btn:hover {
-  background: #d6d8db;
+    transform: translateY(-1px);
+    background: #e0e6e8;
 }
-
 .filter-btn.active {
-  background: #004b23;
-  color: white;
+    background: var(--color-hover);
+    color: var(--color-blanco);
+    border-color: rgba(0,0,0,0.06);
+    box-shadow: 0 6px 16px rgba(0,75,35,0.12);
 }
-
 /* Tabla */
 .report-table {
   width: 100%;
@@ -89,11 +99,11 @@ body {
 
 .report-table th {
   background: var(--color-secundario);
-  color: white;
+  color: var(--color-blanco);
 }
 
 .report-table tbody tr:hover {
-  background: #f1f3f5;
+  background: var(--color-blanco);
 }
 
 /* Estados */
@@ -122,7 +132,7 @@ body {
 /* Enlaces */
 a {
   text-decoration: none;
-  color: #004b23;
+  color: var(--color-principal);
   font-weight: bold;
 }
 

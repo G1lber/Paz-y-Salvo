@@ -265,6 +265,10 @@ def aprendices(request):
 
 def horasludicas(request):
     return render(request, 'bienestar/horas-ludicas.html')
+def prestarequipos(request):
+    return render(request, 'bienestar/prestar-equipos.html')
+def equiposalmacen(request):
+    return render(request, 'almacen/prestarequipos.html')
 def prestarlibro(request):
     return render(request, 'biblioteca/prestarlibro.html')
 def pendientes_biblioteca(request):

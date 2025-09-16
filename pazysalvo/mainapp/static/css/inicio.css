@@ -1,276 +1,379 @@
-:root {
-  --color-principal: #39A900;       /* Verde */
-  --color-secundario: #002b46;      /* Azul oscuro */
-  --color-blanco: #ffffff;
-  --color-fondo: #f4f7fa;
-  --color-texto: #002b46;
-  --color-hover: #2b8500;
-  --color-sombra: rgba(0, 0, 0, 0.08);
+       :root {
+            --color-principal: #39A900;       /* Verde SENA */
+            --color-secundario: #002b46;      /* Azul oscuro SENA */
+            --color-blanco: #ffffff;
+            --color-fondo: #f4f7fa;
+            --color-texto: #002b46;
+            --color-hover: #2b8500;
+            --color-sombra: rgba(0, 0, 0, 0.08);
+            --color-borde: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .sena-header {
+    background-color: var(--color-blanco);
+    border-bottom: 2px solid var(--color-principal);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    padding: 12px 0;
 }
 
-/* Estilo general */
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: var(--color-fondo);
-  color: var(--color-texto);
-  line-height: 1.6;
-}
-.header {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  padding: 20px;
-  box-sizing: border-box;
+/* contenedor principal del header */
+.container-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
 }
 
-.logout-container {
-  margin-right: 20px;
+/* Logo y texto */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.3s ease;
 }
 
+.logo-container:hover {
+    transform: scale(1.03);
+}
+
+.sena-logo {
+    height: 60px;
+}
+
+.system-info h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-secundario);
+}
+
+.system-info p {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+}
+
+/* Datos del usuario */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.user-name, .user-role {
+    font-size: 0.9rem;
+    color: var(--color-texto);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Botón de salida */
 .logout-btn {
-  padding: 10px 18px;
-  background-color: transparent;
-  border: 2px solid var(--color-secundario);
-  color: var(--color-secundario);
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 6px;
-  transition: all 0.3s ease;
+    padding: 8px 14px;
+    background-color: var(--color-principal);
+    color: var(--color-blanco);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
 }
 
 .logout-btn:hover {
-  background-color: var(--color-secundario);
-  color: var(--color-blanco);
+    background-color: var(--color-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.15);
 }
 
-.dashboard {
-  padding: 40px 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.dashboard h1 {
-  color: var(--color-secundario);
-  font-size: 2.5rem;
-  margin-bottom: 30px; /* Aumentado (antes estaba en 10px) */
-  text-align: center;
-}
-
-.dashboard .intro {
-  color: #444;
-  font-size: 1.1rem;
-  margin-bottom: 40px;
-  text-align: center;
-}
-.detalles-container{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  
-  min-height: 100vh;
-  text-align: center;
-  padding: 2rem;
-}
-/* Tarjetas */
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 25px;
-}
-
-.card {
-  background-color: var(--color-blanco);
-  border-left: 8px solid var(--color-principal);
-  padding: 30px 25px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px var(--color-sombra);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-}
-
-.card h3 {
-  color: var(--color-secundario);
-  font-size: 1.4rem;
-  margin-bottom: 10px;
-}
-
-.card p {
-  color: #555;
-  flex-grow: 1;
-  margin-bottom: 20px;
-}
-
-/* Botones */
-.btn {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: var(--color-principal);
-  color: var(--color-blanco);
-  text-decoration: none;
-  border-radius: 6px;
-  font-weight: bold;
-  transition: background-color 0.3s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  text-align: center;
-}
-
-.btn:hover {
-  background-color: var(--color-hover);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-
-.card h3 i {
-  margin-right: 8px;
-  color: var(--color-secundario); /* o cualquier color que uses */
-}
-
-/* Responsivo: Ajustes para pantallas pequeñas */
+/* Responsivo */
 @media (max-width: 768px) {
-  .dashboard {
-    padding: 30px 15px;
-  }
-
-  .dashboard h1 {
-    font-size: 2rem;
-  }
-
-  .dashboard .intro {
-    font-size: 1rem;
-    margin-bottom: 30px;
-  }
-
-  .card {
-    padding: 25px 20px;
-  }
-
-  .card h3 {
-    font-size: 1.2rem;
-  }
-
-  .btn {
-    width: 100%;
-    padding: 12px;
-  }
+    .container-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .user-info {
+        width: 100%;
+        justify-content: space-between;
+    }
 }
 
-@media (max-width: 480px) {
-  .dashboard h1 {
-    font-size: 1.8rem;
-  }
 
-  .cards {
-    grid-template-columns: 1fr;
-  }
-}
-/* Ajuste al contenedor principal */
-.roles-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
-  padding: 2rem;
-}
+        /* Main Content */
+        .dashboard {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-/* Sección por rol */
-.rol-section {
-  margin: 0;
-  background: #ffffff;
-  border: 2px solid var(--color-principal);
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 1rem; 
-  width: 100%;
-  max-width: 360px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-  transition: all 0.3s ease;
-}
+        .dashboard h1 {
+            color: var(--color-secundario);
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
 
-/* Encabezado del desplegable */
-.rol-section summary {
-  padding: 16px 20px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
-  background-color: var(--color-principal);
-  color: white;
-  list-style: none;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 0.6rem;
-  position: relative;
-}
+        .dashboard .intro {
+            color: #444;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            text-align: center;
+        }
 
-.rol-section summary i {
-  font-size: 1.2rem;
-}
+        .detalles-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 2rem 0;
+        }
 
-/* Flechas */
-.rol-section summary::after {
-  content: "▼";
-  position: absolute;
-  right: 20px;
-  font-size: 0.9rem;
-  transition: transform 0.3s ease;
-}
+        /* Sección por rol */
+        .rol-section {
+            margin: 0;
+            background: #ffffff;
+            border: 2px solid var(--color-principal);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
 
-.rol-section[open] summary::after {
-  content: "▲";
-}
+        /* Encabezado del desplegable */
+        .rol-section summary {
+            padding: 16px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: var(--color-principal);
+            color: white;
+            list-style: none;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 0.6rem;
+            position: relative;
+        }
 
-/* Hover */
-.rol-section summary:hover {
-  background-color: var(--color-hover);
-}
+        .rol-section summary i {
+            font-size: 1.2rem;
+        }
 
-/* Ocultar flecha nativa */
-.rol-section summary::-webkit-details-marker {
-  display: none;
-}
+        /* Flechas */
+        .rol-section summary::after {
+            content: "▼";
+            position: absolute;
+            right: 20px;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+        }
 
-/* Contenido expandido */
-.rol-section[open] .cards-container {
-  animation: fadeIn 0.3s ease-in-out;
-}
+        .rol-section[open] summary::after {
+            content: "▲";
+        }
 
-/* Animación suave */
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.98); }
-  to { opacity: 1; transform: scale(1); }
-}
+        /* Hover */
+        .rol-section summary:hover {
+            background-color: var(--color-hover);
+        }
 
-/* Contenedor de tarjetas */
-.cards-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  justify-items: center; /* Centra las tarjetas en su celda */
-  gap: 1.5rem;
-  padding: 1.5rem;
-  background-color: #f8fafc;
-}
+        /* Ocultar flecha nativa */
+        .rol-section summary::-webkit-details-marker {
+            display: none;
+        }
 
-/* Tarjeta individual */
-.card {
-  width: 220px;
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 1rem;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
-  text-align: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
+        /* Contenido expandido */
+        .rol-section[open] .cards-container {
+            animation: fadeIn 0.3s ease-in-out;
+        }
 
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
+        /* Animación suave */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
 
+        /* Contenedor de tarjetas */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            justify-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background-color: #f8fafc;
+        }
+
+        /* Tarjetas modernas (del primer diseño) */
+        .feature-card {
+            background: var(--color-blanco);
+            border-radius: 10px;
+            padding: 25px 20px;
+            text-align: center;
+            height: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid var(--color-borde);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            background-color: rgba(57, 169, 0, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-icon i {
+            font-size: 30px;
+            color: var(--color-principal);
+        }
+
+        .feature-card h3 {
+            color: var(--color-secundario);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .btn-sena {
+            background-color: var(--color-principal);
+            border: none;
+            color: var(--color-blanco);
+            border-radius: 6px;
+            padding: 8px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-sena:hover {
+            background-color: var(--color-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            color: var(--color-blanco);
+        }
+
+        /* Footer */
+        .sena-footer {
+            background-color: var(--color-blanco);
+            color: var(--color-texto);
+            padding: 20px 0;
+            border-top: 2px solid var(--color-principal);
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .user-info {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                margin-top: 15px;
+            }
+            
+            .user-name, .user-role {
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 20px 15px;
+            }
+            
+            .dashboard h1 {
+                font-size: 2rem;
+            }
+            
+            .dashboard .intro {
+                font-size: 1rem;
+                margin-bottom: 30px;
+            }
+            
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-card {
+                max-width: 100%;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .system-info h1 {
+                font-size: 1.3rem;
+            }
+            
+            .user-name, .user-role {
+                font-size: 0.8rem;
+            }
+            
+            .dashboard h1 {
+                font-size: 1.8rem;
+            }
+            
+            .rol-section summary {
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+        }

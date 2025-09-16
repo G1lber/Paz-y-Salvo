@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registrar Horas</title>
+  <link rel="stylesheet" href="{% static 'css/horas-ludicas.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <section class="prestamo-libro">
+    <div class="barra-superior" style="flex-direction: column; align-items: flex-start;">
+      <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+      <h1 class="titulo">Registrar Horas</h1>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <!-- Formulario para registrar horas individualmente -->
+      <div class="form-group">
+        <label for="aprendiz">Aprendiz</label>
+        <input type="text" id="aprendiz" name="aprendiz" placeholder="Documento del usuario" required>
+      </div>
+
+      <div class="form-group">
+        <label for="horas">Horas</label>
+        <input type="number" id="horas" name="horas" required>
+      </div>
+
+      <!-- <div class="form-group">
+        <label for="fecha">Fecha de préstamo</label>
+        <input type="date" id="fecha" name="fecha" required>
+      </div> -->
+
+      <button type="submit" class="btn-submit">Registrar Horas</button>
+
+      <hr style="margin: 30px 0;">
+
+      <!-- Sección para subir archivo Excel -->
+      <div class="form-group">
+        <label for="archivo_excel">Subir Excel de horas</label>
+        <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls">
+      </div>
+
+      <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de Horas</button>
+    </form>
+  </section>
+</body>
+</html>

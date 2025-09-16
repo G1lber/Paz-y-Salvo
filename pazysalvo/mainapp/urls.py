@@ -20,6 +20,7 @@ urlpatterns = [
     path('fichas/eliminar/<int:ficha_id>/', views.eliminar_ficha, name='eliminar_ficha'),
 
     # Otros módulos
+    path('horasludicas/', views.horasludicas, name='horas-ludicas'),
     path('prestarlibro/', views.prestarlibro, name='prestar-libro'),
     path('pendientes-biblioteca/', views.pendientes_biblioteca, name='pendientes-biblioteca'),
     

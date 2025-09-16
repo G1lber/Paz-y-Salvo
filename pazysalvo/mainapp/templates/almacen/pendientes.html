@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pendientes Almacén </title>
+  <link rel="stylesheet" href="{% static 'css/pendientesalmacen.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    
+    <div class="toolbar">
+        <!-- Campo de búsqueda -->
+        <input type="text" id="search" placeholder="Buscar reporte...">
+
+        <!-- Filtros -->
+        <div class="filters">
+            <button class="filter-btn active">Todos</button>
+            <button class="filter-btn">Pendiente</button>
+            <button class="filter-btn">Activo</button>
+            <button class="filter-btn">Vencido</button>
+        </div>
+    </div>
+
+    <div class="container">
+    <table class="report-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre del Equipo</th>
+            <th>Estado</th>
+            <th>Fecha de Reporte</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>001</td>
+            <td>Proyector Epson</td>
+            <td><span class="status pendiente">Pendiente</span></td>
+            <td>2025-09-16</td>
+            <td>
+            <button class="btn edit">Editar</button>
+            <button class="btn delete">Eliminar</button>
+            </td>
+        </tr>
+        <tr>
+            <td>002</td>
+            <td>Portátil Dell</td>
+            <td><span class="status activo">Activo</span></td>
+            <td>2025-09-14</td>
+            <td>
+            <button class="btn edit">Editar</button>
+            <button class="btn delete">Eliminar</button>
+            </td>
+        </tr>
+        <tr>
+            <td>003</td>
+            <td>Tablet Samsung</td>
+            <td><span class="status vencido">Vencido</span></td>
+            <td>2025-09-10</td>
+            <td>
+            <button class="btn edit">Editar</button>
+            <button class="btn delete">Eliminar</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</body>
+</html>

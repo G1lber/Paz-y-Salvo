@@ -265,14 +265,22 @@ def aprendices(request):
 
 def horasludicas(request):
     return render(request, 'bienestar/horas-ludicas.html')
+
 def prestarequipos(request):
     return render(request, 'bienestar/prestar-equipos.html')
+
 def equiposalmacen(request):
     return render(request, 'almacen/prestarequipos.html')
+
+def pendientesalmacen(request):
+    return render(request, 'almacen/pendientes.html')
+
 def prestarlibro(request):
     return render(request, 'biblioteca/prestarlibro.html')
+
 def pendientes_biblioteca(request):
     return render(request, 'biblioteca/pendientes-biblioteca.html')
+
 
 def fichas(request):
     fichas = Ficha.objects.all().select_related('programa_FK')

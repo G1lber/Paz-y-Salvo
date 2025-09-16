@@ -23,6 +23,7 @@ urlpatterns = [
     path('horasludicas/', views.horasludicas, name='horas-ludicas'),
     path('prestarequipos/', views.prestarequipos, name='prestar-equipos'),
     path('equiposalmacen/', views.equiposalmacen, name='equipos-almacen'),
+    path('pendientessalmacen/', views.pendientesalmacen, name='pendientes-almacen'),
     path('prestarlibro/', views.prestarlibro, name='prestar-libro'),
     path('pendientes-biblioteca/', views.pendientes_biblioteca, name='pendientes-biblioteca'),
     

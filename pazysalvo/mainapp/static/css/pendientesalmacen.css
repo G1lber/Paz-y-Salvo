@@ -1,0 +1,162 @@
+:root {
+  --color-principal: #39A900;
+  --color-secundario: #002b46;
+  --color-blanco: #ffffff;
+  --color-fondo: #f4f7fa;
+  --color-texto: #002b46;
+  --color-hover: #2b8500;
+  --color-sombra: rgba(0, 0, 0, 0.08);
+  --color-borde: #e0e0e0;
+}
+
+/* Estilos generales */
+body {
+  font-family: Arial, sans-serif;
+  background: var(--color-blanco);
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+
+.container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  background: var(--color-blanco);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Barra superior */
+.toolbar {
+  max-width: 1000px;
+  margin: 1rem auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+
+#search {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* Botones de filtro */
+.filters {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filter-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: var(--color-blanco);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.filter-btn:hover {
+  background: #d6d8db;
+}
+
+.filter-btn.active {
+  background: #004b23;
+  color: white;
+}
+
+/* Tabla */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.report-table th,
+.report-table td {
+  padding: 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.report-table th {
+  background: var(--color-secundario);
+  color: white;
+}
+
+.report-table tbody tr:hover {
+  background: #f1f3f5;
+}
+
+/* Estados */
+.status {
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.status.pendiente {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.activo {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status.vencido {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Enlaces */
+a {
+  text-decoration: none;
+  color: #004b23;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Botones generales */
+.btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-right: 0.3rem;
+  transition: background 0.2s;
+}
+
+/* Botón Editar */
+.btn.edit {
+  background: var(--color-principal);
+  color: white;
+}
+
+.btn.edit:hover {
+  background: var(--color-hover);
+}
+
+/* Botón Eliminar */
+.btn.delete {
+  background: #dc3545;
+  color: var(--color-blanco);
+}
+
+.btn.delete:hover {
+  background: #c82333;
+}

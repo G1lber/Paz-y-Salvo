@@ -11,29 +11,48 @@
     <link rel="stylesheet" href="{% static 'css/inicio.css' %}">
   
 </head>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const detalles = document.querySelectorAll(".rol-section");
+
+  detalles.forEach(detalle => {
+    detalle.addEventListener("toggle", function () {
+      if (this.open) {
+        // Cierra todos los demás
+        detalles.forEach(otro => {
+          if (otro !== this && otro.open) {
+            otro.removeAttribute("open");
+          }
+        });
+      }
+    });
+  });
+});
+</script>
+
 <body>
     <!-- Header con logo SENA (blanco) -->
     <header class="sena-header">
-    <div class="container-header">
-        <!-- Logo + Nombre sistema -->
-        <div class="logo-container">
-            <img src="{% static 'image/sena-logo.png' %}" alt="Logo SENA" class="sena-logo">
-            <div class="system-info">
-                
-                <p>Servicio Nacional de Aprendizaje</p>
+        <div class="container-header">
+            <!-- Logo + Nombre sistema -->
+            <div class="logo-container">
+                <img src="{% static 'image/sena-logo.png' %}" alt="Logo SENA" class="sena-logo">
+                <div class="system-info">
+                    
+                    <p>Servicio Nacional de Aprendizaje</p>
+                </div>
+            </div>
+
+            <!-- Info usuario -->
+            <div class="user-info">
+                <span class="user-name"><i class="fas fa-user-circle me-2"></i>{{ request.session.usuario_nombre|default:"Invitado" }}</span>
+                <span class="user-role"><i class="fas fa-user-tag me-2"></i>{{ request.session.usuario_rol }}</span>
+                <a href="{% url 'login' %}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </a>
             </div>
         </div>
-
-        <!-- Info usuario -->
-        <div class="user-info">
-            <span class="user-name"><i class="fas fa-user-circle me-2"></i>{{ request.session.usuario_nombre|default:"Invitado" }}</span>
-            <span class="user-role"><i class="fas fa-user-tag me-2"></i>{{ request.session.usuario_rol }}</span>
-            <a href="{% url 'login' %}" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i> Salir
-            </a>
-        </div>
-    </div>
-</header>
+    </header>
 
 
     <!-- Contenido principal -->

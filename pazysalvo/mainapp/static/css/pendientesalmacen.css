@@ -31,9 +31,12 @@ body {
 
 /* Título de la card */
 .card-title {
-  margin: 0 0 1rem 0;
-  font-size: 1.4rem;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.6rem;
   color: var(--color-texto);
+  text-align: center;
+  padding-bottom: 0.5rem;
+
 }
 
 /* Barra de búsqueda */
@@ -153,7 +156,7 @@ a:hover {
 
 /* Botón Editar */
 .btn.edit {
-  background: var(--color-principal);
+  background: var(--color-secundario);
   color: white;
 }
 
@@ -170,3 +173,4 @@ a:hover {
 .btn.delete:hover {
   background: #c82333;
 }
+

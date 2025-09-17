@@ -32,8 +32,10 @@
   </div>
 
  
-
-  <input type="text" id="busqueda" placeholder="Buscar por nombre o documento...">
+    <form method="get" class="box">
+        <input type="text" id="busqueda" name="busqueda" placeholder="Buscar por nombre o documento" class="p-2 border rounded w-64" value="{{ request.GET.busqueda }}">
+        <button type="submit" class="btn-editar">Buscar</button>
+    </form>
   
 <table id="tabla-aprendices">
   <thead>

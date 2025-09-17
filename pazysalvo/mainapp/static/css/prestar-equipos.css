@@ -10,8 +10,8 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: var(--color-borde);;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--color-fondo);;
     margin: 0;
     padding: 0;
 }

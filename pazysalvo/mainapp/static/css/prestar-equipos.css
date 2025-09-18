@@ -1,6 +1,7 @@
 :root {
   --color-principal: #39A900;
-  --color-secundario: #002b46;
+  --color-secundario: #2E8C00;
+  --color-azul: #002b46;
   --color-blanco: #ffffff;
   --color-fondo: #f4f7fa;
   --color-texto: #002b46;
@@ -10,148 +11,163 @@
 }
 
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: var(--color-fondo);;
-    margin: 0;
-    padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-fondo);
+  margin: 0;
+  padding: 40px 20px;
+  color: var(--color-texto);
 }
 
 .container {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 1.5rem;
-    background: var(--color-blanco);;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  max-width: 850px;
+  margin: auto;
+  background: var(--color-blanco);
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px var(--color-sombra);
 }
+
 .back-wrapper {
-  max-width: 1000px;
-  margin: 1rem auto 0 auto;
-  padding-right: 20rem; /* lo pega más a la izquierda */
+  max-width: 850px;
+  margin: 0 auto 20px auto;
 }
 
 .btn-back {
   display: inline-block;
-  background: var(--color-principal); 
-  color: var(--color-blanco);
-  padding: 0.8rem 1.6rem; /* más grande */
-  border-radius: 10px;
+  border: 2px solid var(--color-azul);
+  background: transparent;
+  color: var(--color-azul);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
   text-decoration: none;
-  font-size: 1rem; /* más grande el texto */
-  font-weight: bold;
-  transition: background 0.2s;
+  transition: all 0.3s;
 }
-
 .btn-back:hover {
-  background: var(--color-hover);
+  background-color: var(--color-azul);
+  color: var(--color-blanco);
 }
 
-h2 {
-    margin-top: 0;
-    color: var(--color-texto);;
+.titulo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 20px 0;
+  color: var(--color-azul);
 }
 
 /* --- Formulario --- */
 form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem 2rem;
-    margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 2rem;
+  margin-bottom: 2rem;
 }
 
 label {
-    font-weight: bold;
-    margin-bottom: 0.3rem;
-    display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  display: block;
+  color: var(--color-azul);
 }
 
 input, select, textarea {
-    width: 100%;
-    padding: 0.6rem;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 0.95rem;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--color-borde);
+  border-radius: 8px;
+  font-size: 15px;
+  background-color: #fafafa;
+  outline: none;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-principal);
+  background-color: var(--color-blanco);
+  box-shadow: 0 0 0 3px rgba(57, 169, 0, 0.2);
 }
 
 textarea {
-    resize: vertical;
-    min-height: 70px;
+  resize: vertical;
+  min-height: 70px;
 }
 
 .form-actions {
-    grid-column: 1 / 3;
-    text-align: right;
+  grid-column: 1 / 3;
+  text-align: right;
 }
 
-button {
-    background: var(--color-principal);; /* Verde */
-    border: none;
-    padding: 0.7rem 1.5rem;
-    border-radius: 8px;
-    color: var(--color-blanco);;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
+.btn-submit {
+  background: var(--color-principal);
+  color: var(--color-blanco);
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 10px var(--color-sombra);
 }
-
-button:hover {
-    background: var(--color-hover);;
+.btn-submit:hover {
+  background: var(--color-hover);
 }
 
 /* --- Tabla --- */
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 th, td {
-    border: 1px solid #ddd;
-    padding: 0.8rem;
-    text-align: center;
+  padding: 0.9rem;
+  text-align: center;
+  border-bottom: 1px solid var(--color-borde);
 }
 
 th {
-    background: var(--color-secundario);;
-    color: var(--color-blanco);;
+  background: var(--color-principal);
+  color: var(--color-blanco);
+  font-weight: 600;
 }
 
 tr:nth-child(even) {
-    background: var(--color-blanco);;
+  background: #f9fafb;
 }
 
-/* --- Acciones --- */
+/* --- Botones de acciones --- */
 .btn {
-    padding: 0.4rem 0.8rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    border: none;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  font-weight: 600;
 }
 
 .btn-edit {
-    background: #007bff;
-    color: var(--color-blanco);;
+  background: #007bff;
+  color: var(--color-blanco);
 }
-
 .btn-edit:hover {
-    background: #0056b3;
+  background: #0056b3;
 }
 
 .btn-delete {
-    background: #dc3545;
-    color: var(--color-blanco);;
+  background: #dc3545;
+  color: var(--color-blanco);
 }
-
 .btn-delete:hover {
-    background: #a71d2a;
+  background: #a71d2a;
 }
 
 .btn-view {
-    background: #17a2b8;
-    color: var(--color-blanco);;
+  background: #17a2b8;
+  color: var(--color-blanco);
 }
-
 .btn-view:hover {
-    background: #0d6673;
+  background: #0d6673;
 }

@@ -1,155 +1,132 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
-
-<div class="aprendices-container">
-
-  <div class="barra-superior">
-    <a  href="{% url 'inicio' %}" class="btn-volver"> Volver</a>
-    <h1>Lista de Aprendices</h1>
-    {% if messages %}
-        <div class="alert-container">
-            {% for message in messages %}
-                <div class="alert {{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Aprendices</title>
+    <link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+</head>
+<body>
+    <div class="aprendices-container">
+        
+        <!-- 🔝 Barra superior -->
+        <div class="barra-superior">
+            <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+            <h1>Lista de Aprendices</h1>
+            <a href="#" id="btn-abrir-modal" class="btn-crear">+ Crear Aprendiz</a>
         </div>
-        <script>
-        // Desaparecer después de 4 segundos con animación
-        setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(el => {
-                el.classList.add('fade-out');
-                setTimeout(() => el.remove(), 500); // Remueve tras animación
-            });
-        }, 3000);
-        </script>
-      {% endif %}
-       <a href="#" id="btn-abrir-modal" class="btn-crear">
-        <i class="fas fa-plus"></i>+ Crear Aprendiz
-    </a>
-  </div>
 
-    <form method="get" class="box">
-        <input type="text" id="busqueda" name="busqueda" placeholder="Buscar por nombre o documento" class="p-2 border rounded w-64" value="{{ request.GET.busqueda }}">
-        <button type="submit" class="btn-editar">Buscar</button>
-    </form>
+        <!-- 🚨 Alertas -->
+        <div class="alertas-top">
+            {% if messages %}
+                <div class="alert-container">
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <script>
+                    setTimeout(() => {
+                        document.querySelectorAll('.alert').forEach(el => {
+                            el.classList.add('fade-out');
+                            setTimeout(() => el.remove(), 500);
+                        });
+                    }, 3000);
+                </script>
+            {% endif %}
+        </div>
 
-    
-  <table id="tabla-aprendices">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Documento</th>
-        <th>Ficha</th>
-        <th>Paz y Salvo</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for aprendiz in aprendices %}
-        <tr>
-          <td>{{ aprendiz.nombre }}</td>
-          <td>{{ aprendiz.num_doc }}</td>
-          <td>{{ aprendiz.id_ficha_FK }}</td>
-          <td>✅</td>
-          <td>
-            {% with aprendiz.seguimientos_como_aprendiz.first as seguimiento %}
-              <a href="#" class="btn-abrir-editar btn-editar"
-                onclick="cargarDatosEdicion(
-                    '{{ aprendiz.id }}',
-                    '{{ aprendiz.nombre }}',
-                    '{{ aprendiz.apellidos }}',
-                    '{{ aprendiz.num_doc }}',
-                    '{{ aprendiz.id_tipodoc_FK.id }}',
-                    '{{ aprendiz.id_ficha_FK }}',
-                    '{{ aprendiz.es_patrocinado }}',
-                    '{% if seguimiento %}{{ seguimiento.id_instructor.id }}{% else %}null{% endif %}'
-                )">
-                Editar
-              </a>
-            {% endwith %}
+        <!-- 🔍 Búsqueda -->
+        <div class="busqueda-container">
+            <form method="get">
+                <input 
+                    type="text" 
+                    name="busqueda" 
+                    placeholder="Buscar por nombre o documento..." 
+                    value="{{ request.GET.busqueda }}" 
+                    class="input-busqueda"
+                >
+                <button type="submit" class="btn-buscar">Buscar</button>
+            </form>
+        </div>
 
-          </td>
-        </tr>
-      {% endfor %}
+        <!-- 📋 Tabla de aprendices -->
+        <div class="table-container">
+            <table id="tabla-aprendices">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Documento</th>
+                        <th>Ficha</th>
+                        <th>Paz y Salvo</th>
+                        <th class="acciones-header">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for aprendiz in aprendices %}
+                        <tr>
+                            <td>{{ aprendiz.nombre }} {{ aprendiz.apellidos }}</td>
+                            <td>{{ aprendiz.num_doc }}</td>
+                            <td><span class="badge-ficha">{{ aprendiz.id_ficha_FK }}</span></td>
+                            <td>
+                                {% if aprendiz.paz_salvo %}
+                                    <span class="paz-salvo aprobado">Aprobado</span>
+                                {% else %}
+                                    <span class="paz-salvo pendiente">Pendiente</span>
+                                {% endif %}
+                            </td>
+                            <td class="acciones">
+                                <button class="btn-editar btn-abrir-editar"
+                                    data-id="{{ aprendiz.id }}"
+                                    data-nombre="{{ aprendiz.nombre }}"
+                                    data-apellidos="{{ aprendiz.apellidos }}"
+                                    data-num_doc="{{ aprendiz.num_doc }}"
+                                    data-tipodoc="{{ aprendiz.id_tipodoc_FK.id }}"
+                                    data-ficha="{{ aprendiz.id_ficha_FK.id }}"
+                                    data-patrocinado="{{ aprendiz.es_patrocinado }}"
+                                    data-instructor="{% with aprendiz.seguimientos_como_aprendiz.first as seguimiento %}{% if seguimiento %}{{ seguimiento.id_instructor.id }}{% endif %}{% endwith %}">
+                                    Editar
+                                </button>
 
-    </tbody>
-  </table>
-</div>
+                                <form method="post" action="{% url 'eliminar_usuario' aprendiz.id %}" class="form-eliminar">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este aprendiz?')">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="no-data">No hay aprendices registrados.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-{% include 'modales/modalCrearAprendiz.html' %}
-{% include 'modales/modalEditarAprendiz.html' %}
-</div>
+        <!-- 📄 Paginación -->
+        {% if aprendices.has_other_pages %}
+        <div class="pagination">
+            {% if aprendices.has_previous %}
+                <a href="?page={{ aprendices.previous_page_number }}{% if request.GET.busqueda %}&busqueda={{ request.GET.busqueda }}{% endif %}" class="page-btn">« Anterior</a>
+            {% endif %}
+            
+            <span class="page-info">Página {{ aprendices.number }} de {{ aprendices.paginator.num_pages }}</span>
+            
+            {% if aprendices.has_next %}
+                <a href="?page={{ aprendices.next_page_number }}{% if request.GET.busqueda %}&busqueda={{ request.GET.busqueda }}{% endif %}" class="page-btn">Siguiente »</a>
+            {% endif %}
+        </div>
+        {% endif %}
 
-<script>
-// Función para cargar datos en el modal de edición
-function cargarDatosEdicion(id, nombre, apellidos, num_doc, id_tipodoc_FK, id_ficha_FK, es_patrocinado, instSeguimiento) {
-    document.getElementById('usuario_id').value = id;
-    document.querySelector('#editarModal input[name="nombre"]').value = nombre;
-    document.querySelector('#editarModal input[name="apellidos"]').value = apellidos;
-    document.querySelector('#editarModal input[name="num_doc"]').value = num_doc;
-    document.querySelector('#editarModal select[name="id_tipodoc_FK"]').value = id_tipodoc_FK;
-    document.querySelector('#editarModal select[name="id_ficha_FK"]').value = id_ficha_FK;
-    document.querySelector('#editarModal input[name="es_patrocinado"]').checked = es_patrocinado === 'True' || es_patrocinado === true;
+        {% include 'modales/modalCrearAprendiz.html' %}
+        {% include 'modales/modalEditarAprendiz.html' %}
+    </div>
 
-    if (instSeguimiento) {
-        document.querySelector('#editarModal select[name="id_instructor"]').value = instSeguimiento;
-    }
-    const selector = document.querySelector('#editarModal select[name="id_instructor_FK"]');
-    selector.value = "";
-
-    // Si hay instructor en el seguimiento, asignarlo
-    if (instSeguimiento && instSeguimiento !== "None") {
-        selector.value = instSeguimiento;
-    }
-}
-
-
-    // Actualizar otros campos según sea necesario
-
-</script>
-
-<script>
-  const inputBusqueda = document.getElementById('busqueda');
-  const filas = document.querySelectorAll('#tabla-aprendices tbody tr');
-
-  inputBusqueda.addEventListener('keyup', () => {
-    const valor = inputBusqueda.value.toLowerCase();
-    filas.forEach(fila => {
-      const texto = fila.innerText.toLowerCase();
-      fila.style.display = texto.includes(valor) ? '' : 'none';
-    });
-  });
-</script>
-
-<!-- Script para abrir modal -->
-<script>
-  const modal = document.getElementById('modal-crear');
-  const btnAbrir = document.getElementById('btn-abrir-modal');
-  const btnCancelar = document.getElementById('btn-cancelar');
-
-  btnAbrir.addEventListener('click', () => {
-    modal.style.display = 'flex';
-  });
-
-  btnCancelar.addEventListener('click', () => {
-    modal.style.display = 'none';
-  });
-</script>
-
-<script>
-const botonesEditar = document.querySelectorAll('.btn-abrir-editar');
-const modalEditar = document.getElementById('editarModal');
-const btnCancelarEditar = document.getElementById('btn-cancelar-editar');
-
-botonesEditar.forEach(btn => {
-  btn.addEventListener('click', () => {
-    modalEditar.style.display = 'flex';
-  });
-});
-
-btnCancelarEditar.addEventListener('click', () => {
-  modalEditar.style.display = 'none';
-});
-
-</script>
+    <!-- JS de modales -->
+    <script src="{% static 'js/aprendices.js' %}"></script>
+</body>
+</html>

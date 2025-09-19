@@ -25,14 +25,19 @@ body {
   padding: 2rem;
   border-radius: 14px;
   box-shadow: 0 6px 14px var(--color-sombra);
-  position: relative; /* Para posicionar el botón volver */
 }
 
-/* Botón volver en la parte superior derecha */
-.btn-volver-top {
-  position: absolute;
-  top: 20px;
-  right: 20px;
+/* Cabecera de la tarjeta con botón a la izquierda */
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--color-borde);
+  padding-bottom: 0.6rem;
+}
+
+/* Botón volver a la izquierda */
+.btn-volver {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -44,24 +49,20 @@ body {
   font-size: 0.9rem;
   text-decoration: none;
   transition: background 0.3s ease, transform 0.2s ease;
-  border: none;
-  cursor: pointer;
+  margin-right: 1rem;
 }
 
-.btn-volver-top:hover {
+.btn-volver:hover {
   background: var(--color-hover);
   transform: translateY(-2px);
 }
 
 /* Título */
 .card-title {
-  margin: 0 0 1.5rem 0;
+  margin: 0;
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--color-secundario);
-  text-align: center;
-  border-bottom: 2px solid var(--color-borde);
-  padding-bottom: 0.6rem;
 }
 
 /* Barra de búsqueda */
@@ -210,18 +211,21 @@ body {
   transform: translateY(-2px);
 }
 
-/* Responsive */
+/* Responsive  de movil */
 @media (max-width: 768px) {
   .container {
     margin: 1rem;
     padding: 1.5rem;
   }
   
-  .btn-volver-top {
-    position: relative;
-    top: 0;
-    right: 0;
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btn-volver {
     margin-bottom: 1rem;
+    margin-right: 0;
   }
   
   .filters {

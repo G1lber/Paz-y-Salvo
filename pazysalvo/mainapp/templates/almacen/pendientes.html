@@ -14,13 +14,13 @@
 <body>
     
     <div class="container">
-        <!-- Botón de volver en la parte superior derecha -->
-        <a href="{% url 'inicio' %}" class="btn-volver-top">
-            <i class="fas fa-arrow-left"></i> Volver
-        </a>
-
-        <!-- Título de la card -->
-        <h2 class="card-title">Reportes Almacén</h2>
+        <!-- Cabecera con título y botón de volver a la izquierda -->
+        <div class="card-header">
+            <a href="{% url 'inicio' %}" class="btn-volver">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+            <h2 class="card-title">Reportes Almacén</h2>
+        </div>
 
         <!-- Barra de herramientas -->
         <div class="toolbar">

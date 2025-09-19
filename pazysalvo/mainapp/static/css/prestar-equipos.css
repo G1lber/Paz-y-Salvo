@@ -5,6 +5,7 @@
   --color-blanco: #ffffff;
   --color-fondo: #f4f7fa;
   --color-texto: #002b46;
+  --color-hoverA: #003e60;
   --color-hover: #2b8500;
   --color-sombra: rgba(0, 0, 0, 0.08);
   --color-borde: #e0e0e0;
@@ -136,7 +137,7 @@ textarea {
   box-shadow: 0 4px 10px var(--color-sombra);
 }
 .btn-submit:hover {
-  background: var(--color-hover);
+  background: var(--color-hoverA);
 }
 
 /* --- Tabla --- */
@@ -175,27 +176,10 @@ tr:nth-child(even) {
   border: none;
   font-weight: 600;
 }
-
-.btn-edit {
-  background: #007bff;
-  color: var(--color-blanco);
-}
-.btn-edit:hover {
-  background: #0056b3;
-}
-
 .btn-delete {
   background: #dc3545;
   color: var(--color-blanco);
 }
 .btn-delete:hover {
   background: #a71d2a;
-}
-
-.btn-view {
-  background: #17a2b8;
-  color: var(--color-blanco);
-}
-.btn-view:hover {
-  background: #0d6673;
 }

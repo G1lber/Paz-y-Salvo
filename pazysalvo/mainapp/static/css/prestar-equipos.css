@@ -28,6 +28,24 @@ body {
   position: relative; 
 }
 
+.barra-superior {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.barra-superior h1 {
+  font-size: 1.6rem;
+  color: var(--color-secundario);
+  font-weight: 600;
+  margin: 0;
+  font-weight: bold;
+}
+
+
 .back-wrapper {
   max-width: 850px;
   margin: 0 auto 20px auto;

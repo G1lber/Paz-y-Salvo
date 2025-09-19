@@ -10,12 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="back-wrapper">
-      <a href="{% url 'inicio' %}" class="btn-back">← Volver</a>
-  </div>
 
   <div class="container">
+    <div class="barra-superior">
+      <a href="{% url 'inicio' %}" class="btn-back">← Volver</a>
     <h2 class="titulo-nuevo-reporte">Nuevo Reporte</h2>
+    </div>
     <form method="POST">
       {% csrf_token %}
       <div>

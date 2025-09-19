@@ -25,11 +25,15 @@ body {
   padding: 30px;
   border-radius: 14px;
   box-shadow: 0 6px 18px var(--color-sombra);
+  position: relative; 
 }
 
 .back-wrapper {
   max-width: 850px;
   margin: 0 auto 20px auto;
+  position: absolute;  /* 🔑 posiciona en la esquina */
+  top: 20px;           /* distancia desde arriba */
+  right: 20px;         /* distancia desde la derecha */
 }
 
 .btn-back {
@@ -53,6 +57,11 @@ body {
   font-weight: 700;
   margin: 20px 0;
   color: var(--color-azul);
+}
+.titulo-nuevo-reporte {
+  text-align: center;
+  width: 100%;
+  display: block;
 }
 
 /* --- Formulario --- */
@@ -126,6 +135,7 @@ th, td {
   padding: 0.9rem;
   text-align: center;
   border-bottom: 1px solid var(--color-borde);
+  
 }
 
 th {

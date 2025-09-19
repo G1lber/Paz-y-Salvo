@@ -9,11 +9,11 @@
 </head>
 <body>
     <div class="back-wrapper">
-        <a href="{% url 'inicio' %}" class="btn-back">Volver</a>
-    </div>
+          <a href="{% url 'inicio' %}" class="btn-back">Volver</a>
+      </div>
 
   <div class="container">
-    <h2>Nuevo Reporte</h2>
+    <h2 class="titulo-nuevo-reporte">Nuevo Reporte</h2>
     <form method="POST">
       {% csrf_token %}
       <div>
@@ -46,11 +46,11 @@
         <textarea id="observaciones" name="observaciones"></textarea>
       </div>
       <div class="form-actions">
-        <button type="submit">Guardar Reporte</button>
+        <button type="submit" class="btn-submit">Guardar Reporte</button>
       </div>
     </form>
 
-    <h2>Listado de Reportes</h2>
+    <h2 class="titulo">Listado de Reportes</h2>
     <table>
       <thead>
         <tr>

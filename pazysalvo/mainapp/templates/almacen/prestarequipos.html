@@ -8,12 +8,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    <div class="back-wrapper">
-        <a href="{% url 'inicio' %}" class="btn-back">Volver</a>
-    </div>
 
   <div class="container">
-    <h2>Nuevo Reporte</h2>
+    <div class="barra-superior">
+      <a href="{% url 'inicio' %}" class="btn-back">← Volver</a>
+      <h2 class="titulo-nuevo-reporte">Nuevo Reporte</h2>
+    </div>
     <form method="POST">
       {% csrf_token %}
       <div>
@@ -46,11 +46,11 @@
         <textarea id="observaciones" name="observaciones"></textarea>
       </div>
       <div class="form-actions">
-        <button type="submit">Guardar Reporte</button>
+        <button type="submit" class="btn-submit">Guardar Reporte</button>
       </div>
     </form>
 
-    <h2>Listado de Reportes</h2>
+    <h2 class="titulo">Listado de Reportes</h2>
     <table>
       <thead>
         <tr>

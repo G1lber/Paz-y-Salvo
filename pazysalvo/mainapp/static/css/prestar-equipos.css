@@ -37,7 +37,7 @@ body {
   gap: 16px;
 }
 
-.barra-superior h1 {
+.barra-superior h2 {
   font-size: 1.6rem;
   color: var(--color-secundario);
   font-weight: 600;
@@ -125,7 +125,7 @@ textarea {
 }
 
 .btn-submit {
-  background: var(--color-principal);
+  background: var(--color-azul);
   color: var(--color-blanco);
   padding: 12px 20px;
   border: none;

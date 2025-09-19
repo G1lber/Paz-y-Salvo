@@ -41,8 +41,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--color-principal);
-  color: var(--color-blanco);
+  background-color: transparent;
+  border: 2px solid var(--color-secundario);
+  color: var(--color-secundario);
   padding: 0.5rem 1rem;
   border-radius: 8px;
   font-weight: 600;
@@ -53,7 +54,8 @@ body {
 }
 
 .btn-volver:hover {
-  background: var(--color-hover);
+  background-color: var(--color-secundario);
+  color: var(--color-blanco);
   transform: translateY(-2px);
 }
 
@@ -63,6 +65,9 @@ body {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--color-secundario);
+  text-align: center;  /* 🔑 centra el texto */
+  display: block;      /* por si es un <h*> o similar, asegura el ancho completo */
+  width: 70%;
 }
 
 /* Barra de búsqueda */

@@ -101,32 +101,62 @@ class ReporteCoordinacion(models.Model):
     def __str__(self):
         return f'Coordinación - {self.id_usuario_FK}'
 
-class ReporteBienestar(models.Model):
-    id_usuario_FK = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.CASCADE)
-    paz_y_salvo = models.BooleanField(default=False)
+class PrestarEquipos(models.Model):
+    id_usuario_FK = models.ForeignKey('Usuario', on_delete=models.CASCADE, null=True)
+    nombre_equipo = models.CharField(max_length=100)
+    fecha_prestamo = models.DateField()
+    fecha_devolucion = models.DateField(null=True, blank=True)
+    observaciones = models.TextField(null=True, blank=True)
+    estado = models.CharField(
+        max_length=20,
+        choices=[
+            ('Pendiente', 'Pendiente'),
+            ('Activo', 'Activo'),
+            ('Vencido', 'Vencido')
+        ],
+        default='Pendiente'
+    )
+
+    def __str__(self):
+        return f'{self.nombre_equipo} - {self.id_usuario_FK}'
+
+class RegistroHoras(models.Model):
+    id_usuario_FK = models.ForeignKey('Usuario', on_delete=models.CASCADE, null=True)
+    cantidad_horas = models.PositiveIntegerField()
+    fecha_registro = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.id_usuario_FK} - {self.cantidad_horas} horas'
+
+class PrestamoLibro(models.Model):
+    id_usuario_FK = models.ForeignKey('Usuario', on_delete=models.CASCADE, null=True)
+    titulo_libro = models.CharField(max_length=200)
+    fecha_prestamo = models.DateField()
+    fecha_devolucion = models.DateField(null=True, blank=True)
+    observaciones = models.TextField(null=True, blank=True)
+    estado = models.CharField(
+        max_length=20,
+        choices=[
+            ('Pendiente', 'Pendiente'),
+            ('Activo', 'Activo'),
+            ('Vencido', 'Vencido')
+        ],
+        default='Pendiente'
+    )
+
+    def __str__(self):
+        return f'{self.titulo_libro} - {self.id_usuario_FK}'
+    
+class PrestamoBienestar(models.Model):
+    id_usuario_FK = models.ForeignKey('Usuario', on_delete=models.CASCADE, null=True)
+    nombre_equipo = models.CharField(max_length=100)
+    serial = models.CharField(max_length=100, null=True, blank=True)
+    fecha_prestamo = models.DateField()
+    fecha_devolucion = models.DateField(null=True, blank=True)
     observaciones = models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f'Bienestar - {self.id_usuario_FK}'
-
-class ReporteBiblioteca(models.Model):
-    id_usuario_FK = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.CASCADE)
-    paz_y_salvo = models.BooleanField(default=False)
-    observaciones = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return f'Biblioteca - {self.id_usuario_FK}'
-
-class ReporteAlmacen(models.Model):
-    id_usuario_FK = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.CASCADE)
-    paz_y_salvo = models.BooleanField(default=False)
-    observaciones = models.TextField(null=True, blank=True)
-
-    def __str__(self):
-        return f'Almacén - {self.id_usuario_FK}'
+        return f'{self.nombre_equipo} - {self.id_usuario_FK}'
     
 class ReporteSeguimiento(models.Model):
     id_usuario_FK = models.ForeignKey(Usuario, on_delete=models.CASCADE)

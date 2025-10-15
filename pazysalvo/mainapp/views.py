@@ -3,6 +3,7 @@ from django.db.models import Prefetch, Max
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Usuario, Login, Roles, Seguimiento, TipoDoc, Ficha, InstructorxAprendiz
+from .models import PrestamoBienestar, RegistroHoras
 from .forms import UsuarioForm, SeguimientoForm
 from django.db.models import Q
 from django.db import IntegrityError
@@ -14,6 +15,8 @@ from django.db import IntegrityError
 from django.utils import timezone
 from datetime import datetime, date
 from django.core.paginator import Paginator
+from django.http import JsonResponse
+import pandas as pd
 
 
 # Create your views here.
@@ -22,6 +25,10 @@ def index(request):
 
 
 def login_view(request):
+
+    storage = messages.get_messages(request)
+    storage.used = True
+
     if request.method == 'POST':
         num_doc = request.POST.get('num_doc')
         password = request.POST.get('password')
@@ -277,10 +284,112 @@ def aprendices(request):
 # TODO: FIN MODULO APRENDICES
 
 def horasludicas(request):
+    if request.method == 'POST':
+        # Si viene un archivo Excel
+        if 'subir_excel' in request.POST:
+            archivo = request.FILES.get('archivo_excel')
+            if not archivo:
+                messages.error(request, "Debes seleccionar un archivo Excel.")
+                return redirect('horasludicas')
+
+            try:
+                # Leer el archivo Excel con pandas
+                df = pd.read_excel(archivo)
+
+                # Se espera que el Excel tenga columnas: documento, horas
+                for _, fila in df.iterrows():
+                    documento = str(fila.get('documento')).strip()
+                    horas = int(fila.get('horas'))
+
+                    try:
+                        usuario = Usuario.objects.get(num_doc=documento)
+                        RegistroHoras.objects.create(
+                            id_usuario_FK=usuario,
+                            cantidad_horas=horas
+                        )
+                    except Usuario.DoesNotExist:
+                        messages.warning(request, f"No se encontró usuario con documento {documento}")
+
+                messages.success(request, "Las horas del Excel fueron cargadas correctamente.")
+            except Exception as e:
+                messages.error(request, f"Error al procesar el archivo: {e}")
+            
+            return redirect('horas-ludicas')
+
+        # Si se registra manualmente
+        else:
+            documento = request.POST.get('aprendiz')
+            horas = request.POST.get('horas')
+
+            try:
+                usuario = Usuario.objects.get(num_doc=documento)
+                RegistroHoras.objects.create(
+                    id_usuario_FK=usuario,
+                    cantidad_horas=horas
+                )
+                messages.success(request, f"Se registraron {horas} hora(s) al aprendiz {usuario.nombre}.")
+            except Usuario.DoesNotExist:
+                messages.error(request, "No existe un aprendiz con ese documento.")
+
+            return redirect('horas-ludicas')
+
     return render(request, 'bienestar/horas-ludicas.html')
 
 def prestarequipos(request):
-    return render(request, 'bienestar/prestar-equipos.html')
+    if request.method == 'POST':
+        documento = request.POST.get('documento')
+        equipo = request.POST.get('equipo')
+        serial = request.POST.get('serial')
+        fecha_prestamo = request.POST.get('fecha_prestamo')
+        fecha_devolucion = request.POST.get('fecha_devolucion')
+        observaciones = request.POST.get('observaciones')
+
+        if PrestamoBienestar.objects.filter(serial=serial).exists():
+            messages.error(request, f"Ya existe un préstamo con el serial {serial}.")
+            return redirect('prestar-equipos')
+        
+        try:
+            usuario = Usuario.objects.get(num_doc=documento)
+            PrestamoBienestar.objects.create(
+                id_usuario_FK=usuario,
+                nombre_equipo=equipo,
+                serial= serial,
+                fecha_prestamo=fecha_prestamo,
+                fecha_devolucion=fecha_devolucion if fecha_devolucion else None,
+                observaciones=observaciones,
+            )
+            messages.success(request, "Reporte guardado correctamente ✅")
+            return redirect('prestar-equipos')  # Evita reenvío del formulario
+        except Usuario.DoesNotExist:
+            messages.error(request, "El documento ingresado no pertenece a ningún aprendiz registrado ❌")
+
+    # Mostrar todos los reportes
+    reportes = PrestamoBienestar.objects.select_related('id_usuario_FK').all().order_by('id')
+
+    return render(request, 'bienestar/prestar-equipos.html', {'reportes': reportes})
+
+
+def editar_prestamo(request, id):
+    prestamo = get_object_or_404(PrestamoBienestar, id=id)
+
+    if request.method == 'POST':
+        prestamo.nombre_equipo = request.POST.get('nombre_equipo')
+        prestamo.serial = request.POST.get('serial')
+        prestamo.fecha_prestamo = request.POST.get('fecha_prestamo')
+        prestamo.fecha_devolucion = request.POST.get('fecha_devolucion')
+        prestamo.observaciones = request.POST.get('observaciones')
+        prestamo.save()
+        messages.success(request, 'El préstamo fue actualizado correctamente.')
+        return redirect('prestar-equipos')  
+    
+    return render(request, 'modales/modalEditarPrestamo.html', {'prestamo': prestamo})
+
+
+def eliminar_prestamo(request, id):
+    prestamo = get_object_or_404(PrestamoBienestar, id=id)
+    prestamo.delete()
+    messages.success(request, 'El préstamo fue eliminado correctamente.')
+    return redirect('prestar-equipos')  
 
 def equiposalmacen(request):
     return render(request, 'almacen/prestarequipos.html')

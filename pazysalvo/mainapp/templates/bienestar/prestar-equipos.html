@@ -12,6 +12,13 @@
 <body>
 
   <div class="container">
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <p class="{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
     <div class="barra-superior">
       <a href="{% url 'inicio' %}" class="btn-back">← Volver</a>
     <h2 class="titulo-nuevo-reporte">Nuevo Reporte</h2>
@@ -69,15 +76,14 @@
         {% for reporte in reportes %}
         <tr>
           <td>{{ reporte.id }}</td>
-          <td>{{ reporte.usuario.numero_doc }}</td>
-          <td>{{ reporte.equipo }}</td>
-          <td>{{ reporte.serial }}</td>
+          <td>{{ reporte.id_usuario_FK.num_doc }}</td>
+          <td>{{ reporte.nombre_equipo }}</td>
+          <td>{{ reporte.serial}}</td>
           <td>{{ reporte.fecha_prestamo }}</td>
-          <td>{{ reporte.fecha_devolucion }}</td>
+          <td>{{ reporte.fecha_devolucion|default:"—" }}</td>
           <td>
-            <button class="btn btn-view">👁️</button>
-            <button class="btn btn-edit">✏️</button>
-            <button class="btn btn-delete">🗑️</button>
+            <button class="btn btn-edit" onclick="abrirModalEditar('{{ reporte.id }}')">✏️</button>
+            <button class="btn btn-delete"onclick="confirmarEliminacion('{{ reporte.id }}')">🗑️</button>
           </td>
         </tr>
         {% empty %}
@@ -88,5 +94,31 @@
       </tbody>
     </table>
   </div>
+
+<div id="modalEditar" style="display: none;"></div>
+
+<script>
+  function abrirModalEditar(id) {
+    fetch(`/editar_prestamo/${id}/`)
+      .then(response => response.text())
+      .then(html => {
+        const modalContainer = document.querySelector('#modalEditar');
+        modalContainer.innerHTML = html;
+        modalContainer.style.display = 'block'; // 👈 mostrar modal al hacer clic
+      });
+  }
+
+  function cerrarModalEditar() {
+    const modalContainer = document.querySelector('#modalEditar');
+    modalContainer.style.display = 'none'; // 👈 ocultar modal
+    modalContainer.innerHTML = ''; // limpiar contenido
+  }
+
+  function confirmarEliminacion(id) {
+    if (confirm('¿Estás seguro de eliminar este préstamo?')) {
+      window.location.href = `/eliminar_prestamo/${id}/`;
+    }
+  }
+</script>
 </body>
 </html>

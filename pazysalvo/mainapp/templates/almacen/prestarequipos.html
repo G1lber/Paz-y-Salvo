@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Prestar Equipos</title>
+  <link rel="stylesheet" href="{% static 'css/prestar-equipos.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+  <div class="container">
+    <div class="barra-superior">
+      <a href="{% url 'inicio' %}" class="btn-back">← Volver</a>
+      <h2 class="titulo-nuevo-reporte">Nuevo Reporte</h2>
+    </div>
+    <form method="POST">
+      {% csrf_token %}
+      <div>
+        <label for="documento">Documento del Aprendiz</label>
+        <input type="text" id="documento" name="documento" required>
+      </div>
+      <div>
+        <label for="equipo">Equipo</label>
+        <select id="equipo" name="equipo" required>
+          <option value="">-- Seleccione --</option>
+          <option value="Balones">Balones</option>
+          <option value="Petos">Petos</option>
+          <option value="Materiales">Materiales</option>
+        </select>
+      </div>
+      <!-- <div>
+        <label for="serial">Serial</label>
+        <input type="text" id="serial" name="serial" required>
+      </div> -->
+      <div>
+        <label for="fecha_prestamo">Fecha Préstamo</label>
+        <input type="date" id="fecha_prestamo" name="fecha_prestamo" required>
+      </div>
+      <div>
+        <label for="fecha_devolucion">Fecha Devolución</label>
+        <input type="date" id="fecha_devolucion" name="fecha_devolucion">
+      </div>
+      <div>
+        <label for="observaciones">Observaciones</label>
+        <textarea id="observaciones" name="observaciones"></textarea>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-submit">Guardar Reporte</button>
+      </div>
+    </form>
+
+    <h2 class="titulo">Listado de Reportes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Documento</th>
+          <th>Equipo</th>
+          <th>F. Préstamo</th>
+          <th>F. Devolución</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for reporte in reportes %}
+        <tr>
+          <td>{{ reporte.id }}</td>
+          <td>{{ reporte.usuario.numero_doc }}</td>
+          <td>{{ reporte.equipo }}</td>
+          <td>{{ reporte.fecha_prestamo }}</td>
+          <td>{{ reporte.fecha_devolucion }}</td>
+          <td>
+            <button class="btn btn-edit"></button>
+            <button class="btn btn-delete"></button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7">No hay reportes registrados.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -15,18 +15,12 @@ body {
   background-color: var(--color-fondo);
   color: var(--color-texto);
   margin: 0;
-  /* Centrado vertical y horizontal con Flexbox, compatible */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
+  padding: 40px 20px;
 }
 
 .prestamo-libro {
-  width: 100%;
   max-width: 650px;
+  margin: auto;
   background-color: var(--color-blanco);
   padding: 35px 30px;
   border-radius: 14px;
@@ -64,7 +58,6 @@ body {
   text-decoration: none;
   transition: all 0.3s;
 }
-
 .btn-volver:hover {
   background-color: var(--color-azul);
   color: var(--color-blanco);
@@ -86,38 +79,20 @@ label {
   color: var(--color-azul);
 }
 
-/* Contenedor del input e ícono */
-.input-group {
-  position: relative;
-}
-
-.input-group input {
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="file"] {
   width: 100%;
-  padding: 12px 14px 12px 45px;
+  padding: 12px 14px;
   border: 1.5px solid var(--color-borde);
   border-radius: 8px;
   font-size: 15px;
   outline: none;
   transition: all 0.3s;
   background-color: #fafafa;
-  box-sizing: border-box;
+  box-sizing: border-box; /* 👈 Solución aplicada aquí */
 }
-
-/* Ajustes para el ícono dentro del input */
-.input-group i {
-  position: absolute;
-  left: 15px;
-  /* Centrado vertical con Flexbox para máxima compatibilidad */
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 18px;
-  color: var(--color-azul);
-  opacity: 0.7;
-  pointer-events: none;
-  /* Añadir prefijo para Firefox si es necesario */
-  -moz-transform: translateY(-50%);
-}
-
 input:focus {
   border-color: var(--color-principal);
   background-color: var(--color-blanco);
@@ -136,7 +111,6 @@ input:focus {
   margin-top: 8px;
   box-shadow: 0 4px 10px var(--color-sombra);
 }
-
 .btn-submit:hover {
   background-color: var(--color-hover);
 }
@@ -146,7 +120,6 @@ input:focus {
   margin: 25px 0;
   position: relative;
 }
-
 .separador span {
   background-color: var(--color-blanco);
   padding: 0 10px;
@@ -154,7 +127,6 @@ input:focus {
   font-size: 14px;
   font-weight: 500;
 }
-
 .separador::before {
   content: "";
   position: absolute;
@@ -173,27 +145,6 @@ input:focus {
   border-radius: 10px;
 }
 
-/* Ícono en input file */
-.input-file-group {
-  position: relative;
-}
-
-.input-file-group input[type="file"] {
-  padding-left: 45px;
-}
-
-.input-file-group i {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 18px;
-  color: var(--color-azul);
-  opacity: 0.7;
-  /* Prefijo para compatibilidad con Firefox */
-  -moz-transform: translateY(-50%);
-}
-
 /* Responsive */
 @media (max-width: 480px) {
   .prestamo-libro {
@@ -202,4 +153,28 @@ input:focus {
   .titulo {
     font-size: 1.5rem;
   }
+}
+
+/* Inputs con íconos */
+.input-icon {
+  position: relative;
+}
+
+.input-icon i {
+  position: absolute;
+  top: 38px; /* alineación vertical */
+  left: 12px;
+  font-size: 16px;
+  color: var(--color-azul);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.input-icon input {
+  padding-left: 40px; /* espacio para el ícono */
+}
+
+/* Ícono de archivo */
+input[type="file"] {
+  padding-left: 40px;
 }

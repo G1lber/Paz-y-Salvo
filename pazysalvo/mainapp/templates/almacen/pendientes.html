@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pendientes Almacén</title>
+  <link rel="stylesheet" href="{% static 'css/pendientesalmacen.css' %}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fuente profesional -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome para íconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    
+    <div class="container">
+        <!-- Cabecera con título y botón de volver a la izquierda -->
+        <div class="card-header">
+            <a href="{% url 'inicio' %}" class="btn-volver">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+            <h2 class="card-title">Reportes Almacén</h2>
+        </div>
+
+        <!-- Barra de herramientas -->
+        <div class="toolbar">
+            <div class="input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search" placeholder="Buscar reporte...">
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters">
+            <button class="filter-btn active">Todos</button>
+            <button class="filter-btn">Pendiente</button>
+            <button class="filter-btn">Activo</button>
+            <button class="filter-btn">Vencido</button>
+        </div>
+
+        <!-- Tabla -->
+        <div class="table-wrapper">
+            <table class="report-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre del Equipo</th>
+                    <th>Estado</th>
+                    <th>Fecha de Reporte</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>001</td>
+                    <td>Proyector Epson</td>
+                    <td><span class="status pendiente">Pendiente</span></td>
+                    <td>2025-09-16</td>
+                    <td>
+                    <button class="btn delete"><i class="fas fa-trash"></i> Quitar</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>002</td>
+                    <td>Portátil Dell</td>
+                    <td><span class="status activo">Activo</span></td>
+                    <td>2025-09-14</td>
+                    <td>
+                    <button class="btn delete"><i class="fas fa-trash"></i> Quitar</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>003</td>
+                    <td>Tablet Samsung</td>
+                    <td><span class="status vencido">Vencido</span></td>
+                    <td>2025-09-10</td>
+                    <td>
+                    <button class="btn delete"><i class="fas fa-trash"></i> Quitar</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

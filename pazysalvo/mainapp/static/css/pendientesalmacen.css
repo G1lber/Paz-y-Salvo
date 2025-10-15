@@ -1,0 +1,244 @@
+:root {
+  --color-principal: #39A900;   /* Verde SENA */
+  --color-hover: #2E8C00;       /* Verde más oscuro */
+  --color-secundario: #002B46;  /* Azul corporativo */
+  --color-blanco: #ffffff;
+  --color-fondo: #f4f7fa;
+  --color-texto: #002b46;
+  --color-sombra: rgba(0, 0, 0, 0.08);
+  --color-borde: #e0e0e0;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--color-fondo);
+  margin: 0;
+  padding: 0;
+  color: var(--color-texto);
+}
+
+/* Contenedor principal */
+.container {
+  max-width: 950px;
+  margin: 2rem auto;
+  background: var(--color-blanco);
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: 0 6px 14px var(--color-sombra);
+}
+
+/* Cabecera de la tarjeta con botón a la izquierda */
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--color-borde);
+  padding-bottom: 0.6rem;
+}
+
+/* Botón volver a la izquierda */
+.btn-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: transparent;
+  border: 2px solid var(--color-secundario);
+  color: var(--color-secundario);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.3s ease, transform 0.2s ease;
+  margin-right: 1rem;
+}
+
+.btn-volver:hover {
+  background-color: var(--color-secundario);
+  color: var(--color-blanco);
+  transform: translateY(-2px);
+}
+
+/* Título */
+.card-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-secundario);
+  text-align: center;  /* 🔑 centra el texto */
+  display: block;      /* por si es un <h*> o similar, asegura el ancho completo */
+  width: 70%;
+}
+
+/* Barra de búsqueda */
+.toolbar {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid var(--color-borde);
+  border-radius: 10px;
+  background-color: #fafafa;
+  padding: 0 12px;
+  flex: 1;
+  transition: border 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--color-principal);
+}
+
+.input-wrapper i {
+  margin-right: 10px;
+  font-size: 16px;
+  color: var(--color-secundario);
+  opacity: 0.8;
+}
+
+.input-wrapper input {
+  border: none;
+  background: transparent;
+  flex: 1;
+  padding: 10px 6px;
+  font-size: 15px;
+  outline: none;
+}
+
+/* Filtros */
+.filters {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: 1rem 0 1.8rem 0;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  appearance: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 22px;
+  border: 1px solid var(--color-borde);
+  background: #f8f9fa;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-secundario);
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  background: #e9ecef;
+}
+
+.filter-btn.active {
+  background: var(--color-principal);
+  color: var(--color-blanco);
+  border-color: var(--color-principal);
+}
+
+/* Tabla */
+.table-wrapper {
+  overflow-x: auto;
+  border-radius: 10px;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.report-table th,
+.report-table td {
+  padding: 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.report-table th {
+  background: var(--color-secundario);
+  color: var(--color-blanco);
+  font-weight: 600;
+}
+
+.report-table tr:hover {
+  background: #f5f9f6;
+}
+
+/* Estados */
+.status {
+  padding: 0.35rem 0.7rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.status.pendiente {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.activo {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status.vencido {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Botones */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.45rem 0.9rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.btn.delete {
+  background: #dc3545;
+  color: var(--color-blanco);
+}
+
+.btn.delete:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+}
+
+/* Responsive  de movil */
+@media (max-width: 768px) {
+  .container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btn-volver {
+    margin-bottom: 1rem;
+    margin-right: 0;
+  }
+  
+  .filters {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .report-table {
+    font-size: 0.85rem;
+  }
+}

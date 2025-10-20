@@ -183,4 +183,202 @@ tr:nth-child(even) {
 .btn-delete:hover {
   background: #a71d2a;
 }
+/* ================================================= */
+/* ESTILOS PROFESIONALES PARA LAS ALERTAS DE DJANGO  */
+/* ================================================= */
 
+/* Contenedor principal de mensajes: Posición fija y superior */
+.message-container {
+    /* Fija el contenedor en la parte superior de la ventana */
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    /* Centra el contenedor horizontalmente */
+    transform: translateX(-50%);
+    z-index: 1000; /* Asegura que esté por encima de todo */
+    width: 90%;
+    max-width: 550px; /* Ancho máximo elegante */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Estilo base para cada mensaje */
+.message {
+    padding: 15px 20px;
+    border-radius: 8px; /* Bordes redondeados */
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Sombra sutil para un efecto flotante */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+    /* CLAVE: Transición suave para el efecto de desvanecimiento (300ms) */
+    transition: opacity 0.3s ease-out; 
+    opacity: 1; /* Asegura que inicie visible */
+}
+
+.message-text {
+    flex-grow: 1;
+    margin-right: 15px;
+    /* Evita que el texto de la alerta se extienda demasiado */
+    word-break: break-word; 
+}
+
+/* 🟢 Estilo para mensajes de Éxito (Success) */
+.success {
+    background-color: var(--color-principal); /* #39A900 (Verde corporativo) */
+    color: var(--color-blanco); 
+    border: 1px solid var(--color-principal);
+}
+
+/* 🔴 Estilo para mensajes de Error */
+.error {
+    /* Usaremos un rojo de error profesional, ya que no definiste --color-eliminar */
+    background-color: #e74c3c; 
+    color: var(--color-blanco);
+    border: 1px solid #c0392b;
+}
+
+/* 🟡 Estilo para mensajes de Advertencia (Warning) */
+.warning, .info {
+    background-color: #fce38a; /* Amarillo suave para warning */
+    color: var(--color-texto);
+    border: 1px solid #f8d77f;
+}
+
+/* Botón de cierre (la X) */
+.close-btn {
+    background: none;
+    border: none;
+    color: inherit; /* Hereda el color del texto del mensaje */
+    font-size: 1.5em; /* Un poco más grande para ser visible */
+    font-weight: 300;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    margin-left: 10px;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: rgba(255, 255, 255, 0.8); /* Ligeramente más claro en hover */
+}
+
+/* ---------------------------------------------------- */
+/* MEDIA QUERY para pantallas más pequeñas (opcional) */
+/* ---------------------------------------------------- */
+@media (max-width: 600px) {
+    .message-container {
+        top: 10px;
+        max-width: 95%; 
+    }
+}
+/* Capa de fondo que cubre toda la pantalla */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Oscurecer el fondo */
+    display: none; /* Oculto por defecto, JS lo muestra como 'flex' */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Debe estar por encima de todo, incluyendo las alertas */
+    animation: fadeIn 0.3s ease-out; /* Animación de entrada */
+}
+
+/* Contenido central del modal */
+.custom-modal-content {
+    background: var(--color-blanco);
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transform: translateY(-20px);
+    animation: dropIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animación de rebote */
+}
+
+.modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-icon {
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    color: var(--color-azul);
+    margin: 0;
+}
+
+.modal-message {
+    color: var(--color-texto);
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+/* Botón de Cancelar */
+.btn-cancel {
+    flex: 1;
+    padding: 12px 20px;
+    border: 2px solid var(--color-borde);
+    background: transparent;
+    color: var(--color-texto);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-cancel:hover {
+    background-color: var(--color-fondo);
+}
+
+/* Botón de Eliminación (el más peligroso/visible) */
+.btn-confirm-delete {
+    flex: 1;
+    display: block; /* Para que 'a' se comporte como botón */
+    text-align: center;
+    text-decoration: none;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    /* Usando el color de eliminación */
+    background: #dc3545; /* Rojo de eliminación, puedes ajustar si tienes una variable */
+    color: var(--color-blanco);
+}
+
+.btn-confirm-delete:hover {
+    background: #c82333;
+}
+
+/* Animaciones de entrada */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes dropIn {
+    from { opacity: 0; transform: translateY(-50px); }
+    to { opacity: 1; transform: translateY(0); }
+}

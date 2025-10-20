@@ -6,16 +6,18 @@
   <title>Prestar Equipos</title>
   <link rel="stylesheet" href="{% static 'css/prestar-equipos.css' %}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Fuente profesional -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <div class="container">
     {% if messages %}
-      <div class="messages">
+      <div class="message-container">
         {% for message in messages %}
-          <p class="{{ message.tags }}">{{ message }}</p>
+          <div class="message {{ message.tags }}">
+            <span class="message-text">{{ message }}</span>
+            <button class="close-btn" onclick="this.parentElement.style.opacity='0'; setTimeout(() => this.parentElement.remove(), 300);">&times;</button>
+          </div>
         {% endfor %}
       </div>
     {% endif %}
@@ -95,9 +97,25 @@
     </table>
   </div>
 
+<div id="confirmModal" class="custom-modal-overlay">
+  <div class="custom-modal-content">
+    <div class="modal-header">
+      <span class="modal-icon">⚠️</span>
+      <h3 class="modal-title">Confirmar Eliminación</h3>
+    </div>
+    <p class="modal-message">¿Estás seguro de que deseas eliminar este préstamo? Esta acción no se puede deshacer.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="cerrarConfirmModal()">Cancelar</button>
+      <a id="confirmDeleteLink" class="btn-confirm-delete">Eliminar</a>
+    </div>
+  </div>
+</div>
 <div id="modalEditar" style="display: none;"></div>
 
 <script>
+  // 🟢 IMPORTANTE: Declarar la variable global para manejar el ID de eliminación
+  let currentDeleteId = null; 
+
   function abrirModalEditar(id) {
     fetch(`/editar_prestamo/${id}/`)
       .then(response => response.text())
@@ -115,10 +133,35 @@
   }
 
   function confirmarEliminacion(id) {
-    if (confirm('¿Estás seguro de eliminar este préstamo?')) {
-      window.location.href = `/eliminar_prestamo/${id}/`;
-    }
+    currentDeleteId = id;
+    const modal = document.getElementById('confirmModal');
+    const confirmLink = document.getElementById('confirmDeleteLink');
+    
+    // Establece el enlace de eliminación con el ID correcto
+    confirmLink.href = `/eliminar_prestamo/${currentDeleteId}/`;
+    
+    // Muestra el modal (CSS lo maneja como 'flex')
+    modal.style.display = 'flex'; 
   }
+
+  function cerrarConfirmModal() {
+    const modal = document.getElementById('confirmModal');
+    modal.style.display = 'none';
+    currentDeleteId = null;
+  }
+
+  // 🚀 SCRIPT PARA AUTO-OCULTAR LAS ALERTAS A LOS 3 SEGUNDOS
+  document.addEventListener('DOMContentLoaded', () => {
+    const messages = document.querySelectorAll('.message-container .message');
+    messages.forEach(message => {
+      // Establece un temporizador para iniciar la transición de ocultamiento
+      setTimeout(() => {
+        message.style.opacity = '0'; // Inicia la transición CSS (fade-out)
+        // Elimina el elemento del DOM después de que la transición CSS termine (300ms)
+        setTimeout(() => message.remove(), 300);
+      }, 3000); // 3 segundos (3000 milisegundos)
+    });
+  });
 </script>
 </body>
 </html>

@@ -25,7 +25,7 @@ class TipoDoc(models.Model):
 
 
 class Programa(models.Model):
-    id_programa = models.IntegerField(primary_key=True)
+    id_programa = models.AutoField(primary_key=True)
     nombre_programa = models.CharField(max_length=150)
     id_centro_FK = models.ForeignKey(Centro, on_delete=models.CASCADE, null=True)
 

@@ -18,7 +18,18 @@
       <h1 class="titulo">Registrar Horas</h1>
     </div>
 
-    <form method="post" enctype="multipart/form-data">
+    {% if messages %}
+      <div class="alert-container">
+        {% for message in messages %}
+          <div class="alert {{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- FORMULARIO MANUAL -->
+    <form method="post" enctype="multipart/form-data" id="form-manual">
       {% csrf_token %}
       
       <!-- Campo Aprendiz -->
@@ -36,15 +47,18 @@
       </div>
 
       <button type="submit" class="btn-submit">Registrar Horas</button>
+    </form>
 
-      <div class="separador"><span>o</span></div>
+    <div class="separador"><span>o</span></div>
 
-      <!-- Subir Excel -->
+    <!-- FORMULARIO EXCEL -->
+    <form method="post" enctype="multipart/form-data" id="form-excel">
+      {% csrf_token %}
       <div class="excel-section">
         <div class="form-group input-icon">
           <label for="archivo_excel">Subir Excel de horas</label>
           <i class="fa-solid fa-file-excel"></i>
-          <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls">
+          <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls" required>
         </div>
         <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de Horas</button>
       </div>

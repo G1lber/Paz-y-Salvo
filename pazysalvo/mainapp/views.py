@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Prefetch, Max
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .models import Usuario, Login, Roles, Seguimiento, TipoDoc, Ficha, InstructorxAprendiz
+from .models import Usuario, Login, Roles, Seguimiento, TipoDoc, Ficha, InstructorxAprendiz, PrestarEquipos, PrestamoLibro
 from .models import PrestamoBienestar, RegistroHoras
 from .forms import UsuarioForm, SeguimientoForm
 from django.db.models import Q
@@ -17,7 +17,8 @@ from datetime import datetime, date
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 import pandas as pd
-
+from django.contrib.auth.decorators import login_required
+from datetime import date
 
 # Create your views here.
 def index(request):
@@ -224,7 +225,7 @@ def aprendices(request):
 
     aprendices_qs = aprendices_qs.order_by('apellidos', 'nombre')
 
-    # 📌 Paginación
+    # Paginación
     paginator = Paginator(aprendices_qs, 8)  # 8 registros por página
     page_number = request.GET.get('page')
     aprendices_page = paginator.get_page(page_number)
@@ -283,6 +284,9 @@ def aprendices(request):
     })
 # TODO: FIN MODULO APRENDICES
 
+
+@login_required(login_url='login')
+
 def horasludicas(request):
     if request.method == 'POST':
         # Si viene un archivo Excel
@@ -290,7 +294,7 @@ def horasludicas(request):
             archivo = request.FILES.get('archivo_excel')
             if not archivo:
                 messages.error(request, "Debes seleccionar un archivo Excel.")
-                return redirect('horasludicas')
+                return redirect('horas-ludicas')
 
             try:
                 # Leer el archivo Excel con pandas
@@ -298,10 +302,15 @@ def horasludicas(request):
 
                 # Se espera que el Excel tenga columnas: documento, horas
                 for _, fila in df.iterrows():
-                    documento = str(fila.get('documento')).strip()
-                    horas = int(fila.get('horas'))
+                    documento = str(fila.get('documento')).strip() if fila.get('documento') else None
+                    horas = fila.get('horas')
+
+                    # Validar datos vacíos
+                    if not documento or pd.isna(horas):
+                        continue  # salta filas vacías o incompletas
 
                     try:
+                        horas = int(horas)
                         usuario = Usuario.objects.get(num_doc=documento)
                         RegistroHoras.objects.create(
                             id_usuario_FK=usuario,
@@ -309,15 +318,17 @@ def horasludicas(request):
                         )
                     except Usuario.DoesNotExist:
                         messages.warning(request, f"No se encontró usuario con documento {documento}")
+                    except ValueError:
+                        messages.warning(request, f"Las horas deben ser numéricas para el documento {documento}")
 
-                messages.success(request, "Las horas del Excel fueron cargadas correctamente.")
+                messages.success(request, "Archivo procesado correctamente.")
             except Exception as e:
                 messages.error(request, f"Error al procesar el archivo: {e}")
-            
+
             return redirect('horas-ludicas')
 
         # Si se registra manualmente
-        else:
+        else: 
             documento = request.POST.get('aprendiz')
             horas = request.POST.get('horas')
 
@@ -391,13 +402,151 @@ def eliminar_prestamo(request, id):
     messages.success(request, 'El préstamo fue eliminado correctamente.')
     return redirect('prestar-equipos')  
 
-def equiposalmacen(request):
+def equiposalmacen(request):  
+    if request.method == 'POST':
+        documento = request.POST.get('documento')
+        equipo = request.POST.get('equipo')
+        fecha_prestamo = request.POST.get('fecha_prestamo')
+        fecha_devolucion = request.POST.get('fecha_devolucion')
+        observaciones = request.POST.get('observaciones')
+        
+        try:
+            usuario = Usuario.objects.get(num_doc=documento)
+            PrestarEquipos.objects.create(
+                id_usuario_FK=usuario,
+                nombre_equipo=equipo,
+                fecha_prestamo=fecha_prestamo,
+                fecha_devolucion=fecha_devolucion if fecha_devolucion else None,
+                observaciones=observaciones,
+            )
+            messages.success(request, "Reporte guardado correctamente ✅")
+            return redirect('pendientes-almacen')  # Evita reenvío del formulario
+        except Usuario.DoesNotExist:
+            messages.error(request, "El documento ingresado no pertenece a ningún aprendiz registrado ❌")
+
+    # # Mostrar todos los reportes
+    # reportes = PrestarEquipos.objects.select_related('id_usuario_FK').all().order_by('id')
+
     return render(request, 'almacen/prestarequipos.html')
 
 def pendientesalmacen(request):
-    return render(request, 'almacen/pendientes.html')
+    # Obtener todos los equipos
+    equipos = PrestarEquipos.objects.select_related("id_usuario_FK").all().order_by('-fecha_prestamo')
+    hoy = date.today()
+
+    # Actualizar automáticamente los estados según las fechas
+    for equipo in equipos:
+        if equipo.fecha_devolucion:  # verificar que tenga una fecha de devolución
+            if equipo.fecha_devolucion < hoy:
+                nuevo_estado = "Vencido"
+            elif equipo.fecha_devolucion == hoy:
+                nuevo_estado = "Vence hoy"
+            else:
+                nuevo_estado = "Activo"
+
+            # Solo guardar si cambió el estado
+            if equipo.estado != nuevo_estado:
+                equipo.estado = nuevo_estado
+                equipo.save()
+
+    # Si el usuario elimina un equipo
+    if request.method == "POST":
+        equipo_id = request.POST.get("equipo_id")
+        if "eliminar" in request.POST:
+            equipo = PrestarEquipos.objects.get(id=equipo_id)
+            equipo.delete()
+            messages.success(request, f"Equipo '{equipo.nombre_equipo}' eliminado correctamente.")
+            return redirect('pendientes-almacen')
+
+    return render(request, 'almacen/pendientes.html', {"equipos": equipos})
+
+@login_required(login_url='login')
 
 def prestarlibro(request):
+    if request.method == 'POST':
+        # 🔹 Si viene un archivo Excel
+        if 'subir_excel' in request.POST:
+            archivo = request.FILES.get('archivo_excel')
+            if not archivo:
+                messages.error(request, "Debes seleccionar un archivo Excel.")
+                return redirect('prestar-libro')
+
+            try:
+                df = pd.read_excel(archivo)
+
+                # Se espera que el Excel tenga: documento, titulo_libro, fecha_prestamo, fecha_devolucion (opcional)
+                for _, fila in df.iterrows():
+                    documento = str(fila.get('documento')).strip() if fila.get('documento') else None
+                    titulo_libro = fila.get('titulo_libro')
+                    fecha_prestamo = fila.get('fecha_prestamo')
+                    fecha_devolucion = fila.get('fecha_devolucion')
+
+                    # Omitir filas vacías o incompletas
+                    if not documento or not titulo_libro or pd.isna(fecha_prestamo):
+                        continue
+
+                    # ✅ Asegurar que las fechas sean del tipo date (no Timestamp)
+                    if pd.notna(fecha_prestamo) and hasattr(fecha_prestamo, 'date'):
+                        fecha_prestamo = fecha_prestamo.date()
+                    if pd.notna(fecha_devolucion) and hasattr(fecha_devolucion, 'date'):
+                        fecha_devolucion = fecha_devolucion.date()
+
+                    try:
+                        usuario = Usuario.objects.get(num_doc=documento)
+
+                        # ✅ Determinar estado automáticamente según fechas
+                        hoy = date.today()
+                        if fecha_devolucion:
+                            if fecha_devolucion < hoy:
+                                estado = "Vencido"
+                            elif fecha_devolucion == hoy:
+                                estado = "Vence hoy"
+                            else:
+                                estado = "Activo"
+                        else:
+                            estado = "Activo"
+
+                        PrestamoLibro.objects.create(
+                            id_usuario_FK=usuario,
+                            titulo_libro=titulo_libro,
+                            fecha_prestamo=fecha_prestamo,
+                            fecha_devolucion=fecha_devolucion,
+                            estado=estado
+                        )
+
+                    except Usuario.DoesNotExist:
+                        messages.warning(request, f"No se encontró usuario con documento {documento}")
+
+                messages.success(request, "Archivo procesado correctamente.")
+            except Exception as e:
+                messages.error(request, f"Error al procesar el archivo: {e}")
+
+            return redirect('prestar-libro')
+
+        # 🔹 Si se registra manualmente
+        else:
+            documento = request.POST.get('aprendiz')
+            titulo_libro = request.POST.get('libro')
+            fecha_prestamo = request.POST.get('fecha_prestamo')
+
+            if not (documento and titulo_libro and fecha_prestamo):
+                messages.error(request, "Todos los campos son obligatorios.")
+                return redirect('prestar-libro')
+
+            try:
+                usuario = Usuario.objects.get(num_doc=documento)
+                PrestamoLibro.objects.create(
+                    id_usuario_FK=usuario,
+                    titulo_libro=titulo_libro,
+                    fecha_prestamo=fecha_prestamo,
+                    estado='Activo'
+                )
+                messages.success(request, f"Se registró el préstamo del libro '{titulo_libro}' al aprendiz {usuario.nombre}.")
+            except Usuario.DoesNotExist:
+                messages.error(request, "No existe un aprendiz con ese documento.")
+
+            return redirect('prestar-libro')
+
     return render(request, 'biblioteca/prestarlibro.html')
 
 def pendientes_biblioteca(request):

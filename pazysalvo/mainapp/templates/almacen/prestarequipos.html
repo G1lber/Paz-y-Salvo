@@ -50,7 +50,7 @@
       </div>
     </form>
 
-    <h2 class="titulo">Listado de Reportes</h2>
+    <!-- <h2 class="titulo">Listado de Reportes</h2>
     <table>
       <thead>
         <tr>
@@ -66,13 +66,13 @@
         {% for reporte in reportes %}
         <tr>
           <td>{{ reporte.id }}</td>
-          <td>{{ reporte.usuario.numero_doc }}</td>
-          <td>{{ reporte.equipo }}</td>
+          <td>{{ reporte.id_usuario_FK.num_doc}}</td>
+          <td>{{ reporte.nombre_equipo}}</td>
           <td>{{ reporte.fecha_prestamo }}</td>
           <td>{{ reporte.fecha_devolucion }}</td>
           <td>
-            <button class="btn btn-edit"></button>
-            <button class="btn btn-delete"></button>
+            <button class="btn btn-edit">✏️</button>
+            <button class="btn btn-delete">🗑️</button>
           </td>
         </tr>
         {% empty %}
@@ -81,7 +81,7 @@
         </tr>
         {% endfor %}
       </tbody>
-    </table>
+    </table> -->
   </div>
 </body>
 </html>

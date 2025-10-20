@@ -6,19 +6,36 @@
   <title>Prestar Libro</title>
   <link rel="stylesheet" href="{% static 'css/prestar_libro.css' %}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Fuente profesional -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
   <section class="prestamo-libro">
+
+    <!-- Barra superior -->
     <div class="barra-superior">
       <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
       <h1 class="titulo">Prestar Libro</h1>
     </div>
 
-    <form method="post" enctype="multipart/form-data">
+    <!-- Mensajes -->
+    {% if messages %}
+      <div class="alert-container">
+        {% for message in messages %}
+          <div class="alert {{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- FORMULARIO MANUAL -->
+    <form method="post" enctype="multipart/form-data" id="form-manual">
       {% csrf_token %}
       
+      <!-- Campo Aprendiz -->
       <div class="form-group">
         <label for="aprendiz">Aprendiz</label>
         <div class="input-group">
@@ -27,6 +44,7 @@
         </div>
       </div>
 
+      <!-- Campo Libro -->
       <div class="form-group">
         <label for="libro">Libro</label>
         <div class="input-group">
@@ -35,29 +53,35 @@
         </div>
       </div>
 
+      <!-- Campo Fecha de préstamo -->
       <div class="form-group">
         <label for="fecha">Fecha de préstamo</label>
         <div class="input-group">
-          <input type="date" id="fecha" name="fecha" required>
+          <input type="date" id="fecha" name="fecha_prestamo" required>
           <i class="fa-solid fa-calendar-day"></i>
         </div>
       </div>
 
       <button type="submit" class="btn-submit">Registrar préstamo</button>
+    </form>
 
-      <div class="separador"><span>o</span></div>
+    <div class="separador"><span>o</span></div>
 
+    <!-- FORMULARIO EXCEL -->
+    <form method="post" enctype="multipart/form-data" id="form-excel">
+      {% csrf_token %}
       <div class="excel-section">
         <div class="form-group">
           <label for="archivo_excel">Subir Excel de morosos</label>
           <div class="input-file-group">
-            <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls">
+            <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls" required>
             <i class="fa-solid fa-file-excel"></i>
           </div>
         </div>
         <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de morosos</button>
       </div>
     </form>
+
   </section>
 </body>
 </html>

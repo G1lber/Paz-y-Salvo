@@ -2,72 +2,268 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Pendientes Biblioteca </title>
-  <link rel="stylesheet" href="{% static 'css/pendientesalmacen.css' %}">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Pendientes Biblioteca</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/pendientes-biblioteca.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-    
+
+    {% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">
+            <span class="message-text">{{ message }}</span>
+            <button class="close-btn" onclick="this.parentElement.style.opacity='0'; setTimeout(() => this.parentElement.remove(), 300);">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="container">
-  <!-- Título de la card -->
-        <h2 class="card-title">Reportes Biblioteca</h2>
+        <!-- Barra superior -->
+        <div class="barra-superior">
+            <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+            <h1 class="titulo">Reportes Biblioteca</h1>
+        </div>
 
         <!-- Barra de herramientas -->
         <div class="toolbar">
-            <!-- Campo de búsqueda -->
-            <input type="text" id="search" placeholder="Buscar reporte...">
+            <div class="search-group">
+                <input type="text" id="search" placeholder="Buscar por libro, aprendiz o documento..." class="search-input">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <button class="btn-refresh" onclick="location.reload()">
+                <i class="fas fa-sync-alt"></i> Actualizar
+            </button>
         </div>
 
         <!-- Filtros -->
         <div class="filters">
-            <button class="filter-btn active">Todos</button>
-            <button class="filter-btn">Pendiente</button>
-            <button class="filter-btn">Activo</button>
-            <button class="filter-btn">Vencido</button>
+            <button class="filter-btn active" data-filter="all">Todos</button>
+            <button class="filter-btn" data-filter="ACTIVO">Activo</button>
+            <button class="filter-btn" data-filter="DEVUELTO">Devuelto</button>
+            <button class="filter-btn" data-filter="VENCIDO">Vencido</button>
+            <button class="filter-btn" data-filter="PENDIENTE">Pendiente</button>
         </div>
 
         <!-- Tabla -->
-        <table class="report-table">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre del Libro</th>
-                <th>Estado</th>
-                <th>Fecha de Reporte</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>001</td>
-                <td>Código Limpio</td>
-                <td><span class="status pendiente">Pendiente</span></td>
-                <td>2025-09-16</td>
-                <td>
-                <button class="btn delete">Quitar</button>
-                </td>
-            </tr>
-            <tr>
-                <td>002</td>
-                <td>Design Patterns</td>
-                <td><span class="status activo">Activo</span></td>
-                <td>2025-09-14</td>
-                <td>
-                <button class="btn delete">Quitar</button>
-                </td>
-            </tr>
-            <tr>
-                <td>003</td>
-                <td>El Programador Pragmático</td>
-                <td><span class="status vencido">Vencido</span></td>
-                <td>2025-09-10</td>
-                <td>
-                <button class="btn delete">Quitar</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Aprendiz</th>
+                        <th>Documento</th>
+                        <th>Libro</th>
+                        <th>Fecha Préstamo</th>
+                        <th>Fecha Devolución</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prestamo in prestamos %}
+                    <tr data-status="{{ prestamo.estado }}">
+                        <td>{{ prestamo.id }}</td>
+                        <td>{{ prestamo.aprendiz.nombre }} {{ prestamo.aprendiz.apellidos }}</td>
+                        <td>{{ prestamo.aprendiz.num_doc }}</td>
+                        <td>{{ prestamo.titulo_libro }}</td>
+                        <td>{{ prestamo.fecha_prestamo|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if prestamo.fecha_devolucion_real %}
+                                {{ prestamo.fecha_devolucion_real|date:"d/m/Y" }}
+                            {% else %}
+                                {{ prestamo.fecha_devolucion_estimada|date:"d/m/Y" }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="status {{ prestamo.estado|lower }}">{{ prestamo.get_estado_display }}</span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                {% if prestamo.estado == 'ACTIVO' or prestamo.estado == 'VENCIDO' %}
+                                <button class="btn btn-devolver" onclick="marcarDevuelto({{ prestamo.id }})" title="Marcar como devuelto">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                {% endif %}
+                                
+                                <button class="btn btn-editar" onclick="editarPrestamo({{ prestamo.id }})" title="Editar préstamo">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                
+                                <button class="btn btn-eliminar" onclick="confirmarEliminacion({{ prestamo.id }})" title="Eliminar préstamo">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="no-data">No hay préstamos registrados</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación -->
+        {% if prestamos.has_other_pages %}
+        <div class="pagination">
+            {% if prestamos.has_previous %}
+            <a href="?page={{ prestamos.previous_page_number }}" class="page-link">
+                <i class="fas fa-chevron-left"></i> Anterior
+            </a>
+            {% endif %}
+
+            <span class="page-info">
+                Página {{ prestamos.number }} de {{ prestamos.paginator.num_pages }}
+            </span>
+
+            {% if prestamos.has_next %}
+            <a href="?page={{ prestamos.next_page_number }}" class="page-link">
+                Siguiente <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
+
+    <!-- Modal de Confirmación Eliminación -->
+    <div id="confirmModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="modal-header">
+                <span class="modal-icon">⚠️</span>
+                <h3 class="modal-title">Confirmar Eliminación</h3>
+            </div>
+            <p class="modal-message">¿Estás seguro de que deseas eliminar este préstamo? Esta acción no se puede deshacer.</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="cerrarConfirmModal()">Cancelar</button>
+                <a id="confirmDeleteLink" class="btn-confirm-delete">Eliminar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Préstamo -->
+    <div id="modalEditar" class="custom-modal-overlay" style="display: none;">
+        <div class="custom-modal-content modal-lg">
+            <div class="modal-header">
+                <h3 class="modal-title">Editar Préstamo</h3>
+                <button class="close-modal" onclick="cerrarModalEditar()">&times;</button>
+            </div>
+            <div id="modalEditarContent">
+                <!-- Contenido cargado via AJAX -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 🟢 Variables globales
+        let currentDeleteId = null;
+
+        // 🔍 Búsqueda en tiempo real
+        document.getElementById('search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.report-table tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        // 🎯 Filtros por estado
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remover active de todos los botones
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                // Agregar active al botón clickeado
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                const rows = document.querySelectorAll('.report-table tbody tr');
+                
+                rows.forEach(row => {
+                    if (filter === 'all') {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = row.dataset.status === filter ? '' : 'none';
+                    }
+                });
+            });
+        });
+
+        // ✅ Marcar como devuelto
+        function marcarDevuelto(prestamoId) {
+            if (confirm('¿Estás seguro de que quieres marcar este libro como devuelto?')) {
+                fetch(`/biblioteca/prestamo/${prestamoId}/devolver/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al procesar la solicitud');
+                });
+            }
+        }
+
+        // ✏️ Editar préstamo
+        function editarPrestamo(prestamoId) {
+            fetch(`/biblioteca/prestamo/${prestamoId}/editar/`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('modalEditarContent').innerHTML = html;
+                    document.getElementById('modalEditar').style.display = 'flex';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al cargar el formulario de edición');
+                });
+        }
+
+        function cerrarModalEditar() {
+            document.getElementById('modalEditar').style.display = 'none';
+        }
+
+        // 🗑️ Eliminar préstamo
+        function confirmarEliminacion(id) {
+            currentDeleteId = id;
+            const modal = document.getElementById('confirmModal');
+            const confirmLink = document.getElementById('confirmDeleteLink');
+            
+            confirmLink.href = `/biblioteca/prestamo/${currentDeleteId}/eliminar/`;
+            modal.style.display = 'flex';
+        }
+
+        function cerrarConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            modal.style.display = 'none';
+            currentDeleteId = null;
+        }
+
+        // 🚀 Auto-ocultar alertas
+        document.addEventListener('DOMContentLoaded', () => {
+            const messages = document.querySelectorAll('.message-container .message');
+            messages.forEach(message => {
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    setTimeout(() => message.remove(), 300);
+                }, 5000);
+            });
+        });
+    </script>
 </body>
 </html>

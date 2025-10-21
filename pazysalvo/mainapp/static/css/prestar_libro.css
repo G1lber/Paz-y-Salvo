@@ -203,3 +203,90 @@ input:focus {
     font-size: 1.5rem;
   }
 }
+
+/* ================================================= */
+/* ESTILOS PROFESIONALES PARA LAS ALERTAS DE DJANGO  */
+/* (Añadidos para consistencia visual) */
+/* ================================================= */
+
+/* Contenedor principal de mensajes: Posición fija y superior */
+.message-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 90%;
+    max-width: 550px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Estilo base para cada mensaje */
+.message {
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);  
+    transition: opacity 0.3s ease-out;  
+    opacity: 1;
+}
+
+.message-text {
+    flex-grow: 1;
+    margin-right: 15px;
+    word-break: break-word; 
+}
+
+/* 🟢 Estilo para mensajes de Éxito (Success) */
+.success {
+    background-color: var(--color-principal); 
+    color: var(--color-blanco); 
+    border: 1px solid var(--color-principal);
+}
+
+/* 🔴 Estilo para mensajes de Error */
+.error {
+    background-color: #e74c3c; 
+    color: var(--color-blanco);
+    border: 1px solid #c0392b;
+}
+
+/* 🟡 Estilo para mensajes de Advertencia (Warning) */
+.warning, .info {
+    background-color: #fce38a;
+    color: var(--color-texto);
+    border: 1px solid #f8d77f;
+}
+
+/* Botón de cierre (la X) */
+.close-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.5em;
+    font-weight: 300;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    margin-left: 10px;
+    transition: color 0.2s;
+}
+
+.close-btn:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ---------------------------------------------------- */
+/* MEDIA QUERY para pantallas más pequeñas */
+/* ---------------------------------------------------- */
+@media (max-width: 600px) {
+    .message-container {
+        top: 10px;
+        max-width: 95%; 
+    }
+}

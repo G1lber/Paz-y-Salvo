@@ -2,53 +2,74 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Registrar Horas</title>
-  <link rel="stylesheet" href="{% static 'css/horas-ludicas.css' %}">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Fuente profesional -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <!-- Font Awesome para íconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <title>Registrar Horas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/horas-ludicas.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <section class="prestamo-libro">
-    <div class="barra-superior">
-      <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
-      <h1 class="titulo">Registrar Horas</h1>
-    </div>
 
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      
-      <!-- Campo Aprendiz -->
-      <div class="form-group input-icon">
-        <label for="aprendiz">Aprendiz</label>
-        <i class="fa-solid fa-user"></i>
-        <input type="text" id="aprendiz" name="aprendiz" placeholder="Documento del usuario" required>
+    {% if messages %}
+      <div class="message-container">
+        {% for message in messages %}
+          <div class="message {{ message.tags }}">
+            <span class="message-text">{{ message }}</span>
+            <button class="close-btn" onclick="this.parentElement.style.opacity='0'; setTimeout(() => this.parentElement.remove(), 300);">&times;</button>
+          </div>
+        {% endfor %}
       </div>
-
-      <!-- Campo Horas -->
-      <div class="form-group input-icon">
-        <label for="horas">Horas</label>
-        <i class="fa-solid fa-clock"></i>
-        <input type="number" id="horas" name="horas" placeholder="Cantidad de horas" required>
-      </div>
-
-      <button type="submit" class="btn-submit">Registrar Horas</button>
-
-      <div class="separador"><span>o</span></div>
-
-      <!-- Subir Excel -->
-      <div class="excel-section">
-        <div class="form-group input-icon">
-          <label for="archivo_excel">Subir Excel de horas</label>
-          <i class="fa-solid fa-file-excel"></i>
-          <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls">
+    {% endif %}
+    <section class="prestamo-libro">
+        <div class="barra-superior">
+            <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+            <h1 class="titulo">Registrar Horas</h1>
         </div>
-        <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de Horas</button>
-      </div>
-    </form>
-  </section>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group input-icon">
+                <label for="aprendiz">Aprendiz</label>
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="aprendiz" name="aprendiz" placeholder="Documento del usuario" required>
+            </div>
+
+            <div class="form-group input-icon">
+                <label for="horas">Horas</label>
+                <i class="fa-solid fa-clock"></i>
+                <input type="number" id="horas" name="horas" placeholder="Cantidad de horas" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Registrar Horas</button>
+
+            <div class="separador"><span>o</span></div>
+
+            <div class="excel-section">
+                <div class="form-group input-icon">
+                    <label for="archivo_excel">Subir Excel de horas</label>
+                    <i class="fa-solid fa-file-excel"></i>
+                    <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls">
+                </div>
+                <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de Horas</button>
+            </div>
+        </form>
+    </section>
+
+<script>
+    // 🚀 SCRIPT PARA AUTO-OCULTAR LAS ALERTAS A LOS 3 SEGUNDOS
+    document.addEventListener('DOMContentLoaded', () => {
+        const messages = document.querySelectorAll('.message-container .message');
+        messages.forEach(message => {
+            // Establece un temporizador para iniciar la transición de ocultamiento
+            setTimeout(() => {
+                message.style.opacity = '0'; // Inicia la transición CSS (fade-out)
+                // Elimina el elemento del DOM después de que la transición CSS termine (300ms)
+                setTimeout(() => message.remove(), 300);
+            }, 3000); // 3 segundos (3000 milisegundos)
+        });
+    });
+</script>
 </body>
 </html>

@@ -6,81 +6,173 @@
   <title>Pendientes Almacén</title>
   <link rel="stylesheet" href="{% static 'css/pendientesalmacen.css' %}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Fuente profesional -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <!-- Font Awesome para íconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
     
-    <div class="container">
-        <!-- Cabecera con título y botón de volver a la izquierda -->
-        <div class="card-header">
-            <a href="{% url 'inicio' %}" class="btn-volver">
-                <i class="fas fa-arrow-left"></i> Volver
-            </a>
-            <h2 class="card-title">Reportes Almacén</h2>
-        </div>
+  <div class="container">
 
-        <!-- Barra de herramientas -->
-        <div class="toolbar">
-            <div class="input-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="search" placeholder="Buscar reporte...">
-            </div>
-        </div>
-
-        <!-- Filtros -->
-        <div class="filters">
-            <button class="filter-btn active">Todos</button>
-            <button class="filter-btn">Pendiente</button>
-            <button class="filter-btn">Activo</button>
-            <button class="filter-btn">Vencido</button>
-        </div>
-
-        <!-- Tabla -->
-        <div class="table-wrapper">
-            <table class="report-table">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre del Equipo</th>
-                    <th>Estado</th>
-                    <th>Fecha de Reporte</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>001</td>
-                    <td>Proyector Epson</td>
-                    <td><span class="status pendiente">Pendiente</span></td>
-                    <td>2025-09-16</td>
-                    <td>
-                    <button class="btn delete"><i class="fas fa-trash"></i> Quitar</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>002</td>
-                    <td>Portátil Dell</td>
-                    <td><span class="status activo">Activo</span></td>
-                    <td>2025-09-14</td>
-                    <td>
-                    <button class="btn delete"><i class="fas fa-trash"></i> Quitar</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>003</td>
-                    <td>Tablet Samsung</td>
-                    <td><span class="status vencido">Vencido</span></td>
-                    <td>2025-09-10</td>
-                    <td>
-                    <button class="btn delete"><i class="fas fa-trash"></i> Quitar</button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+    <!-- Cabecera -->
+    <div class="card-header">
+      <a href="{% url 'inicio' %}" class="btn-volver">
+        <i class="fas fa-arrow-left"></i> Volver
+      </a>
+      <h2 class="card-title">Reportes Almacén</h2>
     </div>
+
+    {% if messages %}
+      <div class="alert-container">
+        {% for message in messages %}
+          <div class="alert {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Barra de búsqueda -->
+    <div class="toolbar">
+      <div class="input-wrapper">
+        <i class="fas fa-search"></i>
+        <input 
+          type="text" 
+          id="search" 
+          placeholder="Buscar reporte..." 
+          onkeyup="buscarReporte()" 
+        >
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filters">
+      <button class="filter-btn active" onclick="filtrar('Todos')">Todos</button>
+      <button class="filter-btn" onclick="filtrar('Activo')">Activo</button>
+      <button class="filter-btn" onclick="filtrar('Vencido')">Vencido</button>
+      <button class="filter-btn" onclick="filtrar('Vence hoy')">Vence hoy</button>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-wrapper">
+      <table class="report-table" id="tabla-reportes">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre del Equipo</th>
+            <th>Usuario</th>
+            <th>Estado</th>
+            <th>Fecha de Préstamo</th>
+            <th>Fecha de Devolución</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for equipo in equipos %}
+          <tr data-estado="{{ equipo.estado }}">
+            <td>{{ equipo.id }}</td>
+            <td>{{ equipo.nombre_equipo }}</td>
+            <td>{{ equipo.id_usuario_FK }}</td>
+            <td>
+              <span class="status 
+                {% if equipo.estado == 'Activo' %}activo
+                {% elif equipo.estado == 'Vencido' %}vencido
+                {% elif equipo.estado == 'Vence hoy' %}vencehoy
+                {% endif %}">
+                {{ equipo.estado }}
+              </span>
+            </td>
+            <td>{{ equipo.fecha_prestamo }}</td>
+            <td>{{ equipo.fecha_devolucion|default:"—" }}</td>
+            <td>
+              <form method="post" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="equipo_id" value="{{ equipo.id }}">
+                <button type="submit" name="eliminar" value="1" class="btn delete">
+                  <i class="fas fa-trash"></i> Quitar
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" style="text-align:center;">No hay reportes registrados.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+  // 🔹 Filtro por estado
+  function filtrar(estado) {
+    const filas = document.querySelectorAll("#tabla-reportes tbody tr");
+    const botones = document.querySelectorAll(".filter-btn");
+    botones.forEach(btn => btn.classList.remove("active"));
+    document.querySelector(`.filter-btn[onclick="filtrar('${estado}')"]`).classList.add("active");
+
+    filas.forEach(fila => {
+      // Ignorar la fila del mensaje vacío
+      if (fila.id === "mensaje-vacio") return;
+
+      if (estado === "Todos" || fila.dataset.estado === estado) {
+        fila.style.display = "";
+      } else {
+        fila.style.display = "none";
+      }
+    });
+
+    verificarResultados();
+  }
+
+  // 🔹 Búsqueda en tiempo real
+  function buscarReporte() {
+    const texto = normalizar(document.getElementById("search").value);
+    const filas = document.querySelectorAll("#tabla-reportes tbody tr");
+
+    filas.forEach(fila => {
+      if (fila.id === "mensaje-vacio") return; // ignorar mensaje vacío
+      const contenido = normalizar(fila.textContent);
+      fila.style.display = contenido.includes(texto) ? "" : "none";
+    });
+
+    verificarResultados();
+  }
+
+  // 🔹 Elimina acentos y convierte a minúsculas
+  function normalizar(texto) {
+    return texto
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim();
+  }
+
+  // 🔹 Verifica si hay resultados visibles
+  function verificarResultados() {
+    const filas = document.querySelectorAll("#tabla-reportes tbody tr");
+    const visibles = Array.from(filas).filter(
+      fila => fila.style.display !== "none" && fila.id !== "mensaje-vacio"
+    );
+
+    let mensaje = document.querySelector("#mensaje-vacio");
+    const tabla = document.querySelector("#tabla-reportes tbody");
+
+    if (visibles.length === 0) {
+      if (!mensaje) {
+        mensaje = document.createElement("tr");
+        mensaje.id = "mensaje-vacio";
+        mensaje.innerHTML = `
+          <td colspan="7" style="text-align:center; color:#777; font-style:italic;">
+            No se encontraron resultados
+          </td>`;
+        tabla.appendChild(mensaje);
+      }
+    } else {
+      if (mensaje) mensaje.remove();
+    }
+  }
+</script>
+
+
 </body>
 </html>

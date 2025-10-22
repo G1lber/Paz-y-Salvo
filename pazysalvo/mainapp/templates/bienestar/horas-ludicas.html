@@ -12,19 +12,46 @@
 <body>
 
     {% if messages %}
-      <div class="message-container">
+      <div class="alert-container">
         {% for message in messages %}
-          <div class="message {{ message.tags }}">
-            <span class="message-text">{{ message }}</span>
-            <button class="close-btn" onclick="this.parentElement.style.opacity='0'; setTimeout(() => this.parentElement.remove(), 300);">&times;</button>
+          <div class="alert {{ message.tags }}">
+            {{ message }}
           </div>
         {% endfor %}
       </div>
     {% endif %}
-    <section class="prestamo-libro">
-        <div class="barra-superior">
-            <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
-            <h1 class="titulo">Registrar Horas</h1>
+
+    <!-- FORMULARIO MANUAL -->
+    <form method="post" enctype="multipart/form-data" id="form-manual">
+      {% csrf_token %}
+      
+      <!-- Campo Aprendiz -->
+      <div class="form-group input-icon">
+        <label for="aprendiz">Aprendiz</label>
+        <i class="fa-solid fa-user"></i>
+        <input type="text" id="aprendiz" name="aprendiz" placeholder="Documento del usuario" required>
+      </div>
+
+      <!-- Campo Horas -->
+      <div class="form-group input-icon">
+        <label for="horas">Horas</label>
+        <i class="fa-solid fa-clock"></i>
+        <input type="number" id="horas" name="horas" placeholder="Cantidad de horas" required>
+      </div>
+
+      <button type="submit" class="btn-submit">Registrar Horas</button>
+    </form>
+
+    <div class="separador"><span>o</span></div>
+
+    <!-- FORMULARIO EXCEL -->
+    <form method="post" enctype="multipart/form-data" id="form-excel">
+      {% csrf_token %}
+      <div class="excel-section">
+        <div class="form-group input-icon">
+          <label for="archivo_excel">Subir Excel de horas</label>
+          <i class="fa-solid fa-file-excel"></i>
+          <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls" required>
         </div>
 
         <form method="post" enctype="multipart/form-data">

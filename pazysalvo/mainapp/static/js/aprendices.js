@@ -61,4 +61,3 @@ btnCancelarEditar.addEventListener('click', () => {
   modalEditar.style.display = 'none';
 });
 
-

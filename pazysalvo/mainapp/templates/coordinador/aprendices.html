@@ -79,18 +79,19 @@
                                 {% endif %}
                             </td>
                             <td class="acciones">
-                                <button class="btn-editar btn-abrir-editar"
+                                <a href="#" 
+                                    class="btn-editar"
                                     data-id="{{ aprendiz.id }}"
                                     data-nombre="{{ aprendiz.nombre }}"
                                     data-apellidos="{{ aprendiz.apellidos }}"
-                                    data-num_doc="{{ aprendiz.num_doc }}"
+                                    data-numdoc="{{ aprendiz.num_doc }}"
                                     data-tipodoc="{{ aprendiz.id_tipodoc_FK.id }}"
-                                    data-ficha="{{ aprendiz.id_ficha_FK.id }}"
+                                    data-ficha="{{ aprendiz.id_ficha_FK.pk }}"
                                     data-patrocinado="{{ aprendiz.es_patrocinado }}"
-                                    data-instructor="{% with aprendiz.seguimientos_como_aprendiz.first as seguimiento %}{% if seguimiento %}{{ seguimiento.id_instructor.id }}{% endif %}{% endwith %}">
+                                    data-instructor="{% if aprendiz.seguimientos_como_aprendiz.first %}{{ aprendiz.seguimientos_como_aprendiz.first.id_instructor.id }}{% else %}null{% endif %}">
                                     Editar
-                                </button>
-
+                                </a>
+                                
                                 <form method="post" action="{% url 'eliminar_usuario' aprendiz.id %}" class="form-eliminar">
                                     {% csrf_token %}
                                     <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este aprendiz?')">
@@ -129,5 +130,12 @@
 
     <!-- JS de modales -->
     <script src="{% static 'js/aprendices.js' %}"></script>
+    <script src="{% static 'js/editar_aprendiz.js' %}">
+    
+</script>
+
+
+    
+
 </body>
 </html>

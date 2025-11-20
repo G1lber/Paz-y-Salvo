@@ -2,10 +2,27 @@
 <div id="modal-crear" class="modal" style="display: none;">
   <div class="modal-contenido">
     <h3>Crear Nuevo Aprendiz</h3>
+
     <form method="POST" action="{% url 'aprendices' %}">
       {% csrf_token %}
       <input type="hidden" name="crear" value="true"/>
-        {{ form_crear.as_p }}
+
+      <!-- Campos individuales -->
+      <p>Nombre: {{ form_crear.nombre }}</p>
+      <p>Apellidos: {{ form_crear.apellidos }}</p>
+      <p>Número de documento: {{ form_crear.num_doc }}</p>
+      <p>Tipo de documento: {{ form_crear.id_tipodoc_FK }}</p>
+      <p>Ficha: {{ form_crear.id_ficha_FK }}</p>
+
+      <p>¿Es patrocinado? {{ form_crear.es_patrocinado }}</p>
+      <p>Resultados completos: {{ form_crear.resultados }}</p>
+      <p>¿Presentó TyT? {{ form_crear.tyt }}</p>
+
+      <!-- CONTENEDOR QUE SE MUESTRA / OCULTA -->
+      <div id="instructor-row" style="display: none;">
+        <p>Instructor de seguimiento: {{ form_crear.id_instructor }}</p>
+      </div>
+
       <div class="modal-botones">
         <button type="button" id="btn-cancelar" class="btn-cancelar">Cancelar</button>
         <button type="submit" class="btn-verde">Guardar</button>
@@ -14,4 +31,25 @@
   </div>
 </div>
 
+<!-- SCRIPT QUE CONTROLA LA VISIBILIDAD -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const patrocinado = document.getElementById("id_es_patrocinado");
+    const resultados = document.getElementById("id_resultados");
+    const instructorRow = document.getElementById("instructor-row");
+
+    function actualizarInstructor() {
+        if (patrocinado.checked || resultados.checked) {
+            instructorRow.style.display = "block";
+        } else {
+            instructorRow.style.display = "none";
+        }
+    }
+
+    patrocinado.addEventListener("change", actualizarInstructor);
+    resultados.addEventListener("change", actualizarInstructor);
+
+    actualizarInstructor(); // Para estado inicial
+});
+</script>
      

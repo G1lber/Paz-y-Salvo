@@ -1,12 +1,29 @@
- <!-- Modal Editar Usuario -->
+<!-- Modal Editar Usuario -->
 <div id="editarModal" class="modal" style="display: none;">
   <div class="modal-contenido">
     <h3>Editar Aprendiz</h3>
+
     <form method="POST" action="{% url 'aprendices' %}">
       {% csrf_token %}
       <input type="hidden" name="editar" value="true"/>
       <input type="hidden" id="usuario_id" name="usuario_id">
-        {{ form_editar.as_p }}
+
+      <!-- Campos individuales -->
+      <p>Nombre: {{ form_editar.nombre }}</p>
+      <p>Apellidos: {{ form_editar.apellidos }}</p>
+      <p>Número de documento: {{ form_editar.num_doc }}</p>
+      <p>Tipo de documento: {{ form_editar.id_tipodoc_FK }}</p>
+      <p>Ficha: {{ form_editar.id_ficha_FK }}</p>
+
+      <p>¿Es patrocinado? {{ form_editar.es_patrocinado }}</p>
+      <p>Resultados completos: {{ form_editar.resultados }}</p>
+      <p>¿Presentó TyT? {{ form_editar.tyt }}</p>
+
+      <!-- CONTENEDOR QUE SE OCULTA / MUESTRA -->
+      <div id="editar-instructor-row" style="display:none;">
+        <p>Instructor de seguimiento: {{ form_editar.id_instructor }}</p>
+      </div>
+
       <div class="modal-botones">
         <button type="button" id="btn-cancelar-editar" class="btn-cancelar">Cancelar</button>
         <button type="submit" class="btn-verde">Actualizar</button>
@@ -14,3 +31,4 @@
     </form>
   </div>
 </div>
+

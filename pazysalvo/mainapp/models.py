@@ -65,6 +65,10 @@ class Usuario(models.Model):
     id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.SET_NULL, null=True)
     es_patrocinado = models.BooleanField(default=False)
 
+    # 🔥 Nuevos campos
+    resultados = models.BooleanField(default=False)
+    tyt = models.BooleanField(default=False)
+
     def __str__(self):
         return f'{self.nombre} {self.apellidos}'
 

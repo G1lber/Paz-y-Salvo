@@ -24,17 +24,21 @@ from datetime import date
 # Create your views here.
 def index(request):
     if request.method == "POST":
-        documento = request.POST.get("username")
+        num_doc = request.POST.get("username")
 
         try:
-            usuario = Usuario.objects.get(num_doc=documento)
-            # Guardamos el ID del usuario en sesión
-            request.session["usuario_id"] = usuario.id
-            return redirect("pazysalvo")
+            usuario = Usuario.objects.get(num_doc=num_doc)
         except Usuario.DoesNotExist:
-            return render(request, "index.html", {
-                "error": "El número de documento no está registrado."
-            })
+            return render(request, "index.html", {"error": "Documento no registrado"})
+
+        # Validar rol Aprendiz
+        if usuario.id_rol_FK.nombre_rol != "Aprendiz":
+            return render(request, "index.html", {"error": "Solo los aprendices pueden ingresar"})
+
+        # Guardamos el ID en sesión
+        request.session["usuario_id"] = usuario.id
+
+        return redirect("pazysalvo")
 
     return render(request, "index.html")
 
@@ -221,13 +225,14 @@ def pazysalvo(request):
     if not usuario_id:
         return redirect("login")
 
-    usuario = Usuario.objects.select_related(
-        "id_ficha_FK",
-        "id_ficha_FK__programa_FK"
-    ).get(id=usuario_id)
+    usuario = Usuario.objects.get(id=usuario_id)
+
+    # Validación: ¿Tiene préstamos en biblioteca?
+    tiene_prestamos = PrestamoLibro.objects.filter(id_usuario_FK=usuario).exists()
 
     return render(request, "aprendiz/pazysalvo.html", {
-        "usuario": usuario
+        "usuario": usuario,
+        "tiene_prestamos": tiene_prestamos
     })
 
 

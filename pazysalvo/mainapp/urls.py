@@ -18,6 +18,7 @@ urlpatterns = [
     path('fichas/crear/', views.crear_ficha, name='crear-ficha'),
     path('fichas/editar/', views.editar_ficha, name='editar-ficha'),
     path('fichas/eliminar/', views.eliminar_ficha, name='eliminar-ficha'),
+    path("crear-programa/", views.crear_programa, name="crear-programa"),
 
     # Otros módulos
     path('horasludicas/', views.horasludicas, name='horas-ludicas'),

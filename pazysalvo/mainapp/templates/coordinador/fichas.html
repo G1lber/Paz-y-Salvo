@@ -10,12 +10,16 @@
 <body>
     <div class="aprendices-container">
         <!-- Barra superior -->
+         
         <div class="barra-superior">
             <a href="{% url 'inicio' %}" class="btn-volver">Volver</a>
             <h1>Listado de fichas</h1>
-            <button id="btn-abrir-modal-crear" class="btn-crear">Crear Ficha</button>
-        </div>
 
+            <div class="acciones-superior">
+                <button id="btn-abrir-modal-crear" class="btn-crear">Crear Ficha</button>
+                <button id="btn-abrir-modal-crear-programa" class="btn-crear">Crear Programa</button>
+            </div>
+        </div>
         <!-- Mensajes -->
         <div class="alert-container">
             {% for message in messages %}
@@ -99,6 +103,7 @@
     {% include 'modales/modal_crear_ficha.html' %}
     {% include 'modales/modal_editar_ficha.html' %}
     {% include 'modales/modal_eliminar_ficha.html' %}
+    {% include 'modales/modal_crear_programa.html' %}
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

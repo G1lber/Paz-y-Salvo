@@ -88,6 +88,20 @@ body {
   box-shadow: 0 4px 6px var(--color-sombra-hover);
 }
 
+.titulo-centro {
+    text-align: center;
+    width: 100%;
+}
+
+.acciones-centradas {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.acciones-centradas .btn-crear {
+    margin: 0 8px;
+}
+
 /* Busqueda */
 .busqueda-container {
   display: flex;

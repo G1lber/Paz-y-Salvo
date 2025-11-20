@@ -40,3 +40,13 @@ $(document).ready(function() {
         }
     });
 });
+
+// Abrir modal Crear Programa
+$("#btn-abrir-modal-crear-programa").on("click", function () {
+    $("#modal-crear-programa").fadeIn();
+});
+
+// Cerrar modal Crear Programa
+$("#modal-crear-programa .btn-cancelar").on("click", function () {
+    $("#modal-crear-programa").fadeOut();
+});

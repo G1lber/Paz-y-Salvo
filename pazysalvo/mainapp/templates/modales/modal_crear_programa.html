@@ -1,0 +1,40 @@
+<div id="modal-crear-programa" class="modal" style="display: none;">
+    <div class="modal-contenido">
+        <h3>Crear Nuevo Programa</h3>
+
+        <form id="form-crear-programa" method="POST" action="{% url 'crear-programa' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="nombre-programa">Nombre del Programa:</label>
+                <input type="text" id="nombre-programa" name="nombre_programa"
+                       class="form-control"
+                       placeholder="Ej: Análisis y Desarrollo de Software" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tipo-programa">Tipo de Programa:</label>
+                <select id="tipo-programa" name="tipo_programa" class="form-control" required>
+                    <option value="">Seleccionar tipo...</option>
+                    <option value="tecnico">Técnico</option>
+                    <option value="tecnologo">Tecnólogo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="centro-programa">Centro:</label>
+                <select id="centro-programa" name="centro" class="form-control" required>
+                    <option value="">Seleccionar centro...</option>
+                    {% for centro in centros %}
+                        <option value="{{ centro.id_centro }}">{{ centro.nombre_centro }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="modal-botones">
+                <button type="button" class="btn-cancelar">Cancelar</button>
+                <button type="submit" class="btn-verde">Crear Programa</button>
+            </div>
+        </form>
+    </div>
+</div>

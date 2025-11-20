@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Prefetch, Max
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .models import Usuario, Login, Roles, Seguimiento, TipoDoc, Ficha, InstructorxAprendiz, PrestarEquipos, PrestamoLibro
+from .models import Centro, Usuario, Login, Roles, Seguimiento, TipoDoc, Ficha, InstructorxAprendiz, PrestarEquipos, PrestamoLibro
 from .models import PrestamoBienestar, RegistroHoras, Programa
 from .forms import UsuarioForm, SeguimientoForm
 from django.db.models import Q
@@ -649,6 +649,7 @@ def eliminar_libro(request, id):
 def fichas(request):
     # 🔍 Captura el término de búsqueda
     busqueda = request.GET.get('busqueda', '')
+    centros = Centro.objects.all()
 
     # 📌 Query base
     fichas_qs = Ficha.objects.all().select_related('programa_FK')
@@ -672,6 +673,7 @@ def fichas(request):
     return render(request, 'coordinador/fichas.html', {
         'fichas': fichas_page,
         'programas': programas,
+        "centros": centros,
         'busqueda': busqueda
     })
 
@@ -739,6 +741,28 @@ def editar_ficha(request):
             messages.error(request, f"Error al editar la ficha: {str(e)}")
 
     return redirect('fichas')
+def crear_programa(request):
+    if request.method == "POST":
+
+        nombre_programa = request.POST.get("nombre_programa")
+        tipo_programa = request.POST.get("tipo_programa")
+        centro_id = request.POST.get("centro")
+
+        try:
+            Programa.objects.create(
+                nombre_programa=nombre_programa,
+                tipo_programa=tipo_programa,   # si tu modelo NO tiene este campo, BORRAR ESTA LÍNEA
+                id_centro_FK_id=centro_id
+            )
+            messages.success(request, "Programa creado correctamente.")
+        except Exception as e:
+            messages.error(request, f"Error al crear el programa: {e}")
+
+        return redirect("fichas")
+
+    messages.error(request, "Solicitud inválida.")
+    return redirect("fichas")
+
 
 def eliminar_ficha(request):
     if request.method == "POST":
@@ -756,3 +780,4 @@ def eliminar_ficha(request):
             messages.error(request, f"La ficha {ficha_id} no existe")
     
     return redirect('fichas')
+

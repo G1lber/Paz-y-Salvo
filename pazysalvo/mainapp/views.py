@@ -549,8 +549,27 @@ def prestarlibro(request):
 
     return render(request, 'biblioteca/prestarlibro.html')
 
-def pendientes_biblioteca(request):
-    return render(request, 'biblioteca/pendientes-biblioteca.html')
+
+def reportes_biblioteca(request):
+    busqueda = request.GET.get("busqueda", "")
+
+    prestamos = PrestamoLibro.objects.all()
+
+    if busqueda:
+        prestamos = prestamos.filter(
+            Q(id_usuario_FK__num_doc__icontains=busqueda) |
+            Q(titulo_libro__icontains=busqueda)
+        )
+
+    return render(request, "biblioteca/pendientes-biblioteca.html", {
+        "prestamos": prestamos
+    })
+
+def eliminar_libro(request, id):
+    prestamo = get_object_or_404(PrestamoLibro, id=id)
+    prestamo.delete()
+    return redirect('pendientes-biblioteca')
+
 
 
 def fichas(request):

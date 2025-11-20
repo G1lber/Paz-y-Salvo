@@ -132,8 +132,6 @@ class PrestamoLibro(models.Model):
     id_usuario_FK = models.ForeignKey('Usuario', on_delete=models.CASCADE, null=True)
     titulo_libro = models.CharField(max_length=200)
     fecha_prestamo = models.DateField()
-    fecha_devolucion = models.DateField(null=True, blank=True)
-    observaciones = models.TextField(null=True, blank=True)
     estado = models.CharField(
         max_length=20,
         choices=[

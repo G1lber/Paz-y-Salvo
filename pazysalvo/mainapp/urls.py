@@ -27,7 +27,7 @@ urlpatterns = [
     path('equiposalmacen/', views.equiposalmacen, name='equipos-almacen'),
     path('pendientesalmacen/', views.pendientesalmacen, name='pendientes-almacen'),
     path('prestarlibro/', views.prestarlibro, name='prestar-libro'),
-    path('pendientes-biblioteca/', views.pendientes_biblioteca, name='pendientes-biblioteca'),
-    
+    path('pendientes-biblioteca/', views.reportes_biblioteca, name='pendientes-biblioteca'),
+    path('eliminar-prestamo/<int:id>/', views.eliminar_libro, name='eliminar_prestamo'),
 ]
 

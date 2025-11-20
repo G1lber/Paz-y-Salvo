@@ -25,12 +25,21 @@ class TipoDoc(models.Model):
 
 
 class Programa(models.Model):
+    TIPO_PROGRAMA = [
+        ('tecnico', 'Técnico'),
+        ('tecnologo', 'Tecnólogo'),
+    ]
     id_programa = models.AutoField(primary_key=True)
     nombre_programa = models.CharField(max_length=150)
+    tipo_programa = models.CharField(max_length=10, choices=TIPO_PROGRAMA, default='tecnico')
     id_centro_FK = models.ForeignKey(Centro, on_delete=models.CASCADE, null=True)
+    
 
     def __str__(self):
         return self.nombre_programa
+    
+    def horas_requeridas(self):
+        return 60 if self.tipo_programa == 'tecnologo' else 30
 
 
 class Ficha(models.Model):

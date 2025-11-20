@@ -21,6 +21,7 @@ urlpatterns = [
 
     # Otros módulos
     path('horasludicas/', views.horasludicas, name='horas-ludicas'),
+    path('horas-faltantes/', views.horas_faltantes, name='horas-faltantes'),
     path('prestarequipos/', views.prestarequipos, name='prestar-equipos'),
     path('editar_prestamo/<int:id>/', views.editar_prestamo, name='editar_prestamo'),
     path('eliminar_prestamo/<int:id>/', views.eliminar_prestamo, name='eliminar_prestamo'),

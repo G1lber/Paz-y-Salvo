@@ -3,7 +3,7 @@ from django.db.models import Prefetch, Max
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Usuario, Login, Roles, Seguimiento, TipoDoc, Ficha, InstructorxAprendiz, PrestarEquipos, PrestamoLibro
-from .models import PrestamoBienestar, RegistroHoras
+from .models import PrestamoBienestar, RegistroHoras, Programa
 from .forms import UsuarioForm, SeguimientoForm
 from django.db.models import Q
 from django.db import IntegrityError
@@ -14,6 +14,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils import timezone
 from datetime import datetime, date
+from django.db.models import Sum
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 import pandas as pd
@@ -345,6 +346,48 @@ def horasludicas(request):
             return redirect('horas-ludicas')
 
     return render(request, 'bienestar/horas-ludicas.html')
+
+def horas_faltantes(request):
+    # Obtener todos los aprendices (usuarios con rol de aprendiz)
+    aprendices = Usuario.objects.filter(id_rol_FK__nombre_rol='Aprendiz')
+    
+    horas_data = []
+    
+    for aprendiz in aprendices:
+        # Obtener horas registradas
+        horas_registradas = RegistroHoras.objects.filter(
+            id_usuario_FK=aprendiz
+        ).aggregate(total=Sum('cantidad_horas'))['total'] or 0
+        
+        # Obtener programa y horas requeridas
+        horas_requeridas = 0
+        programa_nombre = "No asignado"
+        
+        if aprendiz.id_ficha_FK and aprendiz.id_ficha_FK.programa_FK:
+            programa = aprendiz.id_ficha_FK.programa_FK
+            programa_nombre = programa.nombre_programa
+            horas_requeridas = programa.horas_requeridas()
+        
+        # Calcular horas faltantes
+        horas_faltantes = max(0, horas_requeridas - horas_registradas)
+        
+        # Solo mostrar aprendices que les falten horas
+        if horas_faltantes > 0:
+            horas_data.append({
+                'aprendiz': aprendiz,
+                'programa': programa_nombre,
+                'horas_registradas': horas_registradas,
+                'horas_requeridas': horas_requeridas,
+                'horas_faltantes': horas_faltantes,
+                'porcentaje_completado': (horas_registradas / horas_requeridas * 100) if horas_requeridas > 0 else 0
+            })
+    
+    # Ordenar por horas faltantes (mayor a menor)
+    horas_data.sort(key=lambda x: x['horas_faltantes'], reverse=True)
+    
+    return render(request, 'bienestar/horas_faltantes.html', {
+        'horas_data': horas_data
+    })
 
 def prestarequipos(request):
     if request.method == 'POST':

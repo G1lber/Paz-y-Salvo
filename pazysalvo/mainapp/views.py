@@ -23,7 +23,20 @@ from datetime import date
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    if request.method == "POST":
+        documento = request.POST.get("username")
+
+        try:
+            usuario = Usuario.objects.get(num_doc=documento)
+            # Guardamos el ID del usuario en sesión
+            request.session["usuario_id"] = usuario.id
+            return redirect("pazysalvo")
+        except Usuario.DoesNotExist:
+            return render(request, "index.html", {
+                "error": "El número de documento no está registrado."
+            })
+
+    return render(request, "index.html")
 
 
 def login_view(request):
@@ -203,7 +216,19 @@ def lista_usuarios(request):
 
 # TODO: FIN MODULO USUARIO
 def pazysalvo(request):
-    return render(request, 'aprendiz/pazysalvo.html')
+    usuario_id = request.session.get("usuario_id")
+
+    if not usuario_id:
+        return redirect("login")
+
+    usuario = Usuario.objects.select_related(
+        "id_ficha_FK",
+        "id_ficha_FK__programa_FK"
+    ).get(id=usuario_id)
+
+    return render(request, "aprendiz/pazysalvo.html", {
+        "usuario": usuario
+    })
 
 
 def inicio(request):
@@ -592,8 +617,27 @@ def prestarlibro(request):
 
     return render(request, 'biblioteca/prestarlibro.html')
 
-def pendientes_biblioteca(request):
-    return render(request, 'biblioteca/pendientes-biblioteca.html')
+
+def reportes_biblioteca(request):
+    busqueda = request.GET.get("busqueda", "")
+
+    prestamos = PrestamoLibro.objects.all()
+
+    if busqueda:
+        prestamos = prestamos.filter(
+            Q(id_usuario_FK__num_doc__icontains=busqueda) |
+            Q(titulo_libro__icontains=busqueda)
+        )
+
+    return render(request, "biblioteca/pendientes-biblioteca.html", {
+        "prestamos": prestamos
+    })
+
+def eliminar_libro(request, id):
+    prestamo = get_object_or_404(PrestamoLibro, id=id)
+    prestamo.delete()
+    return redirect('pendientes-biblioteca')
+
 
 
 def fichas(request):

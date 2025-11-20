@@ -2,72 +2,89 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Pendientes Biblioteca </title>
-  <link rel="stylesheet" href="{% static 'css/pendientesalmacen.css' %}">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes Biblioteca</title>
+    <link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
 </head>
 <body>
-    
-    <div class="container">
-  <!-- Título de la card -->
-        <h2 class="card-title">Reportes Biblioteca</h2>
 
-        <!-- Barra de herramientas -->
-        <div class="toolbar">
-            <!-- Campo de búsqueda -->
-            <input type="text" id="search" placeholder="Buscar reporte...">
-        </div>
+<div class="aprendices-container">
 
-        <!-- Filtros -->
-        <div class="filters">
-            <button class="filter-btn active">Todos</button>
-            <button class="filter-btn">Pendiente</button>
-            <button class="filter-btn">Activo</button>
-            <button class="filter-btn">Vencido</button>
-        </div>
+    <!-- 🔝 Barra superior -->
+    <div class="barra-superior">
+        <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+        <h1>Reportes Biblioteca</h1>
+    </div>
 
-        <!-- Tabla -->
+    <!-- Buscador -->
+    <div class="busqueda-container">
+        <form method="get">
+            <input 
+                type="text"
+                name="busqueda"
+                placeholder="Buscar por documento o libro..."
+                value="{{ request.GET.busqueda }}"
+                class="input-busqueda"
+            >
+            <button class="btn-buscar" type="submit">Buscar</button>
+        </form>
+    </div>
+
+    <!-- 📋 Tabla -->
+    <div class="table-container">
         <table class="report-table">
             <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre del Libro</th>
-                <th>Estado</th>
-                <th>Fecha de Reporte</th>
-                <th>Acciones</th>
-            </tr>
+                <tr>
+                    <th>Documento</th>
+                    <th>Título del Libro</th>
+                    <th>Fecha del Préstamo</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
             </thead>
+
             <tbody>
-            <tr>
-                <td>001</td>
-                <td>Código Limpio</td>
-                <td><span class="status pendiente">Pendiente</span></td>
-                <td>2025-09-16</td>
-                <td>
-                <button class="btn delete">Quitar</button>
-                </td>
-            </tr>
-            <tr>
-                <td>002</td>
-                <td>Design Patterns</td>
-                <td><span class="status activo">Activo</span></td>
-                <td>2025-09-14</td>
-                <td>
-                <button class="btn delete">Quitar</button>
-                </td>
-            </tr>
-            <tr>
-                <td>003</td>
-                <td>El Programador Pragmático</td>
-                <td><span class="status vencido">Vencido</span></td>
-                <td>2025-09-10</td>
-                <td>
-                <button class="btn delete">Quitar</button>
-                </td>
-            </tr>
+            {% for prestamo in prestamos %}
+                <tr>
+                    <td>{{ prestamo.id_usuario_FK.num_doc }}</td>
+
+                    <td>{{ prestamo.titulo_libro }}</td>
+
+                    <td>{{ prestamo.fecha_prestamo|date:"Y-m-d" }}</td>
+
+                    <td>
+                        {% if prestamo.estado == "Pendiente" %}
+                            <span class="status pendiente">Pendiente</span>
+                        {% elif prestamo.estado == "Activo" %}
+                            <span class="status activo">Activo</span>
+                        {% else %}
+                            <span class="status vencido">Vencido</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="acciones">
+                        <form action="{% url 'eliminar_prestamo' prestamo.id %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn-eliminar" type="submit"
+                                onclick="return confirm('¿Eliminar este registro?')">
+                                Eliminar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+            {% empty %}
+                <tr>
+                    <td colspan="5" class="no-data">
+                        No hay préstamos registrados.
+                    </td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>
+
+</div>
 </body>
 </html>

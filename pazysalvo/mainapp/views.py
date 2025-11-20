@@ -225,13 +225,14 @@ def pazysalvo(request):
     if not usuario_id:
         return redirect("login")
 
-    usuario = Usuario.objects.select_related(
-        "id_ficha_FK",
-        "id_ficha_FK__programa_FK"
-    ).get(id=usuario_id)
+    usuario = Usuario.objects.get(id=usuario_id)
+
+    # Validación: ¿Tiene préstamos en biblioteca?
+    tiene_prestamos = PrestamoLibro.objects.filter(id_usuario_FK=usuario).exists()
 
     return render(request, "aprendiz/pazysalvo.html", {
-        "usuario": usuario
+        "usuario": usuario,
+        "tiene_prestamos": tiene_prestamos
     })
 
 

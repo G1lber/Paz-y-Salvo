@@ -15,10 +15,25 @@
         </div>
 
         <div class="section">
-            <p><span class="label">Nombre del Aprendiz:</span> ___________________________</p>
-            <p><span class="label">Documento de identidad:</span> ___________________________</p>
-            <p><span class="label">Programa:</span> ___________________________</p>
-            <p><span class="label">Ficha:</span> ___________________________</p>
+            <p>
+                <span class="label">Nombre del Aprendiz:</span> 
+                {{ usuario.nombre }} {{ usuario.apellidos }}
+            </p>
+
+            <p>
+                <span class="label">Documento de identidad:</span> 
+                {{ usuario.num_doc }}
+            </p>
+
+            <p>
+                <span class="label">Programa:</span> 
+                {{ usuario.id_ficha_FK.programa_FK.nombre_programa }}
+            </p>
+
+            <p>
+                <span class="label">Ficha:</span> 
+                {{ usuario.id_ficha_FK.num_ficha }}
+            </p>
         </div>
 
         <div class="section">

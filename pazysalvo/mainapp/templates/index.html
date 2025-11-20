@@ -26,12 +26,14 @@
         <form method="post">
             {% csrf_token %}
             <div class="input-group">
-                <input type="text" name="username" placeholder="Numero de documento" required>
+                <input type="text" name="username" placeholder="Número de documento" required>
             </div>
-            {% comment %} <a href="{% url 'pazysalvo' %}" class="btn">Entrar</a> {% endcomment %}
-            {% comment %} <button href="{% url 'pazysalvo' %}">Entrar</button> {% endcomment %}
 
-            <button type="button" onclick="window.location.href='{% url 'pazysalvo' %}'">Entrar</button>
+            {% if error %}
+                <p style="color: red;">{{ error }}</p>
+            {% endif %}
+
+            <button type="submit" class="btn">Entrar</button>
         </form>
     </div>
 </body>

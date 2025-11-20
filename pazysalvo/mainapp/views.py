@@ -285,7 +285,7 @@ def aprendices(request):
 # TODO: FIN MODULO APRENDICES
 
 
-@login_required(login_url='login')
+
 
 def horasludicas(request):
     if request.method == 'POST':
@@ -460,7 +460,7 @@ def pendientesalmacen(request):
 
     return render(request, 'almacen/pendientes.html', {"equipos": equipos})
 
-@login_required(login_url='login')
+
 
 def prestarlibro(request):
     if request.method == 'POST':

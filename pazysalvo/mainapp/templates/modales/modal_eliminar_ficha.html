@@ -1,0 +1,17 @@
+<div id="modal-eliminar-ficha" class="modal" style="display: none;">
+    <div class="modal-contenido">
+        <h3>Eliminar Ficha</h3>
+        <form id="form-eliminar-ficha" method="POST" action="{% url 'eliminar-ficha' %}">
+            {% csrf_token %}
+            <input type="hidden" id="ficha-id-eliminar" name="ficha_id">
+            <div class="form-group">
+                <p>¿Estás seguro de que deseas eliminar la ficha <strong id="ficha-numero-eliminar"></strong>?</p>
+                <p style="color: #d9534f; font-weight: 500; margin-top: 10px;">⚠️ Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-botones">
+                <button type="button" class="btn-cancelar">Cancelar</button>
+                <button type="submit" class="btn-verde">Eliminar Ficha</button>
+            </div>
+        </form>
+    </div>
+</div>

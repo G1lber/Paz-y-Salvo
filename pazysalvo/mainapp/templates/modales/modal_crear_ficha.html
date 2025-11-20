@@ -1,0 +1,36 @@
+<div id="modal-crear-ficha" class="modal" style="display: none;">
+    <div class="modal-contenido">
+        <h3>Crear Nueva Ficha</h3>
+        <form id="form-crear-ficha" method="POST" action="{% url 'crear-ficha' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="num-ficha-crear">Número de Ficha:</label>
+                <input type="text" id="num-ficha-crear" name="num_ficha" 
+                       class="form-control"
+                       placeholder="Ej: 287654, 123456, etc." required
+                       pattern="[0-9]+" title="Solo se permiten números">
+            </div>
+            <div class="form-group">
+                <label for="programa-crear">Programa:</label>
+                <select id="programa-crear" name="programa" class="form-control" required>
+                    <option value="">Seleccionar programa...</option>
+                    {% for programa in programas %}
+                        <option value="{{ programa.id_programa }}">{{ programa.nombre_programa }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fecha-inicio-crear">Fecha Inicio:</label>
+                <input type="date" id="fecha-inicio-crear" name="fecha_inicio" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="fecha-fin-crear">Fecha Fin:</label>
+                <input type="date" id="fecha-fin-crear" name="fecha_fin" class="form-control" required>
+            </div>
+            <div class="modal-botones">
+                <button type="button" class="btn-cancelar">Cancelar</button>
+                <button type="submit" class="btn-verde">Crear Ficha</button>
+            </div>
+        </form>
+    </div>
+</div>

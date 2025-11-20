@@ -396,6 +396,7 @@ def horas_faltantes(request):
         # Calcular horas faltantes
         horas_faltantes = max(0, horas_requeridas - horas_registradas)
         
+        #Mostrar aprendices le falten o no horas (if True:)
         # Solo mostrar aprendices que les falten horas
         if horas_faltantes > 0:
             horas_data.append({
@@ -651,12 +652,12 @@ def fichas(request):
     if busqueda:
         fichas_qs = fichas_qs.filter(
             Q(num_ficha__icontains=busqueda) |
-            Q(programa_FK__nombre__icontains=busqueda)
+            Q(programa_FK__nombre_programa__icontains=busqueda)
         )
 
-    fichas_qs = fichas_qs.order_by('-fecha_inicio')  # Ordena por fecha (puedes cambiar)
+    fichas_qs = fichas_qs.order_by('-fecha_inicio')
 
-    # 📑 Paginación (8 por página, como en aprendices)
+    # 📑 Paginación
     paginator = Paginator(fichas_qs, 8)
     page_number = request.GET.get('page')
     fichas_page = paginator.get_page(page_number)
@@ -664,64 +665,89 @@ def fichas(request):
     programas = Programa.objects.all()
 
     return render(request, 'coordinador/fichas.html', {
-        'fichas': fichas_page,   # 👈 ahora se pasa el objeto paginado
+        'fichas': fichas_page,
         'programas': programas,
         'busqueda': busqueda
     })
 
 def crear_ficha(request):
     if request.method == 'POST':
-        codigo_ficha = request.POST.get('codigo_ficha')
-        programa_id = request.POST.get('programa')
+        try:
+            num_ficha = request.POST.get('num_ficha', '').strip()
+            programa_id = request.POST.get('programa')
+            fecha_inicio = request.POST.get('fecha_inicio')
+            fecha_fin = request.POST.get('fecha_fin')
+            
+            # Validar que el número de ficha no esté vacío
+            if not num_ficha:
+                messages.error(request, "El número de ficha es obligatorio")
+                return redirect('fichas')
+            
+            # Validar que la ficha no exista ya
+            if Ficha.objects.filter(num_ficha=num_ficha).exists():
+                messages.error(request, f"La ficha {num_ficha} ya existe")
+                return redirect('fichas')
+            
+            programa = Programa.objects.get(id_programa=programa_id)
+            
+            # Crear ficha con número manual
+            Ficha.objects.create(
+                num_ficha=num_ficha,
+                programa_FK=programa,
+                fecha_inicio=fecha_inicio,
+                fecha_fin=fecha_fin
+            )
+            
+            messages.success(request, f"Ficha {num_ficha} creada con éxito")
+            return redirect('fichas')
+            
+        except Programa.DoesNotExist:
+            messages.error(request, "El programa seleccionado no es válido")
+        except Exception as e:
+            messages.error(request, f"Error al crear la ficha: {str(e)}")
 
-        # Guarda la ficha
-        programa = Programa.objects.get(id=programa_id)
-        Ficha.objects.create(codigo_ficha=codigo_ficha, programa=programa)
+    return redirect('fichas')
 
-        return redirect('lista_fichas')  # Ajusta al nombre real de tu ruta/listado
-
-    # Si es GET, carga el modal
-    programas = Programa.objects.all()
-    return render(request, 'modales/modalCrearFicha.html', {
-        'programas': programas
-    })
-
-def editar_ficha(request, ficha_id):
-    ficha = get_object_or_404(Ficha, num_ficha=ficha_id)
-    programas = Programa.objects.all()
-
+def editar_ficha(request):
     if request.method == "POST":
-        num_ficha = request.POST.get("codigo_ficha")
+        ficha_id = request.POST.get("ficha_id")
         fecha_inicio = request.POST.get("fecha_inicio")
         fecha_fin = request.POST.get("fecha_fin")
         programa_id = request.POST.get("programa")
 
         try:
+            ficha = Ficha.objects.get(num_ficha=ficha_id)
             programa = Programa.objects.get(id_programa=programa_id)
 
-            ficha.num_ficha = num_ficha
             ficha.fecha_inicio = fecha_inicio
             ficha.fecha_fin = fecha_fin
             ficha.programa_FK = programa
             ficha.save()
 
             messages.success(request, "Ficha editada con éxito")
-            return redirect('fichas')
-        except (Programa.DoesNotExist, ValueError):
-            messages.error(request, "El programa seleccionado no es válido")
-
-    return render(request, 'coordinador/modals/modal_editar_ficha.html', {
-        'ficha': ficha,
-        'programas': programas
-    })
-
-def eliminar_ficha(request, ficha_id):
-    if request.method == "POST":
-        try:
-            ficha = Ficha.objects.get(num_ficha=ficha_id)
-            ficha.delete()
-            messages.success(request, "Ficha eliminada con éxito")
+            
         except Ficha.DoesNotExist:
             messages.error(request, "La ficha no existe")
+        except Programa.DoesNotExist:
+            messages.error(request, "El programa seleccionado no es válido")
+        except Exception as e:
+            messages.error(request, f"Error al editar la ficha: {str(e)}")
+
+    return redirect('fichas')
+
+def eliminar_ficha(request):
+    if request.method == "POST":
+        ficha_id = request.POST.get("ficha_id", "").strip()
+        
+        if not ficha_id or not ficha_id.isdigit():
+            messages.error(request, "ID de ficha inválido")
+            return redirect('fichas')
+        
+        try:
+            ficha = Ficha.objects.get(num_ficha=int(ficha_id))
+            ficha.delete()
+            messages.success(request, f"Ficha {ficha_id} eliminada con éxito")
+        except Ficha.DoesNotExist:
+            messages.error(request, f"La ficha {ficha_id} no existe")
     
     return redirect('fichas')

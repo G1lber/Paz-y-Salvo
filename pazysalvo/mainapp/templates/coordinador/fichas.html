@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Gestión de Fichas</title>
     <link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modales.css' %}">
 </head>
 <body>
     <div class="aprendices-container">
@@ -50,16 +51,16 @@
                     {% for ficha in fichas %}
                         <tr>
                             <td><span class="badge-ficha">{{ ficha.num_ficha }}</span></td>
-                            <td>{{ ficha.programa_FK.nombre }}</td>
-                            <td>{{ ficha.fecha_inicio|date:"d/m/Y" }}</td>
-                            <td>{{ ficha.fecha_fin|date:"d/m/Y" }}</td>
+                            <td>{{ ficha.programa_FK.nombre_programa }}</td>
+                            <td>{{ ficha.fecha_inicio|date:"d/m/Y"|default:"No asignada" }}</td>
+                            <td>{{ ficha.fecha_fin|date:"d/m/Y"|default:"No asignada" }}</td>
                             <td>
                                 <div class="acciones">
                                     <button class="btn-editar"
-                                            data-ficha-id="{{ ficha.num_ficha }}"
-                                            data-programa="{{ ficha.programa_FK.id_programa }}"
-                                            data-fecha-inicio="{{ ficha.fecha_inicio|date:'Y-m-d' }}"
-                                            data-fecha-fin="{{ ficha.fecha_fin|date:'Y-m-d' }}">
+                                        data-ficha-id="{{ ficha.num_ficha }}"
+                                        data-programa="{{ ficha.programa_FK.id_programa }}"
+                                        data-fecha-inicio="{{ ficha.fecha_inicio|date:'Y-m-d' }}"
+                                        data-fecha-fin="{{ ficha.fecha_fin|date:'Y-m-d' }}">
                                         Editar
                                     </button>
                                     <button class="btn-eliminar"
@@ -94,13 +95,13 @@
         {% endif %}
     </div>
 
-    <!-- Aquí van los 3 modales (crear, editar, eliminar) exactamente como ya los tienes -->
-    {{ block.super }}
+    <!-- Incluir modales -->
+    {% include 'modales/modal_crear_ficha.html' %}
+    {% include 'modales/modal_editar_ficha.html' %}
+    {% include 'modales/modal_eliminar_ficha.html' %}
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        // ✅ Se mantiene toda tu lógica de abrir/cerrar modales y edición/eliminación
-    </script>
+    <script src="{% static 'js/modales_fichas.js' %}"></script>
 </body>
 </html>

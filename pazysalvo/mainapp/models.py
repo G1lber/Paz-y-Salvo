@@ -43,7 +43,11 @@ class Programa(models.Model):
 
 
 class Ficha(models.Model):
-    num_ficha = models.AutoField(primary_key=True)
+    num_ficha = models.CharField(
+        max_length=50, 
+        primary_key=True,
+        verbose_name="Número de Ficha"
+    )
     fecha_inicio = models.DateField(null=True, blank=True)
     fecha_fin = models.DateField(null=True, blank=True)
     programa_FK = models.ForeignKey(Programa, on_delete=models.SET_NULL, null=True, blank=True)

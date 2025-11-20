@@ -1,0 +1,36 @@
+<div id="modal-editar-ficha" class="modal" style="display: none;">
+    <div class="modal-contenido">
+        <h3>Editar Ficha</h3>
+        <form id="form-editar-ficha" method="POST" action="{% url 'editar-ficha' %}">
+            {% csrf_token %}
+            <input type="hidden" id="ficha-id-original" name="ficha_id_original">
+            {% comment %} <div class="form-group">
+                <label for="num-ficha-editar">Número de Ficha:</label>
+                <input type="text" id="num-ficha-editar" name="num_ficha" 
+                       class="form-control"
+                       pattern="[0-9]+" title="Solo se permiten números" required>
+            </div> {% endcomment %}
+            <div class="form-group">
+                <label for="programa-editar">Programa:</label>
+                <select id="programa-editar" name="programa" class="form-control" required>
+                    <option value="">Seleccionar programa...</option>
+                    {% for programa in programas %}
+                        <option value="{{ programa.id_programa }}">{{ programa.nombre_programa }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fecha-inicio-editar">Fecha Inicio:</label>
+                <input type="date" id="fecha-inicio-editar" name="fecha_inicio" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="fecha-fin-editar">Fecha Fin:</label>
+                <input type="date" id="fecha-fin-editar" name="fecha_fin" class="form-control" required>
+            </div>
+            <div class="modal-botones">
+                <button type="button" class="btn-cancelar">Cancelar</button>
+                <button type="submit" class="btn-verde">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>

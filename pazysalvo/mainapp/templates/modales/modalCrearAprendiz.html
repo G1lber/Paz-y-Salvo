@@ -31,25 +31,4 @@
   </div>
 </div>
 
-<!-- SCRIPT QUE CONTROLA LA VISIBILIDAD -->
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const patrocinado = document.getElementById("id_es_patrocinado");
-    const resultados = document.getElementById("id_resultados");
-    const instructorRow = document.getElementById("instructor-row");
 
-    function actualizarInstructor() {
-        if (patrocinado.checked || resultados.checked) {
-            instructorRow.style.display = "block";
-        } else {
-            instructorRow.style.display = "none";
-        }
-    }
-
-    patrocinado.addEventListener("change", actualizarInstructor);
-    resultados.addEventListener("change", actualizarInstructor);
-
-    actualizarInstructor(); // Para estado inicial
-});
-</script>
-     

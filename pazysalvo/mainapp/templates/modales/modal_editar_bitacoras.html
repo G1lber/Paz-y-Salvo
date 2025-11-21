@@ -1,0 +1,49 @@
+<!-- Modal Editar Bitácoras -->
+<div id="editarModal" class="modal-editar" style="display: none;">
+  <div class="modal-contenido">
+    <h3>Editar Bitácoras</h3>
+
+    <form method="POST" action="{% url 'editar_bitacoras' %}">
+      {% csrf_token %}
+      <!-- ID de la relación InstructorxAprendiz -->
+      <input type="hidden" id="relacion_id" name="relacion_id">
+
+      <!-- Checkbox para bitácoras -->
+      <div class="form-group">
+        <label for="bitacoras_completas">Bitácoras completas:</label>
+        <input type="checkbox" id="bitacoras_completas" name="bitacoras_completas">
+      </div>
+
+      <div class="modal-botones">
+        <button type="button" id="btn-cancelar-editar" class="btn-cancelar">Cancelar</button>
+        <button type="submit" class="btn-verde">Actualizar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  // Abrir modal
+  document.querySelectorAll('.btn-editar').forEach(btn => {
+      btn.addEventListener('click', e => {
+          e.preventDefault();
+          const modal = document.getElementById('editarModal');
+          modal.style.display = 'block';
+
+          document.getElementById('relacion_id').value = btn.dataset.id;
+          document.getElementById('bitacoras_completas').checked = btn.dataset.bitacoras === 'checked';
+      });
+  });
+
+  // Cancelar / cerrar modal
+  document.getElementById('btn-cancelar-editar').addEventListener('click', () => {
+      document.getElementById('editarModal').style.display = 'none';
+  });
+
+  // Cerrar modal al hacer clic fuera
+  window.onclick = function(event) {
+      const modal = document.getElementById('editarModal');
+      if (event.target == modal) {
+          modal.style.display = "none";
+      }
+  };
+</script>

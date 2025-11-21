@@ -7,6 +7,8 @@ urlpatterns = [
     path('pazysalvo/', views.pazysalvo, name='pazysalvo'),
     path('inicio/', views.inicio, name='inicio'),
     path('aprendices/', views.aprendices, name='aprendices'),
+    path('aprendices-instructor/', views.aprendicesxinstructor, name='aprendices-instructor'),
+    path('editar-bitacoras/', views.editar_bitacoras, name='editar_bitacoras'),
 
     # Usuarios
     path('usuarios/', views.lista_usuarios, name='usuarios'),
@@ -31,5 +33,6 @@ urlpatterns = [
     path('prestarlibro/', views.prestarlibro, name='prestar-libro'),
     path('pendientes-biblioteca/', views.reportes_biblioteca, name='pendientes-biblioteca'),
     path('eliminar-prestamo/<int:id>/', views.eliminar_libro, name='eliminar_prestamo'),
+    
 ]
 

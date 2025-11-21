@@ -314,9 +314,59 @@ def aprendices(request):
         'instructores': Usuario.objects.filter(id_rol_FK__nombre_rol="Instructor"),
     })
 # TODO: FIN MODULO APRENDICES
+def editar_bitacoras(request):
+    if request.method == "POST":
+        # Debe coincidir con el name del input hidden del modal
+        relacion_id = request.POST.get('relacion_id')  
+        relacion = get_object_or_404(InstructorxAprendiz, id=relacion_id)
+        relacion.bitacoras_completas = 'bitacoras_completas' in request.POST
+        relacion.save()
+        messages.success(request, 'Bitácoras actualizadas correctamente.')
+        return redirect('aprendices-instructor')
+        
+def aprendicesxinstructor(request):
 
+    # 1️⃣ Verificar si el usuario está logueado en tu sistema
+    instructor_id = request.session.get('usuario_id')
 
+    if not instructor_id:
+        return redirect('login')  # No está logueado
 
+    # 2️⃣ Buscar al instructor en la tabla Usuario
+    try:
+        instructor = Usuario.objects.get(id=instructor_id)
+    except Usuario.DoesNotExist:
+        return HttpResponse("El instructor no existe en la base de datos")
+
+    # 3️⃣ Obtener los aprendices asignados al instructor
+    aprendices_ids = InstructorxAprendiz.objects.filter(
+        id_instructor_FK=instructor
+    ).values_list('id_aprendiz_FK', flat=True)
+
+    aprendices_qs = Usuario.objects.filter(id__in=aprendices_ids)
+
+    # -----------------------------
+    #   Filtro de búsqueda
+    # -----------------------------
+    busqueda = request.GET.get('busqueda', '')
+
+    if busqueda:
+        aprendices_qs = aprendices_qs.filter(
+            Q(nombre__icontains=busqueda) |
+            Q(apellidos__icontains=busqueda) |
+            Q(num_doc__icontains=busqueda)
+        )
+
+    # -----------------------------
+    #   Paginación
+    # -----------------------------
+    paginator = Paginator(aprendices_qs.order_by('nombre'), 10)
+    page_number = request.GET.get('page')
+    aprendices_page = paginator.get_page(page_number)
+
+    return render(request, 'instructor/aprendices.html', {
+        'aprendices': aprendices_page
+    })
 
 def horasludicas(request):
     if request.method == 'POST':

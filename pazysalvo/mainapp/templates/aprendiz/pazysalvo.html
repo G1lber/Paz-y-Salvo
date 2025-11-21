@@ -55,15 +55,35 @@
                         <td>Verificar que estén registrados la totalidad de los juicios evaluativos en el aplicativo de gestión académico administrativo institucional (etapa lectiva y productiva)
                         Verificar evidencia de presentación de la prueba Saber TyT (Tecnólogos).
                         </td>
-                        <td><img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150"></td>
-                        <td>Firma</td>
+                        <td>
+                            {% if cumple_requisitos_academicos %}
+                                <img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">
+                            {% else %}
+                                <img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if cumple_requisitos_academicos %}
+                                Firma
+                            {% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <td>INSTRUCTOR SEGUIMIENTO ETAPA PRODUCTIVA</td>
                         <td>Verificar el diligenciamiento del formato de seguimiento a etapa productiva
                         Verificar la existencia de la bitácora del aprendiz en etapa productiva.</td>
-                        <td><img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150"></td>
-                        <td>Firma</td>
+                        <td>
+                            {% if tiene_bitacoras_completas %}
+                                <img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">
+                            {% else %}
+                                <img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if tiene_bitacoras_completas %}
+                                Firma
+                            {% endif %}
+                        </td>
                     </tr>
                     <tr>
                         <td>RESPONSABLE BIENESTAR AL APRENDIZ</td>

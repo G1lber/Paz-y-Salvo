@@ -234,6 +234,8 @@ def pazysalvo(request):
         "usuario": usuario,
         "tiene_prestamos": tiene_prestamos,
         "cumple_horas_bienestar": usuario.cumple_horas_bienestar(),  # Nueva variable
+        "tiene_bitacoras_completas": usuario.tiene_bitacoras_completas(),  # Nueva variable
+        "cumple_requisitos_academicos": usuario.cumple_requisitos_academicos(),  # Nueva variable
     })
 
 

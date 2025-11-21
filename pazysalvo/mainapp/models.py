@@ -90,6 +90,25 @@ class Usuario(models.Model):
         ).aggregate(Sum('cantidad_horas'))['cantidad_horas__sum'] or 0
         
         return total_horas >= horas_requeridas
+    
+    def tiene_bitacoras_completas(self):
+        """
+        Verifica si el aprendiz tiene las bitácoras completas
+        según el registro en InstructorxAprendiz
+        """
+        try:
+            relacion = InstructorxAprendiz.objects.get(id_aprendiz_FK=self)
+            return relacion.bitacoras_completas
+        except InstructorxAprendiz.DoesNotExist:
+            return False
+    
+    def cumple_requisitos_academicos(self):
+        """
+        Verifica si el usuario cumple con los requisitos académicos:
+        - tyt debe estar en True
+        - Y (resultados en True O es_patrocinado en True)
+        """
+        return self.tyt and (self.resultados or self.es_patrocinado)
 
 class Login(models.Model):
     id_usuario_FK = models.OneToOneField(Usuario, on_delete=models.CASCADE)

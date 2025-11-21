@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.hashers import make_password
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.db.models import Sum
+
 
 # Create your models here.
 
@@ -73,7 +75,43 @@ class Usuario(models.Model):
 
     def __str__(self):
         return f'{self.nombre} {self.apellidos}'
-
+    
+    def cumple_horas_bienestar(self):
+        """
+        Verifica si el usuario cumple con las horas requeridas de bienestar
+        según su programa (técnico 30 horas, tecnólogo 60 horas)
+        """
+        if not self.id_ficha_FK or not self.id_ficha_FK.programa_FK:
+            return False
+        
+        # Obtener horas requeridas según el tipo de programa
+        horas_requeridas = self.id_ficha_FK.programa_FK.horas_requeridas()
+        
+        # Calcular total de horas registradas
+        total_horas = RegistroHoras.objects.filter(
+            id_usuario_FK=self
+        ).aggregate(Sum('cantidad_horas'))['cantidad_horas__sum'] or 0
+        
+        return total_horas >= horas_requeridas
+    
+    def tiene_bitacoras_completas(self):
+        """
+        Verifica si el aprendiz tiene las bitácoras completas
+        según el registro en InstructorxAprendiz
+        """
+        try:
+            relacion = InstructorxAprendiz.objects.get(id_aprendiz_FK=self)
+            return relacion.bitacoras_completas
+        except InstructorxAprendiz.DoesNotExist:
+            return False
+    
+    def cumple_requisitos_academicos(self):
+        """
+        Verifica si el usuario cumple con los requisitos académicos:
+        - tyt debe estar en True
+        - Y (resultados en True O es_patrocinado en True)
+        """
+        return self.tyt and (self.resultados or self.es_patrocinado)
 
 class Login(models.Model):
     id_usuario_FK = models.OneToOneField(Usuario, on_delete=models.CASCADE)

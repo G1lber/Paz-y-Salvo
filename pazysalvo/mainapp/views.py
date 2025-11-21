@@ -232,7 +232,8 @@ def pazysalvo(request):
 
     return render(request, "aprendiz/pazysalvo.html", {
         "usuario": usuario,
-        "tiene_prestamos": tiene_prestamos
+        "tiene_prestamos": tiene_prestamos,
+        "cumple_horas_bienestar": usuario.cumple_horas_bienestar(),  # Nueva variable
     })
 
 

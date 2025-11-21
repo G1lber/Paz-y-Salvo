@@ -1,5 +1,5 @@
 <!-- Modal Editar Bitácoras -->
-<div id="editarModal" class="modal-editar" style="display: none;">
+<div id="editarModal" class="modal" style="display: none;">
   <div class="modal-contenido">
     <h3>Editar Bitácoras</h3>
 
@@ -27,7 +27,7 @@
       btn.addEventListener('click', e => {
           e.preventDefault();
           const modal = document.getElementById('editarModal');
-          modal.style.display = 'block';
+          modal.style.display = 'flex';
 
           document.getElementById('relacion_id').value = btn.dataset.id;
           document.getElementById('bitacoras_completas').checked = btn.dataset.bitacoras === 'checked';

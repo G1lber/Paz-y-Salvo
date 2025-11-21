@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Aprendices</title>
     <link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modales.css' %}">
 </head>
 <body>
     <div class="aprendices-container">
@@ -111,4 +112,10 @@
             {% endif %}
         </div>
         {% endif %}
-{% include 'modales/modal_editar_bitacoras.html' %}
+
+        <!-- 🔹 Modal Editar Bitácoras -->
+        {% include 'modales/modal_editar_bitacoras.html' %}
+
+    </div> <!-- cierre de .aprendices-container -->
+</body>
+</html>

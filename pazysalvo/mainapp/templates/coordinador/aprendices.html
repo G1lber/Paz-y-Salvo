@@ -79,7 +79,7 @@
                                 {% endif %}
                             </td>
                             <td class="acciones">
-                                <a href="#" 
+                                <button 
                                     class="btn-editar"
                                     data-id="{{ aprendiz.id }}"
                                     data-nombre="{{ aprendiz.nombre }}"
@@ -90,9 +90,9 @@
                                     data-patrocinado="{{ aprendiz.es_patrocinado }}"
                                     data-resultados="{{ aprendiz.resultados }}"
                                     data-tyt="{{ aprendiz.tyt }}"
-                                    data-instructor="{% for rel in aprendiz.aprendiz_en_seguimiento.all %}{{ rel.id_instructor_FK.id }}{% endfor %}">
+                                    data-instructor="{% if aprendiz.aprendiz_en_seguimiento.first %}{{ aprendiz.aprendiz_en_seguimiento.first.id_instructor_FK.id }}{% endif %}">
                                     Editar
-                                </a>
+                                </button>
                                 
                                 <form method="post" action="{% url 'eliminar_usuario' aprendiz.id %}" class="form-eliminar">
                                     {% csrf_token %}
@@ -133,7 +133,6 @@
     <!-- JS de modales -->
     <script src="{% static 'js/aprendices.js' %}"></script>
     <script src="{% static 'js/editar_aprendiz.js' %}"></script>
-    <script src="{% static 'js/toggle_instructor.js' %}"></script>  <!-- ✅ Agregar esta línea -->
 
 </body>
 </html>

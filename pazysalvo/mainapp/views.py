@@ -145,7 +145,7 @@ def editar_usuario(request, usuario_id):
         usuario.id_tipodoc_FK = TipoDoc.objects.get(pk=id_tipodoc)
         usuario.id_rol_FK = Roles.objects.get(pk=id_rol)
 
-        # Solo asigna ficha si el rol es aprendiz
+        # Solo asigna ficha si el rol es aprendiz (por ejemplo ID = 5)
         if id_rol == '5' and id_ficha:
             usuario.id_ficha_FK = Ficha.objects.get(pk=id_ficha)
         else:
@@ -153,32 +153,28 @@ def editar_usuario(request, usuario_id):
 
         usuario.save()
 
-        # ✅ MANEJO CORREGIDO DE LOGIN SEGÚN ROL
-        if id_rol != '5':  # Si NO es aprendiz
-            if password:  # Y se proporcionó contraseña
-                login = Login.objects.filter(id_usuario_FK=usuario).first()
-                if login:
-                    login.password = make_password(password)
-                    login.save()
-                else:
-                    Login.objects.create(
-                        id_usuario_FK=usuario,
-                        password=make_password(password)
-                    )
-                messages.success(request, 'Contraseña actualizada.')
-        else:  # Si ES aprendiz, ELIMINAR cualquier registro de login
-            Login.objects.filter(id_usuario_FK=usuario).delete()
-            messages.success(request, 'Registro de login eliminado (usuario es aprendiz).')
+        # Manejo de contraseña solo si el rol NO es aprendiz
+        if id_rol != '5' and password:
+            login = Login.objects.filter(id_usuario_FK=usuario).first()
+            if login:
+                login.password = make_password(password)
+                login.save()
+            else:
+                Login.objects.create(
+                    id_usuario_FK=usuario,
+                    contraseña=make_password(password)
+                )
+            messages.success(request, 'Contraseña actualizada.')
 
         messages.success(request, 'Usuario actualizado exitosamente.')
         return redirect('usuarios')
+
     return render(request, 'editar_usuario.html', {
         'usuario': usuario,
         'tipos_doc': tipos_doc,
         'roles': roles,
         'fichas': fichas,
     })
-
 def eliminar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)
 
@@ -264,7 +260,7 @@ def aprendices(request):
     aprendices_qs = aprendices_qs.order_by('apellidos', 'nombre')
 
     # Paginación
-    paginator = Paginator(aprendices_qs, 8)  # 8 registros por página
+    paginator = Paginator(aprendices_qs, 8)
     page_number = request.GET.get('page')
     aprendices_page = paginator.get_page(page_number)
 
@@ -280,7 +276,7 @@ def aprendices(request):
                 usuario.id_rol_FK = Roles.objects.get(nombre_rol="Aprendiz")
                 usuario.save()
 
-                if id_instructor2:
+                if id_instructor2:  # ✅ Solo crear si hay instructor
                     Seguimiento.objects.create(id_aprendiz=usuario, id_instructor=id_instructor2)
                     InstructorxAprendiz.objects.create(id_instructor_FK=id_instructor2, id_aprendiz_FK=usuario)
 
@@ -296,16 +292,16 @@ def aprendices(request):
                 usuario = get_object_or_404(Usuario, pk=usuario_id)
                 form_editar = UsuarioForm(request.POST, instance=usuario)
                 if form_editar.is_valid():
-                    usuario = form_editar.save()  # ✅ Capturar el usuario guardado
+                    form_editar.save()
 
-                    id_instructor_nuevo = form_editar.cleaned_data.get('id_instructor')  # ✅ Usar cleaned_data
+                    id_instructor_nuevo = request.POST.get('id_instructor')
                     if id_instructor_nuevo:
                         seguimiento, _ = Seguimiento.objects.get_or_create(id_aprendiz=usuario)
-                        seguimiento.id_instructor = id_instructor_nuevo  # ✅ Sin _id
+                        seguimiento.id_instructor_id = id_instructor_nuevo
                         seguimiento.save()
 
                         instxapr, _ = InstructorxAprendiz.objects.get_or_create(id_aprendiz_FK=usuario)
-                        instxapr.id_instructor_FK = id_instructor_nuevo  # ✅ Sin _id
+                        instxapr.id_instructor_FK_id = id_instructor_nuevo
                         instxapr.save()
 
                     messages.success(request, 'Cambios guardados correctamente!')
@@ -319,7 +315,7 @@ def aprendices(request):
         'form_crear': form_crear,
         'form_editar': form_editar,
         'busqueda': busqueda,
-        'instructores': Usuario.objects.filter(id_rol_FK__nombre_rol="Instructor Seguimiento"),  # ✅ Cambiar aquí
+        'instructores': Usuario.objects.filter(id_rol_FK__nombre_rol="Instructor Seguimiento"),  # ✅ Cambio aquí
     })
 # TODO: FIN MODULO APRENDICES
 def editar_bitacoras(request):

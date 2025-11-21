@@ -3,30 +3,46 @@ from .models import Usuario, Seguimiento
 
 class UsuarioForm(forms.ModelForm):
     id_instructor = forms.ModelChoiceField(
-        queryset=Usuario.objects.filter(id_rol_FK__nombre_rol="Instructor Seguimiento"),  # ✅ Cambiar aquí
+        queryset=Usuario.objects.filter(id_rol_FK__nombre_rol="Instructor Seguimiento"),  # ✅ Cambio aquí
         required=False,
         label="Instructor de seguimiento",
-        empty_label="Seleccione un instructor"  # ✅ Agregar placeholder
+        empty_label="Seleccione un instructor"  # ✅ Texto por defecto
     )
 
     class Meta:
         model = Usuario
         fields = [
-            'nombre', 
-            'apellidos', 
-            'num_doc', 
-            'id_tipodoc_FK', 
-            'id_ficha_FK', 
+            'nombre',
+            'apellidos',
+            'num_doc',
+            'id_tipodoc_FK',
+            'id_ficha_FK',
             'es_patrocinado',
-            'resultados',  # ✅ Agregar
-            'tyt'  # ✅ Agregar
-        ]
-        widgets = {
-            'es_patrocinado': forms.CheckboxInput(attrs={'class': 'checkbox-input'}),
-            'resultados': forms.CheckboxInput(attrs={'class': 'checkbox-input'}),  # ✅ Agregar
-            'tyt': forms.CheckboxInput(attrs={'class': 'checkbox-input'}),  # ✅ Agregar
+            'resultados',  # Nuevo campo
+            'tyt',          # Nuevo campo
+        ]  # ✅ Incluir los nuevos campos
+
+        labels = {
+            'nombre': 'Nombre',
+            'apellidos': 'Apellidos',
+            'num_doc': 'Número de documento',
+            'id_tipodoc_FK': 'Tipo de documento',
+            'id_ficha_FK': 'Ficha',
+            'es_patrocinado': '¿Es patrocinado?',
+            'resultados': 'Resultados Completos',
+            'tyt': '¿Presentó TyT?',
         }
 
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'apellidos': forms.TextInput(attrs={'class': 'form-control'}),
+            'num_doc': forms.TextInput(attrs={'class': 'form-control'}),
+            'id_tipodoc_FK': forms.Select(attrs={'class': 'form-control'}),
+            'id_ficha_FK': forms.Select(attrs={'class': 'form-control'}),
+            'es_patrocinado': forms.CheckboxInput(attrs={'class': 'form-check-input mt-2'}),
+            'resultados': forms.CheckboxInput(attrs={'class': 'form-check-input mt-2'}),
+            'tyt': forms.CheckboxInput(attrs={'class': 'form-check-input mt-2'}),
+        }
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Personaliza los campos si es necesario

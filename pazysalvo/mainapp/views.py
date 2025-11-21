@@ -145,7 +145,7 @@ def editar_usuario(request, usuario_id):
         usuario.id_tipodoc_FK = TipoDoc.objects.get(pk=id_tipodoc)
         usuario.id_rol_FK = Roles.objects.get(pk=id_rol)
 
-        # Solo asigna ficha si el rol es aprendiz (por ejemplo ID = 5)
+        # Solo asigna ficha si el rol es aprendiz
         if id_rol == '5' and id_ficha:
             usuario.id_ficha_FK = Ficha.objects.get(pk=id_ficha)
         else:
@@ -153,28 +153,32 @@ def editar_usuario(request, usuario_id):
 
         usuario.save()
 
-        # Manejo de contraseña solo si el rol NO es aprendiz
-        if id_rol != '5' and password:
-            login = Login.objects.filter(id_usuario_FK=usuario).first()
-            if login:
-                login.password = make_password(password)
-                login.save()
-            else:
-                Login.objects.create(
-                    id_usuario_FK=usuario,
-                    contraseña=make_password(password)
-                )
-            messages.success(request, 'Contraseña actualizada.')
+        # ✅ MANEJO CORREGIDO DE LOGIN SEGÚN ROL
+        if id_rol != '5':  # Si NO es aprendiz
+            if password:  # Y se proporcionó contraseña
+                login = Login.objects.filter(id_usuario_FK=usuario).first()
+                if login:
+                    login.password = make_password(password)
+                    login.save()
+                else:
+                    Login.objects.create(
+                        id_usuario_FK=usuario,
+                        password=make_password(password)
+                    )
+                messages.success(request, 'Contraseña actualizada.')
+        else:  # Si ES aprendiz, ELIMINAR cualquier registro de login
+            Login.objects.filter(id_usuario_FK=usuario).delete()
+            messages.success(request, 'Registro de login eliminado (usuario es aprendiz).')
 
         messages.success(request, 'Usuario actualizado exitosamente.')
         return redirect('usuarios')
-
     return render(request, 'editar_usuario.html', {
         'usuario': usuario,
         'tipos_doc': tipos_doc,
         'roles': roles,
         'fichas': fichas,
     })
+
 def eliminar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)
 

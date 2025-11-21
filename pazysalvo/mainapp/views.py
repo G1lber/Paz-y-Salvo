@@ -276,8 +276,9 @@ def aprendices(request):
                 usuario.id_rol_FK = Roles.objects.get(nombre_rol="Aprendiz")
                 usuario.save()
 
-                Seguimiento.objects.create(id_aprendiz=usuario, id_instructor=id_instructor2)
-                InstructorxAprendiz.objects.create(id_instructor_FK=id_instructor2, id_aprendiz_FK=usuario)
+                if id_instructor2:
+                    Seguimiento.objects.create(id_aprendiz=usuario, id_instructor=id_instructor2)
+                    InstructorxAprendiz.objects.create(id_instructor_FK=id_instructor2, id_aprendiz_FK=usuario)
 
                 messages.success(request, 'Aprendiz creado correctamente!')
                 return redirect('aprendices')
@@ -291,16 +292,16 @@ def aprendices(request):
                 usuario = get_object_or_404(Usuario, pk=usuario_id)
                 form_editar = UsuarioForm(request.POST, instance=usuario)
                 if form_editar.is_valid():
-                    form_editar.save()
+                    usuario = form_editar.save()  # ✅ Capturar el usuario guardado
 
-                    id_instructor_nuevo = request.POST.get('id_instructor')
+                    id_instructor_nuevo = form_editar.cleaned_data.get('id_instructor')  # ✅ Usar cleaned_data
                     if id_instructor_nuevo:
                         seguimiento, _ = Seguimiento.objects.get_or_create(id_aprendiz=usuario)
-                        seguimiento.id_instructor_id = id_instructor_nuevo
+                        seguimiento.id_instructor = id_instructor_nuevo  # ✅ Sin _id
                         seguimiento.save()
 
                         instxapr, _ = InstructorxAprendiz.objects.get_or_create(id_aprendiz_FK=usuario)
-                        instxapr.id_instructor_FK_id = id_instructor_nuevo
+                        instxapr.id_instructor_FK = id_instructor_nuevo  # ✅ Sin _id
                         instxapr.save()
 
                     messages.success(request, 'Cambios guardados correctamente!')
@@ -310,11 +311,11 @@ def aprendices(request):
                         messages.error(request, error)
 
     return render(request, 'coordinador/aprendices.html', {
-        'aprendices': aprendices_page,  # 👈 ahora se pasa el paginado
+        'aprendices': aprendices_page,
         'form_crear': form_crear,
         'form_editar': form_editar,
         'busqueda': busqueda,
-        'instructores': Usuario.objects.filter(id_rol_FK__nombre_rol="Instructor"),
+        'instructores': Usuario.objects.filter(id_rol_FK__nombre_rol="Instructor Seguimiento"),  # ✅ Cambiar aquí
     })
 # TODO: FIN MODULO APRENDICES
 def editar_bitacoras(request):

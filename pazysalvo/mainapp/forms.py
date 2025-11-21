@@ -3,47 +3,30 @@ from .models import Usuario, Seguimiento
 
 class UsuarioForm(forms.ModelForm):
     id_instructor = forms.ModelChoiceField(
-        queryset=Usuario.objects.filter(id_rol_FK_id=2),
+        queryset=Usuario.objects.filter(id_rol_FK__nombre_rol="Instructor Seguimiento"),  # ✅ Cambiar aquí
         required=False,
-        label='Instructor de Seguimiento',
-        widget=forms.Select(attrs={'class': 'form-control', 'id': 'instructor'})
+        label="Instructor de seguimiento",
+        empty_label="Seleccione un instructor"  # ✅ Agregar placeholder
     )
 
     class Meta:
         model = Usuario
         fields = [
-            'nombre',
-            'apellidos',
-            'num_doc',
-            'id_tipodoc_FK',
-            'id_ficha_FK',
+            'nombre', 
+            'apellidos', 
+            'num_doc', 
+            'id_tipodoc_FK', 
+            'id_ficha_FK', 
             'es_patrocinado',
-            'resultados',  # Nuevo campo
-            'tyt',          # Nuevo campo
-            'id_instructor'
+            'resultados',  # ✅ Agregar
+            'tyt'  # ✅ Agregar
         ]
-
-        labels = {
-            'nombre': 'Nombre',
-            'apellidos': 'Apellidos',
-            'num_doc': 'Número de documento',
-            'id_tipodoc_FK': 'Tipo de documento',
-            'id_ficha_FK': 'Ficha',
-            'es_patrocinado': '¿Es patrocinado?',
-            'resultados': 'Resultados Completos',
-            'tyt': '¿Presentó TyT?',
-        }
-
         widgets = {
-            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'apellidos': forms.TextInput(attrs={'class': 'form-control'}),
-            'num_doc': forms.TextInput(attrs={'class': 'form-control'}),
-            'id_tipodoc_FK': forms.Select(attrs={'class': 'form-control'}),
-            'id_ficha_FK': forms.Select(attrs={'class': 'form-control'}),
-            'es_patrocinado': forms.CheckboxInput(attrs={'class': 'form-check-input mt-2'}),
-            'resultados': forms.CheckboxInput(attrs={'class': 'form-check-input mt-2'}),
-            'tyt': forms.CheckboxInput(attrs={'class': 'form-check-input mt-2'}),
+            'es_patrocinado': forms.CheckboxInput(attrs={'class': 'checkbox-input'}),
+            'resultados': forms.CheckboxInput(attrs={'class': 'checkbox-input'}),  # ✅ Agregar
+            'tyt': forms.CheckboxInput(attrs={'class': 'checkbox-input'}),  # ✅ Agregar
         }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Personaliza los campos si es necesario
@@ -66,4 +49,4 @@ class SeguimientoForm(forms.ModelForm):
             'id_aprendiz': 'Aprendiz',
             'id_instructor': 'Instructor',
         }
- 
+

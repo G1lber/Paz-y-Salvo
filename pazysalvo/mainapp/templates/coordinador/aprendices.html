@@ -85,10 +85,12 @@
                                     data-nombre="{{ aprendiz.nombre }}"
                                     data-apellidos="{{ aprendiz.apellidos }}"
                                     data-numdoc="{{ aprendiz.num_doc }}"
-                                    data-tipodoc="{{ aprendiz.id_tipodoc_FK.id }}"
-                                    data-ficha="{{ aprendiz.id_ficha_FK.pk }}"
+                                    data-tipodoc="{{ aprendiz.id_tipodoc_FK.id|default:'' }}"
+                                    data-ficha="{{ aprendiz.id_ficha_FK.num_ficha|default:'' }}"
                                     data-patrocinado="{{ aprendiz.es_patrocinado }}"
-                                    data-instructor="{% if aprendiz.seguimientos_como_aprendiz.first %}{{ aprendiz.seguimientos_como_aprendiz.first.id_instructor.id }}{% else %}null{% endif %}">
+                                    data-resultados="{{ aprendiz.resultados }}"
+                                    data-tyt="{{ aprendiz.tyt }}"
+                                    data-instructor="{% for rel in aprendiz.aprendiz_en_seguimiento.all %}{{ rel.id_instructor_FK.id }}{% endfor %}">
                                     Editar
                                 </a>
                                 
@@ -131,6 +133,7 @@
     <!-- JS de modales -->
     <script src="{% static 'js/aprendices.js' %}"></script>
     <script src="{% static 'js/editar_aprendiz.js' %}"></script>
+    <script src="{% static 'js/toggle_instructor.js' %}"></script>  <!-- ✅ Agregar esta línea -->
 
 </body>
 </html>

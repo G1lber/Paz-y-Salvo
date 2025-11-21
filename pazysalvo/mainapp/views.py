@@ -325,31 +325,31 @@ def editar_bitacoras(request):
         return redirect('aprendices-instructor')
         
 def aprendicesxinstructor(request):
-
-    # 1️⃣ Verificar si el usuario está logueado en tu sistema
     instructor_id = request.session.get('usuario_id')
-
     if not instructor_id:
-        return redirect('login')  # No está logueado
+        return redirect('login')
 
-    # 2️⃣ Buscar al instructor en la tabla Usuario
     try:
         instructor = Usuario.objects.get(id=instructor_id)
     except Usuario.DoesNotExist:
         return HttpResponse("El instructor no existe en la base de datos")
 
-    # 3️⃣ Obtener los aprendices asignados al instructor
-    aprendices_ids = InstructorxAprendiz.objects.filter(
-        id_instructor_FK=instructor
-    ).values_list('id_aprendiz_FK', flat=True)
+    # Relaciones solo del instructor actual
+    relaciones_instructor = InstructorxAprendiz.objects.filter(id_instructor_FK=instructor)
 
-    aprendices_qs = Usuario.objects.filter(id__in=aprendices_ids)
+    # Aprendices relacionados
+    aprendices_qs = Usuario.objects.filter(
+        id__in=relaciones_instructor.values_list('id_aprendiz_FK', flat=True)
+    ).prefetch_related(
+        Prefetch(
+            'aprendiz_en_seguimiento',  # ← Aquí va el related_name correcto
+            queryset=relaciones_instructor,
+            to_attr='relaciones_instructor_filtradas'
+        )
+    )
 
-    # -----------------------------
-    #   Filtro de búsqueda
-    # -----------------------------
+    # Filtro de búsqueda
     busqueda = request.GET.get('busqueda', '')
-
     if busqueda:
         aprendices_qs = aprendices_qs.filter(
             Q(nombre__icontains=busqueda) |
@@ -357,9 +357,6 @@ def aprendicesxinstructor(request):
             Q(num_doc__icontains=busqueda)
         )
 
-    # -----------------------------
-    #   Paginación
-    # -----------------------------
     paginator = Paginator(aprendices_qs.order_by('nombre'), 10)
     page_number = request.GET.get('page')
     aprendices_page = paginator.get_page(page_number)

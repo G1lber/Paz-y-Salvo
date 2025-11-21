@@ -66,31 +66,31 @@
                 </thead>
                 <tbody>
                     {% for aprendiz in aprendices %}
-                        {% for relacion in aprendiz.seguimientos_como_aprendiz.all %}
-                        <tr>
-                            <td>{{ aprendiz.nombre }} {{ aprendiz.apellidos }}</td>
-                            <td>{{ aprendiz.num_doc }}</td>
-                            <td><span class="badge-ficha">{{ aprendiz.id_ficha_FK }}</span></td>
-                            <td>
-                                {% if relacion.bitacoras_completas %}
-                                    <span class="paz-salvo aprobado">Completas</span>
-                                {% else %}
-                                    <span class="paz-salvo pendiente">Pendientes</span>
-                                {% endif %}
-                            </td>
-                            <td class="acciones">
-                                <a href="#" 
+                        {% for relacion in aprendiz.relaciones_instructor_filtradas %}
+                            <tr>
+                                <td>{{ aprendiz.nombre }} {{ aprendiz.apellidos }}</td>
+                                <td>{{ aprendiz.num_doc }}</td>
+                                <td><span class="badge-ficha">{{ aprendiz.id_ficha_FK }}</span></td>
+                                <td>
+                                    {% if relacion.bitacoras_completas %}
+                                        <span class="paz-salvo aprobado">Completas</span>
+                                    {% else %}
+                                        <span class="paz-salvo pendiente">Pendientes</span>
+                                    {% endif %}
+                                </td>
+                                <td class="acciones">
+                                    <a href="#"
                                     class="btn-editar"
                                     data-id="{{ relacion.id }}"
                                     data-bitacoras="{{ relacion.bitacoras_completas|yesno:'checked,' }}">
                                     Editar
-                                </a>
-                            </td>
-                        </tr>
+                                    </a>
+                                </td>
+                            </tr>
                         {% empty %}
-                        <tr>
-                            <td colspan="5" class="no-data">No hay aprendices registrados.</td>
-                        </tr>
+                            <tr>
+                                <td colspan="5" class="no-data">No hay aprendices registrados.</td>
+                            </tr>
                         {% endfor %}
                     {% endfor %}
                 </tbody>

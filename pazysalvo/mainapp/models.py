@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.hashers import make_password
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 # Create your models here.
 
@@ -78,8 +80,8 @@ class Login(models.Model):
     password = models.CharField(max_length=100, null=True)
 
     def save(self, *args, **kwargs):
-        # Si la contraseña no está encriptada, encriptarla
-        if not self.password.startswith('pbkdf2_'):
+        # ✅ Solo encriptar si hay contraseña y no está ya encriptada
+        if self.password and not self.password.startswith('pbkdf2_'):
             self.password = make_password(self.password)
         super().save(*args, **kwargs)
 
@@ -210,3 +212,23 @@ class InstructorxAprendiz(models.Model):
 
     def __str__(self):
         return f'Instructor: {self.id_instructor_FK} - Aprendiz: {self.id_aprendiz_FK}'
+
+
+@receiver(pre_save, sender=Usuario)
+def eliminar_login_al_cambiar_a_aprendiz(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            usuario_actual = Usuario.objects.get(pk=instance.pk)
+            rol_actual = usuario_actual.id_rol_FK
+            nuevo_rol = instance.id_rol_FK
+            
+            if (rol_actual != nuevo_rol and 
+                nuevo_rol and 
+                nuevo_rol.nombre_rol and 
+                nuevo_rol.nombre_rol.lower() == 'aprendiz'):
+                
+                # ✅ ELIMINAR registro completo, no solo poner password=None
+                Login.objects.filter(id_usuario_FK=instance).delete()
+                    
+        except Usuario.DoesNotExist:
+            pass

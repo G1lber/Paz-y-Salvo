@@ -45,7 +45,7 @@
                             INTERVIENE EN EL DILIGENCIAMIENTO</th>
                         <th>DESCRIPCION DEL TRAMITE</th>
                         <th>NOMBRES Y APELLIDOS COMPLETOS</th>
-                        <th>FIRMA</th>
+                        <th>Estado</th>
                     </tr>
                     
                 </thead>
@@ -64,7 +64,7 @@
                         </td>
                         <td>
                             {% if cumple_requisitos_academicos %}
-                                Firma
+                                Firmado
                             {% endif %}
                         </td>
                     </tr>
@@ -81,7 +81,7 @@
                         </td>
                         <td>
                             {% if tiene_bitacoras_completas %}
-                                Firma
+                                Firmado
                             {% endif %}
                         </td>
                     </tr>
@@ -97,7 +97,7 @@
                         </td>
                         <td>
                             {% if cumple_horas_bienestar %}
-                                Firma
+                                Firmado
                             {% endif %}
                         </td>
                     </tr>
@@ -115,7 +115,7 @@
 
                         <td>
                             {% if not tiene_prestamos %}
-                                Firma
+                                Firmado
                             {% endif %}
                         </td>
                     </tr>

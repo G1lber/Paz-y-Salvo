@@ -73,7 +73,6 @@ btnCancelarEditar.addEventListener('click', () => {
 document.addEventListener("DOMContentLoaded", function () {
 
     function actualizarInstructorCrear() {
-        const patrocinado = document.getElementById("id_es_patrocinado");
         const resultados = document.getElementById("id_resultados");
 
         const row = document.getElementById("instructor-row");
@@ -84,7 +83,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function actualizarInstructorEditar() {
-        const patrocinado = document.querySelector('#editarModal input[name="es_patrocinado"]');
         const resultados = document.querySelector('#editarModal input[name="resultados"]');
 
         const row = document.getElementById("editar-instructor-row");
@@ -95,17 +93,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Eventos del modal crear
-    const patrocinadoCrear = document.getElementById("id_es_patrocinado");
     const resultadosCrear = document.getElementById("id_resultados");
 
-    if (patrocinadoCrear) patrocinadoCrear.addEventListener("change", actualizarInstructorCrear);
     if (resultadosCrear) resultadosCrear.addEventListener("change", actualizarInstructorCrear);
 
     // Eventos del modal editar
-    const patrocinadoEditar = document.querySelector('#editarModal input[name="es_patrocinado"]');
+
     const resultadosEditar = document.querySelector('#editarModal input[name="resultados"]');
 
-    if (patrocinadoEditar) patrocinadoEditar.addEventListener("change", actualizarInstructorEditar);
     if (resultadosEditar) resultadosEditar.addEventListener("change", actualizarInstructorEditar);
 
 });

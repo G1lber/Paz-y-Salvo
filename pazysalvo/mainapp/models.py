@@ -67,7 +67,6 @@ class Usuario(models.Model):
     id_tipodoc_FK = models.ForeignKey(TipoDoc, on_delete=models.SET_NULL, null=True)
     id_rol_FK = models.ForeignKey(Roles, on_delete=models.SET_NULL, null=True)
     id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.SET_NULL, null=True)
-    es_patrocinado = models.BooleanField(default=False)
 
     # 🔥 Nuevos campos
     resultados = models.BooleanField(default=False)
@@ -111,7 +110,7 @@ class Usuario(models.Model):
         - tyt debe estar en True
         - Y (resultados en True O es_patrocinado en True)
         """
-        return self.tyt and (self.resultados or self.es_patrocinado)
+        return self.tyt and self.resultados
 
 class Login(models.Model):
     id_usuario_FK = models.OneToOneField(Usuario, on_delete=models.CASCADE)

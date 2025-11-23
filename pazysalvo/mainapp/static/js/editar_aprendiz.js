@@ -5,12 +5,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // ✅ Función para mostrar/ocultar instructor en modal editar
   function toggleInstructorEditar() {
-    const checkPatro = document.querySelector('#editarModal input[name="es_patrocinado"]');
     const checkResultados = document.querySelector('#editarModal input[name="resultados"]');
     const instructorRow = document.getElementById('editar-instructor-row');
     
     if (instructorRow) {
-      if (checkPatro.checked || checkResultados.checked) {
+      if (checkResultados.checked) {
         instructorRow.style.display = 'block';
       } else {
         instructorRow.style.display = 'none';
@@ -45,8 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
       document.querySelector('#editarModal select[name="id_ficha_FK"]').value = ficha || "";
 
       // Checkboxes ✅
-      const checkPatro = document.querySelector('#editarModal input[name="es_patrocinado"]');
-      checkPatro.checked = (patrocinado === "True" || patrocinado === true);
+      
 
       const checkResultados = document.querySelector('#editarModal input[name="resultados"]');
       if (checkResultados) {
@@ -73,12 +71,8 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   // ✅ Event listeners para los checkboxes (cuando cambien en el modal)
-  const checkPatroEdit = document.querySelector('#editarModal input[name="es_patrocinado"]');
   const checkResultadosEdit = document.querySelector('#editarModal input[name="resultados"]');
   
-  if (checkPatroEdit) {
-    checkPatroEdit.addEventListener('change', toggleInstructorEditar);
-  }
   
   if (checkResultadosEdit) {
     checkResultadosEdit.addEventListener('change', toggleInstructorEditar);

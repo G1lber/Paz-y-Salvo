@@ -17,7 +17,6 @@ class UsuarioForm(forms.ModelForm):
             'num_doc',
             'id_tipodoc_FK',
             'id_ficha_FK',
-            'es_patrocinado',
             'resultados',  # Nuevo campo
             'tyt',          # Nuevo campo
         ]  # ✅ Incluir los nuevos campos
@@ -28,7 +27,6 @@ class UsuarioForm(forms.ModelForm):
             'num_doc': 'Número de documento',
             'id_tipodoc_FK': 'Tipo de documento',
             'id_ficha_FK': 'Ficha',
-            'es_patrocinado': '¿Es patrocinado?',
             'resultados': 'Resultados Completos',
             'tyt': '¿Presentó TyT?',
         }
@@ -39,7 +37,6 @@ class UsuarioForm(forms.ModelForm):
             'num_doc': forms.TextInput(attrs={'class': 'form-control'}),
             'id_tipodoc_FK': forms.Select(attrs={'class': 'form-control'}),
             'id_ficha_FK': forms.Select(attrs={'class': 'form-control'}),
-            'es_patrocinado': forms.CheckboxInput(attrs={'class': 'form-check-input mt-2'}),
             'resultados': forms.CheckboxInput(attrs={'class': 'form-check-input mt-2'}),
             'tyt': forms.CheckboxInput(attrs={'class': 'form-check-input mt-2'}),
         }

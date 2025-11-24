@@ -1,23 +1,44 @@
-/* ====== CONTENEDOR GENERAL ====== */
+/* ========================== */
+/*      VARIABLES SENA        */
+/* ========================== */
+
+:root {
+  --color-principal: #39A900;      /* Verde SENA */
+  --color-secundario: #002b46;     /* Azul oscuro */
+  --color-blanco: #ffffff;
+  --color-fondo: #f4f7fa;
+  --color-texto: #002b46;
+  --color-hover: #2b8500;
+  --color-sombra: rgba(0, 0, 0, 0.08);
+  --color-borde: #e0e0e0;
+}
+
+/* ========================== */
+/*   CONTENEDOR GENERAL       */
+/* ========================== */
 
 body {
   margin: 0;
   padding: 0;
-  background: #f4f4f4;
+  background: var(--color-fondo);
   font-family: Arial, Helvetica, sans-serif;
+  color: var(--color-texto);
 }
 
 .container {
   width: 95%;
   max-width: 900px;
   margin: 20px auto;
-  background: white;
+  background: var(--color-blanco);
   padding: 25px;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px var(--color-sombra);
+  border: 1px solid var(--color-borde);
 }
 
-/* ====== BARRA SUPERIOR ====== */
+/* ========================== */
+/*       BARRA SUPERIOR       */
+/* ========================== */
 
 .barra-superior {
   display: flex;
@@ -28,29 +49,27 @@ body {
 
 .btn-back {
   text-decoration: none;
-  background: #007bff;
+  background: var(--color-secundario);
   padding: 10px 18px;
-  color: white;
+  color: var(--color-blanco);
   border-radius: 8px;
   font-weight: bold;
   transition: 0.2s;
 }
 
 .btn-back:hover {
-  background: #005fcc;
+  background: #014168;
 }
 
 .titulo-nuevo-reporte {
   font-size: 24px;
-  color: #333;
   margin: 0;
+  color: var(--color-secundario);
 }
 
-/* ====== MENSAJES DJANGO ====== */
-
-.messages {
-  margin-bottom: 15px;
-}
+/* ========================== */
+/*       MENSAJES DJANGO      */
+/* ========================== */
 
 .alert {
   padding: 10px 14px;
@@ -59,17 +78,21 @@ body {
 }
 
 .alert-success {
-  background: #d4edda;
-  color: #155724;
+  background: #d6f5d6;
+  color: var(--color-principal);
+  border-left: 4px solid var(--color-principal);
 }
 
 .alert-error,
 .alert-danger {
-  background: #f8d7da;
-  color: #721c24;
+  background: #ffe0e0;
+  color: #8b0000;
+  border-left: 4px solid #cc0000;
 }
 
-/* ====== PESTAÑAS ====== */
+/* ========================== */
+/*         PESTAÑAS           */
+/* ========================== */
 
 .tabs {
   display: flex;
@@ -80,48 +103,32 @@ body {
 
 .tab-btn {
   padding: 12px 25px;
-  background: #e8e8e8;
-  border: 2px solid #bfbfbf;
+  background: var(--color-blanco);
+  border: 2px solid var(--color-borde);
   border-radius: 10px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  color: #333;
+  color: var(--color-secundario);
 }
 
 .tab-btn:hover {
-  background: #dcdcdc;
-  border-color: #9d9d9d;
-  transform: translateY(-2px);
+  border-color: var(--color-principal);
+  color: var(--color-principal);
 }
 
 .tab-btn.active {
-  background: #007bff;
-  color: white;
-  border-color: #0068d6;
-  box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3);
+  background: var(--color-principal);
+  color: var(--color-blanco);
+  border-color: var(--color-principal);
+  box-shadow: 0 3px 8px rgba(57, 169, 0, 0.3);
   transform: translateY(-2px);
 }
 
-.tab-form {
-  display: none; /* se muestra dinámicamente por JS */
-}
-
-/* ====== MENSAJE INICIAL ====== */
-
-.welcome-message {
-  text-align: center;
-  margin-top: 20px;
-  color: #444;
-}
-
-.welcome-message h4 {
-  margin-bottom: 5px;
-  font-size: 20px;
-}
-
-/* ====== FORMULARIOS ====== */
+/* ========================== */
+/*        FORMULARIOS         */
+/* ========================== */
 
 .form-grid {
   display: grid;
@@ -142,7 +149,7 @@ body {
 label {
   font-weight: bold;
   margin-bottom: 6px;
-  color: #333;
+  color: var(--color-secundario);
 }
 
 input[type="text"],
@@ -150,20 +157,24 @@ input[type="date"],
 select,
 textarea {
   padding: 10px;
-  border: 1.8px solid #ccc;
+  border: 2px solid var(--color-borde);
   border-radius: 8px;
   font-size: 15px;
-  transition: 0.2s ease;
+  transition: 0.2s;
+  background: #ffffff;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: #007bff;
+  border-color: var(--color-principal);
   outline: none;
+  box-shadow: 0 0 6px rgba(57, 169, 0, 0.2);
 }
 
-/* ====== BOTÓN SUBMIT ====== */
+/* ========================== */
+/*       BOTÓN SUBMIT         */
+/* ========================== */
 
 .form-actions {
   text-align: center;
@@ -172,9 +183,9 @@ select:focus {
 
 .btn-submit {
   padding: 12px 30px;
-  background: #28a745;
+  background: var(--color-principal);
   border: none;
-  color: white;
+  color: var(--color-blanco);
   font-size: 17px;
   border-radius: 10px;
   cursor: pointer;
@@ -182,41 +193,36 @@ select:focus {
 }
 
 .btn-submit:hover {
-  background: #218838;
+  background: var(--color-hover);
 }
 
-/* ====== FORMULARIO MASIVO ====== */
+/* ========================== */
+/*   FORMULARIO MASIVO       */
+/* ========================== */
 
 .file-input-wrapper input[type="file"] {
   padding: 10px;
-  border: 1.8px solid #ccc;
+  border: 2px solid var(--color-borde);
   border-radius: 8px;
-  background: #fafafa;
+  background: #ffffff;
 }
 
 .instructions {
   margin-top: 20px;
-  background: #eef7ff;
+  background: #e8f5e8;
   padding: 15px;
-  border-left: 4px solid #007bff;
+  border-left: 4px solid var(--color-principal);
   border-radius: 6px;
 }
 
 .instructions h4 {
   margin: 0 0 10px;
-  color: #005fcc;
+  color: var(--color-secundario);
 }
 
-.instructions ul {
-  margin-left: 18px;
-  padding-left: 0;
-}
-
-.instructions li {
-  margin-bottom: 6px;
-}
-
-/* ====== RESPONSIVE ====== */
+/* ========================== */
+/*        RESPONSIVE          */
+/* ========================== */
 
 @media (max-width: 700px) {
   .form-grid {

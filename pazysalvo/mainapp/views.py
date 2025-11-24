@@ -533,29 +533,109 @@ def eliminar_prestamo(request, id):
 
 def equiposalmacen(request):  
     if request.method == 'POST':
-        documento = request.POST.get('documento')
-        equipo = request.POST.get('equipo')
-        fecha_prestamo = request.POST.get('fecha_prestamo')
-        fecha_devolucion = request.POST.get('fecha_devolucion')
-        observaciones = request.POST.get('observaciones')
+        form_type = request.POST.get('form_type')
         
-        try:
-            usuario = Usuario.objects.get(num_doc=documento)
-            PrestarEquipos.objects.create(
-                id_usuario_FK=usuario,
-                nombre_equipo=equipo,
-                fecha_prestamo=fecha_prestamo,
-                fecha_devolucion=fecha_devolucion if fecha_devolucion else None,
-                observaciones=observaciones,
-            )
-            messages.success(request, "Reporte guardado correctamente ✅")
-            return redirect('pendientes-almacen')  # Evita reenvío del formulario
-        except Usuario.DoesNotExist:
-            messages.error(request, "El documento ingresado no pertenece a ningún aprendiz registrado ❌")
-
-    # # Mostrar todos los reportes
-    # reportes = PrestarEquipos.objects.select_related('id_usuario_FK').all().order_by('id')
-
+        # Formulario Individual
+        if form_type == 'individual':
+            documento = request.POST.get('documento')
+            equipo = request.POST.get('equipo')
+            fecha_prestamo = request.POST.get('fecha_prestamo')
+            fecha_devolucion = request.POST.get('fecha_devolucion')
+            observaciones = request.POST.get('observaciones')
+            
+            try:
+                usuario = Usuario.objects.get(num_doc=documento)
+                PrestarEquipos.objects.create(
+                    id_usuario_FK=usuario,
+                    nombre_equipo=equipo,
+                    fecha_prestamo=fecha_prestamo,
+                    fecha_devolucion=fecha_devolucion if fecha_devolucion else None,
+                    observaciones=observaciones,
+                )
+                messages.success(request, "Reporte guardado correctamente ✅")
+                return redirect('pendientes-almacen')
+            except Usuario.DoesNotExist:
+                messages.error(request, "El documento ingresado no pertenece a ningún aprendiz registrado ❌")
+        
+        # Formulario Masivo (Excel)
+        elif form_type == 'masiva':
+            excel_file = request.FILES.get('excel_file')
+            
+            if excel_file:
+                try:
+                    # Leer el archivo Excel
+                    df = pd.read_excel(excel_file)
+                    
+                    # Validar columnas requeridas
+                    required_columns = ['documento', 'equipo', 'fecha_prestamo']
+                    missing_columns = [col for col in required_columns if col not in df.columns]
+                    
+                    if missing_columns:
+                        messages.error(request, f"Faltan columnas requeridas: {', '.join(missing_columns)}")
+                    else:
+                        success_count = 0
+                        error_count = 0
+                        errors = []
+                        
+                        for index, row in df.iterrows():
+                            try:
+                                documento = str(row['documento']).strip()
+                                equipo = row['equipo']
+                                fecha_prestamo = row['fecha_prestamo']
+                                
+                                # Convertir fecha si es string
+                                if isinstance(fecha_prestamo, str):
+                                    fecha_prestamo = datetime.strptime(fecha_prestamo, '%Y-%m-%d').date()
+                                
+                                # Fecha de devolución (opcional)
+                                fecha_devolucion = row.get('fecha_devolucion')
+                                if fecha_devolucion and isinstance(fecha_devolucion, str):
+                                    fecha_devolucion = datetime.strptime(fecha_devolucion, '%Y-%m-%d').date()
+                                elif pd.isna(fecha_devolucion):
+                                    fecha_devolucion = None
+                                
+                                # Observaciones (opcional)
+                                observaciones = row.get('observaciones', '')
+                                if pd.isna(observaciones):
+                                    observaciones = ''
+                                
+                                # Validar que el usuario exista
+                                usuario = Usuario.objects.get(num_doc=documento)
+                                
+                                # Crear el registro
+                                PrestarEquipos.objects.create(
+                                    id_usuario_FK=usuario,
+                                    nombre_equipo=equipo,
+                                    fecha_prestamo=fecha_prestamo,
+                                    fecha_devolucion=fecha_devolucion,
+                                    observaciones=observaciones,
+                                )
+                                success_count += 1
+                                
+                            except Usuario.DoesNotExist:
+                                error_count += 1
+                                errors.append(f"Fila {index + 2}: Documento {documento} no encontrado")
+                            except Exception as e:
+                                error_count += 1
+                                errors.append(f"Fila {index + 2}: Error - {str(e)}")
+                        
+                        # Mostrar resultados
+                        if success_count > 0:
+                            messages.success(request, f"✅ Se procesaron {success_count} registros correctamente")
+                        if error_count > 0:
+                            messages.warning(request, f"⚠️ {error_count} registros tuvieron errores")
+                            # Mostrar primeros 5 errores para no saturar
+                            for error in errors[:5]:
+                                messages.error(request, error)
+                            if len(errors) > 5:
+                                messages.info(request, f"... y {len(errors) - 5} errores más")
+                
+                except Exception as e:
+                    messages.error(request, f"Error al procesar el archivo: {str(e)}")
+            
+            else:
+                messages.error(request, "No se seleccionó ningún archivo")
+    
     return render(request, 'almacen/prestarequipos.html')
 
 def pendientesalmacen(request):

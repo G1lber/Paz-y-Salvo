@@ -1,186 +1,233 @@
-:root {
-  --color-principal: #39A900;
-  --color-secundario: #2E8C00;
-  --color-azul: #002b46;
-  --color-blanco: #ffffff;
-  --color-fondo: #f4f7fa;
-  --color-texto: #002b46;
-  --color-hoverA: #003e60;
-  --color-hover: #2b8500;
-  --color-sombra: rgba(0, 0, 0, 0.08);
-  --color-borde: #e0e0e0;
-}
+/* ====== CONTENEDOR GENERAL ====== */
 
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--color-fondo);
   margin: 0;
-  padding: 40px 20px;
-  color: var(--color-texto);
+  padding: 0;
+  background: #f4f4f4;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .container {
-  max-width: 850px;
-  margin: auto;
-  background: var(--color-blanco);
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 6px 18px var(--color-sombra);
-  position: relative; 
+  width: 95%;
+  max-width: 900px;
+  margin: 20px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
+
+/* ====== BARRA SUPERIOR ====== */
 
 .barra-superior {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.barra-superior h2 {
-  font-size: 1.6rem;
-  color: var(--color-secundario);
-  font-weight: 600;
-  margin: 0;
-  font-weight: bold;
-}
-
-
-.back-wrapper {
-  max-width: 850px;
-  margin: 0 auto 20px auto;
-  position: absolute;  /* 🔑 posiciona en la esquina */
-  top: 20px;           /* distancia desde arriba */
-  right: 20px;         /* distancia desde la derecha */
+  justify-content: space-between;
+  margin-bottom: 25px;
 }
 
 .btn-back {
-  display: inline-block;
-  border: 2px solid var(--color-azul);
-  background: transparent;
-  color: var(--color-azul);
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 600;
   text-decoration: none;
-  transition: all 0.3s;
+  background: #007bff;
+  padding: 10px 18px;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: 0.2s;
 }
+
 .btn-back:hover {
-  background-color: var(--color-azul);
-  color: var(--color-blanco);
+  background: #005fcc;
 }
 
-.titulo {
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin: 20px 0;
-  color: var(--color-azul);
-}
 .titulo-nuevo-reporte {
-  text-align: center;
-  width: 100%;
-  display: block;
+  font-size: 24px;
+  color: #333;
+  margin: 0;
 }
 
-/* --- Formulario --- */
-form {
+/* ====== MENSAJES DJANGO ====== */
+
+.messages {
+  margin-bottom: 15px;
+}
+
+.alert {
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.alert-success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.alert-error,
+.alert-danger {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* ====== PESTAÑAS ====== */
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 25px 0;
+}
+
+.tab-btn {
+  padding: 12px 25px;
+  background: #e8e8e8;
+  border: 2px solid #bfbfbf;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: #333;
+}
+
+.tab-btn:hover {
+  background: #dcdcdc;
+  border-color: #9d9d9d;
+  transform: translateY(-2px);
+}
+
+.tab-btn.active {
+  background: #007bff;
+  color: white;
+  border-color: #0068d6;
+  box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.tab-form {
+  display: none; /* se muestra dinámicamente por JS */
+}
+
+/* ====== MENSAJE INICIAL ====== */
+
+.welcome-message {
+  text-align: center;
+  margin-top: 20px;
+  color: #444;
+}
+
+.welcome-message h4 {
+  margin-bottom: 5px;
+  font-size: 20px;
+}
+
+/* ====== FORMULARIOS ====== */
+
+.form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem 2rem;
-  margin-bottom: 2rem;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-section.full-width {
+  grid-column: span 2;
 }
 
 label {
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-  display: block;
-  color: var(--color-azul);
+  font-weight: bold;
+  margin-bottom: 6px;
+  color: #333;
 }
 
-input, select, textarea {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1.5px solid var(--color-borde);
+input[type="text"],
+input[type="date"],
+select,
+textarea {
+  padding: 10px;
+  border: 1.8px solid #ccc;
   border-radius: 8px;
   font-size: 15px;
-  background-color: #fafafa;
-  outline: none;
-  transition: all 0.3s;
-  box-sizing: border-box;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: var(--color-principal);
-  background-color: var(--color-blanco);
-  box-shadow: 0 0 0 3px rgba(57, 169, 0, 0.2);
+  transition: 0.2s ease;
 }
 
-textarea {
-  resize: vertical;
-  min-height: 70px;
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #007bff;
+  outline: none;
 }
+
+/* ====== BOTÓN SUBMIT ====== */
 
 .form-actions {
-  grid-column: 1 / 3;
-  text-align: right;
+  text-align: center;
+  margin-top: 25px;
 }
 
 .btn-submit {
-  background: var(--color-azul);
-  color: var(--color-blanco);
-  padding: 12px 20px;
+  padding: 12px 30px;
+  background: #28a745;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 10px var(--color-sombra);
-}
-.btn-submit:hover {
-  background: var(--color-hoverA);
-}
-
-/* --- Tabla --- */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-  border: 1px solid var(--color-borde);
+  color: white;
+  font-size: 17px;
   border-radius: 10px;
-  overflow: hidden;
-}
-
-th, td {
-  padding: 0.9rem;
-  text-align: center;
-  border-bottom: 1px solid var(--color-borde);
-  
-}
-
-th {
-  background: var(--color-principal);
-  color: var(--color-blanco);
-  font-weight: 600;
-}
-
-tr:nth-child(even) {
-  background: #f9fafb;
-}
-
-/* --- Botones de acciones --- */
-.btn {
-  padding: 0.5rem 0.9rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
   cursor: pointer;
-  border: none;
-  font-weight: 600;
-}
-.btn-delete {
-  background: #dc3545;
-  color: var(--color-blanco);
-}
-.btn-delete:hover {
-  background: #a71d2a;
+  transition: 0.2s;
 }
 
+.btn-submit:hover {
+  background: #218838;
+}
+
+/* ====== FORMULARIO MASIVO ====== */
+
+.file-input-wrapper input[type="file"] {
+  padding: 10px;
+  border: 1.8px solid #ccc;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.instructions {
+  margin-top: 20px;
+  background: #eef7ff;
+  padding: 15px;
+  border-left: 4px solid #007bff;
+  border-radius: 6px;
+}
+
+.instructions h4 {
+  margin: 0 0 10px;
+  color: #005fcc;
+}
+
+.instructions ul {
+  margin-left: 18px;
+  padding-left: 0;
+}
+
+.instructions li {
+  margin-bottom: 6px;
+}
+
+/* ====== RESPONSIVE ====== */
+
+@media (max-width: 700px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-section.full-width {
+    grid-column: span 1;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+}

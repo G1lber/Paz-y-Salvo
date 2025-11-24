@@ -77,14 +77,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         <a href="{% url 'usuarios' %}" class="btn-sena">Ver Usuarios</a>
                     </div>
 
-                    <div class="feature-card">
+                    {% comment %} <div class="feature-card">
                         <div class="card-icon">
                             <i class="fas fa-chart-bar"></i>
                         </div>
                         <h3>Reportes y Estadísticas</h3>
                         <p>Genera reportes y consulta estadísticas del sistema</p>
                         <a href="{% url 'usuarios' %}" class="btn-sena">Ver Reportes</a>
-                    </div>
+                    </div> {% endcomment %}
                 </div>
             </details>
             {% endif %}

@@ -477,37 +477,143 @@ def horas_faltantes(request):
 
 def prestarequipos(request):
     if request.method == 'POST':
-        documento = request.POST.get('documento')
-        equipo = request.POST.get('equipo')
-        serial = request.POST.get('serial')
-        fecha_prestamo = request.POST.get('fecha_prestamo')
-        fecha_devolucion = request.POST.get('fecha_devolucion')
-        observaciones = request.POST.get('observaciones')
-
-        if PrestamoBienestar.objects.filter(serial=serial).exists():
-            messages.error(request, f"Ya existe un préstamo con el serial {serial}.")
-            return redirect('prestar-equipos')
+        form_type = request.POST.get('form_type')
         
-        try:
-            usuario = Usuario.objects.get(num_doc=documento)
-            PrestamoBienestar.objects.create(
-                id_usuario_FK=usuario,
-                nombre_equipo=equipo,
-                serial= serial,
-                fecha_prestamo=fecha_prestamo,
-                fecha_devolucion=fecha_devolucion if fecha_devolucion else None,
-                observaciones=observaciones,
-            )
-            messages.success(request, "Reporte guardado correctamente ✅")
-            return redirect('prestar-equipos')  # Evita reenvío del formulario
-        except Usuario.DoesNotExist:
-            messages.error(request, "El documento ingresado no pertenece a ningún aprendiz registrado ❌")
+        # Formulario Individual
+        if form_type == 'individual':
+            documento = request.POST.get('documento')
+            equipo = request.POST.get('equipo')
+            serial = request.POST.get('serial')
+            fecha_prestamo = request.POST.get('fecha_prestamo')
+            fecha_devolucion = request.POST.get('fecha_devolucion')
+            observaciones = request.POST.get('observaciones')
+
+            if PrestamoBienestar.objects.filter(serial=serial).exists():
+                messages.error(request, f"Ya existe un préstamo con el serial {serial}.")
+                return redirect('prestar-equipos')
+            
+            try:
+                usuario = Usuario.objects.get(num_doc=documento)
+                PrestamoBienestar.objects.create(
+                    id_usuario_FK=usuario,
+                    nombre_equipo=equipo,
+                    serial=serial,
+                    fecha_prestamo=fecha_prestamo,
+                    fecha_devolucion=fecha_devolucion if fecha_devolucion else None,
+                    observaciones=observaciones,
+                )
+                messages.success(request, "Reporte guardado correctamente ✅")
+                return redirect('prestar-equipos')
+            except Usuario.DoesNotExist:
+                messages.error(request, "El documento ingresado no pertenece a ningún aprendiz registrado ❌")
+        
+        # Formulario Masivo (Excel)
+        elif form_type == 'masiva':
+            excel_file = request.FILES.get('excel_file')
+            
+            if excel_file:
+                try:
+                    # Leer el archivo Excel
+                    df = pd.read_excel(excel_file)
+                    
+                    # Validar columnas requeridas
+                    required_columns = ['documento', 'equipo', 'serial', 'fecha_prestamo']
+                    missing_columns = [col for col in required_columns if col not in df.columns]
+                    
+                    if missing_columns:
+                        messages.error(request, f"Faltan columnas requeridas: {', '.join(missing_columns)}")
+                    else:
+                        success_count = 0
+                        error_count = 0
+                        errors = []
+                        seriales_existentes = set(PrestamoBienestar.objects.values_list('serial', flat=True))
+                        seriales_procesados = set()
+                        
+                        for index, row in df.iterrows():
+                            try:
+                                documento = str(row['documento']).strip()
+                                equipo = row['equipo']
+                                serial = str(row['serial']).strip()
+                                fecha_prestamo = row['fecha_prestamo']
+                                
+                                # Validar serial único en el archivo
+                                if serial in seriales_procesados:
+                                    error_count += 1
+                                    errors.append(f"Fila {index + 2}: Serial {serial} duplicado en el archivo")
+                                    continue
+                                
+                                # Validar serial único en la base de datos
+                                if serial in seriales_existentes:
+                                    error_count += 1
+                                    errors.append(f"Fila {index + 2}: Serial {serial} ya existe en el sistema")
+                                    continue
+                                
+                                # Convertir fecha si es string
+                                if isinstance(fecha_prestamo, str):
+                                    fecha_prestamo = datetime.strptime(fecha_prestamo, '%Y-%m-%d').date()
+                                
+                                # Fecha de devolución (opcional)
+                                fecha_devolucion = row.get('fecha_devolucion')
+                                if fecha_devolucion and isinstance(fecha_devolucion, str):
+                                    fecha_devolucion = datetime.strptime(fecha_devolucion, '%Y-%m-%d').date()
+                                elif pd.isna(fecha_devolucion):
+                                    fecha_devolucion = None
+                                
+                                # Observaciones (opcional)
+                                observaciones = row.get('observaciones', '')
+                                if pd.isna(observaciones):
+                                    observaciones = ''
+                                
+                                # Validar que el usuario exista
+                                usuario = Usuario.objects.get(num_doc=documento)
+                                
+                                # Validar equipo válido
+                                equipos_validos = ['Portátil', 'Tablet', 'Proyector']
+                                if equipo not in equipos_validos:
+                                    error_count += 1
+                                    errors.append(f"Fila {index + 2}: Equipo '{equipo}' no válido. Válidos: {', '.join(equipos_validos)}")
+                                    continue
+                                
+                                # Crear el registro
+                                PrestamoBienestar.objects.create(
+                                    id_usuario_FK=usuario,
+                                    nombre_equipo=equipo,
+                                    serial=serial,
+                                    fecha_prestamo=fecha_prestamo,
+                                    fecha_devolucion=fecha_devolucion,
+                                    observaciones=observaciones,
+                                )
+                                success_count += 1
+                                seriales_procesados.add(serial)
+                                
+                            except Usuario.DoesNotExist:
+                                error_count += 1
+                                errors.append(f"Fila {index + 2}: Documento {documento} no encontrado")
+                            except Exception as e:
+                                error_count += 1
+                                errors.append(f"Fila {index + 2}: Error - {str(e)}")
+                        
+                        # Mostrar resultados
+                        if success_count > 0:
+                            messages.success(request, f"✅ Se procesaron {success_count} registros correctamente")
+                        if error_count > 0:
+                            messages.warning(request, f"⚠️ {error_count} registros tuvieron errores")
+                            # Mostrar primeros 5 errores para no saturar
+                            for error in errors[:5]:
+                                messages.error(request, error)
+                            if len(errors) > 5:
+                                messages.info(request, f"... y {len(errors) - 5} errores más")
+                
+                except Exception as e:
+                    messages.error(request, f"Error al procesar el archivo: {str(e)}")
+            
+            else:
+                messages.error(request, "No se seleccionó ningún archivo")
 
     # Mostrar todos los reportes
     reportes = PrestamoBienestar.objects.select_related('id_usuario_FK').all().order_by('id')
 
     return render(request, 'bienestar/prestar-equipos.html', {'reportes': reportes})
-
 
 def editar_prestamo(request, id):
     prestamo = get_object_or_404(PrestamoBienestar, id=id)

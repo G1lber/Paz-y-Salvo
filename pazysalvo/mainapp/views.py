@@ -16,10 +16,13 @@ from django.utils import timezone
 from datetime import datetime, date
 from django.db.models import Sum
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 import pandas as pd
 from django.contrib.auth.decorators import login_required
 from datetime import date
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
+from openpyxl.utils import get_column_letter
 
 # Create your views here.
 def index(request):
@@ -1073,4 +1076,155 @@ def actualizar_datos_aprendiz(request):
         "ag_empleo": ag_empleo,
         "tipos_doc": tipos_doc,
     })
+
+
+def agencia_empleo(request):
+    """
+    Vista que muestra todos los registros de empleo de los aprendices.
+    Permite búsqueda por documento, nombre o empresa.
+    """
+    busqueda = request.GET.get('busqueda', '')
+
+    # Consultar todos los registros de AgEmpleo con su aprendiz relacionado
+    registros_empleo = AgEmpleo.objects.select_related(
+        'id_aprendiz_FK',
+        'id_aprendiz_FK__id_tipodoc_FK',  # ✅ Agregar tipo de documento
+        'id_aprendiz_FK__id_ficha_FK',
+        'id_aprendiz_FK__id_ficha_FK__programa_FK'
+    ).all()
+
+    # Filtro de búsqueda
+    if busqueda:
+        registros_empleo = registros_empleo.filter(
+            Q(id_aprendiz_FK__num_doc__icontains=busqueda) |
+            Q(id_aprendiz_FK__nombre__icontains=busqueda) |
+            Q(id_aprendiz_FK__apellidos__icontains=busqueda) |
+            Q(nombre_empresa__icontains=busqueda) |
+            Q(correo__icontains=busqueda)
+        )
+
+    # Ordenar por apellido del aprendiz
+    registros_empleo = registros_empleo.order_by('id_aprendiz_FK__apellidos', 'id_aprendiz_FK__nombre')
+
+    # Paginación
+    paginator = Paginator(registros_empleo, 10)
+    page_number = request.GET.get('page')
+    registros_page = paginator.get_page(page_number)
+
+    return render(request, 'empleo/empleo.html', {
+        'registros': registros_page,
+        'busqueda': busqueda,
+    })
+
+
+def descargar_reporte_empleo(request):
+    """
+    Vista que genera y descarga un archivo Excel con todos los datos de empleo.
+    """
+    # Obtener todos los registros sin paginación
+    registros_empleo = AgEmpleo.objects.select_related(
+        'id_aprendiz_FK',
+        'id_aprendiz_FK__id_tipodoc_FK',
+        'id_aprendiz_FK__id_ficha_FK',
+        'id_aprendiz_FK__id_ficha_FK__programa_FK'
+    ).order_by('id_aprendiz_FK__apellidos', 'id_aprendiz_FK__nombre')
+
+    # Crear un nuevo libro de Excel
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Reporte Empleo"
+
+    # Estilos
+    header_fill = PatternFill(start_color="39A900", end_color="39A900", fill_type="solid")
+    header_font = Font(bold=True, color="FFFFFF", size=12)
+    header_alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    
+    border_style = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+
+    # Encabezados
+    headers = [
+        'Tipo Doc', 'Documento', 'Aprendiz', 'Fecha Nacimiento', 
+        'Programa', 'Correo', 'Teléfono 1', 'Teléfono 2', 
+        'Empresa', 'Fecha Inicio', 'Fecha Fin'
+    ]
+
+    # Escribir encabezados
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col_num)
+        cell.value = header
+        cell.fill = header_fill
+        cell.font = header_font
+        cell.alignment = header_alignment
+        cell.border = border_style
+
+    # Escribir datos
+    row_num = 2
+    for registro in registros_empleo:
+        # Tipo de documento
+        tipo_doc = registro.id_aprendiz_FK.id_tipodoc_FK.nombre_tipo if registro.id_aprendiz_FK.id_tipodoc_FK else "-"
+        ws.cell(row=row_num, column=1, value=tipo_doc).border = border_style
+
+        # Documento
+        ws.cell(row=row_num, column=2, value=str(registro.id_aprendiz_FK.num_doc)).border = border_style
+
+        # Aprendiz (nombre completo)
+        nombre_completo = f"{registro.id_aprendiz_FK.nombre} {registro.id_aprendiz_FK.apellidos}"
+        ws.cell(row=row_num, column=3, value=nombre_completo).border = border_style
+
+        # Fecha de nacimiento
+        fecha_nac = registro.fecha_nacimiento.strftime('%Y-%m-%d') if registro.fecha_nacimiento else "-"
+        ws.cell(row=row_num, column=4, value=fecha_nac).border = border_style
+
+        # Programa
+        if registro.id_aprendiz_FK.id_ficha_FK and registro.id_aprendiz_FK.id_ficha_FK.programa_FK:
+            programa = registro.id_aprendiz_FK.id_ficha_FK.programa_FK.nombre_programa
+        else:
+            programa = "Sin programa"
+        ws.cell(row=row_num, column=5, value=programa).border = border_style
+
+        # Correo
+        ws.cell(row=row_num, column=6, value=registro.correo or "-").border = border_style
+
+        # Teléfono 1
+        ws.cell(row=row_num, column=7, value=registro.telefono or "-").border = border_style
+
+        # Teléfono 2
+        ws.cell(row=row_num, column=8, value=registro.telefono_2 or "-").border = border_style
+
+        # Empresa
+        ws.cell(row=row_num, column=9, value=registro.nombre_empresa or "-").border = border_style
+
+        # Fecha inicio empresa
+        fecha_inicio = registro.fecha_inicio_empresa.strftime('%Y-%m-%d') if registro.fecha_inicio_empresa else "-"
+        ws.cell(row=row_num, column=10, value=fecha_inicio).border = border_style
+
+        # Fecha fin empresa
+        fecha_fin = registro.fecha_fin_empresa.strftime('%Y-%m-%d') if registro.fecha_fin_empresa else "-"
+        ws.cell(row=row_num, column=11, value=fecha_fin).border = border_style
+
+        row_num += 1
+
+    # Ajustar ancho de columnas
+    column_widths = [12, 15, 30, 18, 40, 30, 15, 15, 35, 15, 15]
+    for i, width in enumerate(column_widths, 1):
+        ws.column_dimensions[get_column_letter(i)].width = width
+
+    # Crear la respuesta HTTP con el archivo Excel
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    
+    # Nombre del archivo con fecha actual
+    filename = f'Reporte_Empleo_{date.today().strftime("%Y%m%d")}.xlsx'
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    # Guardar el libro en la respuesta
+    wb.save(response)
+
+    return response
 

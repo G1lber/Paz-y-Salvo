@@ -77,14 +77,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         <a href="{% url 'usuarios' %}" class="btn-sena">Ver Usuarios</a>
                     </div>
 
-                    <div class="feature-card">
+                    {% comment %} <div class="feature-card">
                         <div class="card-icon">
                             <i class="fas fa-chart-bar"></i>
                         </div>
                         <h3>Reportes y Estadísticas</h3>
                         <p>Genera reportes y consulta estadísticas del sistema</p>
                         <a href="{% url 'usuarios' %}" class="btn-sena">Ver Reportes</a>
-                    </div>
+                    </div> {% endcomment %}
                 </div>
             </details>
             {% endif %}
@@ -208,6 +208,22 @@ document.addEventListener("DOMContentLoaded", () => {
                         <h3>Mis Aprendices</h3>
                         <p>Consulta los aprendices asignados a tu seguimiento</p>
                         <a href="{% url 'aprendices-instructor' %}" class="btn-sena">Ver Aprendices</a>
+                    </div>
+                </div>
+            </details>
+            {% endif %}
+
+            {% if rol == "Coordinador Empleo" or rol == "Admin" %}
+            <details class="rol-section">
+                <summary><i class="fas fa-clipboard-list"></i> Opciones Agencia publica de empleo</summary>
+                <div class="cards-container">
+                    <div class="feature-card">
+                        <div class="card-icon">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3>Informacion de aprendices</h3>
+                        <p>Consulta la informacion actulizada de los aprendices</p>
+                        <a href="{% url 'agencia-publica-empleo' %}" class="btn-sena">Ver Aprendices</a>
                     </div>
                 </div>
             </details>

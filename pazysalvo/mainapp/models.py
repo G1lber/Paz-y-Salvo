@@ -69,7 +69,7 @@ class Usuario(models.Model):
     id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.SET_NULL, null=True)
 
     # 🔥 Nuevos campos
-    actualizo_datos = models.BooleanField(default=False)
+    datos_actualizados = models.BooleanField(default=False)
     resultados = models.BooleanField(default=False)
     tyt = models.BooleanField(default=False)
 

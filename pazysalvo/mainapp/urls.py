@@ -33,6 +33,6 @@ urlpatterns = [
     path('prestarlibro/', views.prestarlibro, name='prestar-libro'),
     path('pendientes-biblioteca/', views.reportes_biblioteca, name='pendientes-biblioteca'),
     path('eliminar-prestamo/<int:id>/', views.eliminar_libro, name='eliminar_prestamo'),
-    
+    path('actualizar-datos/', views.actualizar_datos_aprendiz, name='actualizar_datos_aprendiz'),
 ]
 

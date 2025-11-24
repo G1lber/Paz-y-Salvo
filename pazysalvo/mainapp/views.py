@@ -3,7 +3,7 @@ from django.db.models import Prefetch, Max
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Centro, Usuario, Login, Roles, Seguimiento, TipoDoc, Ficha, InstructorxAprendiz, PrestarEquipos, PrestamoLibro
-from .models import PrestamoBienestar, RegistroHoras, Programa
+from .models import PrestamoBienestar, RegistroHoras, Programa, AgEmpleo  # ✅ Importar AgEmpleo
 from .forms import UsuarioForm, SeguimientoForm
 from django.db.models import Q
 from django.db import IntegrityError
@@ -37,6 +37,10 @@ def index(request):
 
         # Guardamos el ID en sesión
         request.session["usuario_id"] = usuario.id
+
+        # ✅ Verificar si tiene datos actualizados
+        if not usuario.datos_actualizados:
+            return redirect("actualizar_datos_aprendiz")
 
         return redirect("pazysalvo")
 
@@ -831,4 +835,56 @@ def eliminar_ficha(request):
             messages.error(request, f"La ficha {ficha_id} no existe")
     
     return redirect('fichas')
+
+def actualizar_datos_aprendiz(request):
+    """
+    Vista que muestra el modal para actualizar datos del aprendiz.
+    Solicita información de AgEmpleo y tipo de documento.
+    """
+    usuario_id = request.session.get("usuario_id")
+
+    if not usuario_id:
+        return redirect("index")
+
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+
+    # Si ya tiene datos actualizados, redirigir a paz y salvo
+    if usuario.datos_actualizados:
+        return redirect("pazysalvo")
+
+    # Obtener o crear registro de AgEmpleo
+    ag_empleo, created = AgEmpleo.objects.get_or_create(id_aprendiz_FK=usuario)
+
+    if request.method == "POST":
+        # ✅ Actualizar tipo de documento
+        tipo_doc_id = request.POST.get("id_tipodoc_FK")
+        if tipo_doc_id:
+            usuario.id_tipodoc_FK_id = tipo_doc_id
+
+        # ✅ Actualizar datos de AgEmpleo
+        ag_empleo.fecha_nacimiento = request.POST.get("fecha_nacimiento")
+        ag_empleo.telefono = request.POST.get("telefono")
+        ag_empleo.telefono_2 = request.POST.get("telefono_2")
+        ag_empleo.correo = request.POST.get("correo")
+        ag_empleo.nombre_empresa = request.POST.get("nombre_empresa")
+        ag_empleo.fecha_inicio_empresa = request.POST.get("fecha_inicio_empresa")
+        ag_empleo.fecha_fin_empresa = request.POST.get("fecha_fin_empresa")
+
+        # ✅ Marcar como actualizado
+        usuario.datos_actualizados = True
+        
+        usuario.save()
+        ag_empleo.save()
+
+        messages.success(request, "Datos actualizados correctamente ✅")
+        return redirect("pazysalvo")
+
+    # Datos para el template
+    tipos_doc = TipoDoc.objects.all()
+
+    return render(request, "aprendiz/actualizar_datos.html", {
+        "usuario": usuario,
+        "ag_empleo": ag_empleo,
+        "tipos_doc": tipos_doc,
+    })
 

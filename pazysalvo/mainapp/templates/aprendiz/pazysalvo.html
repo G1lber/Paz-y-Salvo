@@ -126,10 +126,20 @@
                         <td>Firma</td>
                     </tr>
                     <tr>
-                        <td>agencia pública de empleo</td>
-                        <td>Verificar que está a paz y salvo con almacén</td>
-                        <td><img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150"></td>
-                        <td>Firma</td>
+                        <td>AGENCIA PÚBLICA DE EMPLEO</td>
+                        <td>Verificar que el aprendiz tenga sus datos actualizados en el sistema de empleo</td>
+                        <td>
+                            {% if usuario.datos_actualizados %}
+                                <img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">
+                            {% else %}
+                                <img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if  usuario.datos_actualizados %}
+                                Firmado
+                            {% endif %}
+                        </td>
                     </tr>
                 </tbody>
             </table>

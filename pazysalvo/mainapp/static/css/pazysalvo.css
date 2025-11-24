@@ -196,3 +196,112 @@ th, td {
   transform: translateY(-4px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
+
+/* ✅ Estilos para el estado con acción desplegable */
+.estado-con-accion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.estado-con-accion > span {
+  font-weight: 600;
+  color: var(--color-secundario);
+}
+
+/* Contenedor del dropdown */
+.dropdown-estado {
+  position: relative;
+  display: inline-block;
+}
+
+/* Botón de tres puntos */
+.btn-dropdown {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  color: var(--color-secundario);
+}
+
+.btn-dropdown:hover {
+  background-color: rgba(57, 169, 0, 0.1);
+}
+
+.btn-dropdown svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Menú desplegable */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+  margin-top: 5px;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Item del dropdown */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: var(--color-secundario);
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+  border-radius: 6px;
+  margin: 4px;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(57, 169, 0, 0.1);
+  color: var(--color-principal);
+}
+
+.dropdown-item svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .estado-con-accion {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .dropdown-menu {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+  }
+  
+  .dropdown-menu.show {
+    transform: translateX(-50%) translateY(0);
+  }
+}

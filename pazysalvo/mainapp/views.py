@@ -848,9 +848,9 @@ def actualizar_datos_aprendiz(request):
 
     usuario = get_object_or_404(Usuario, id=usuario_id)
 
-    # Si ya tiene datos actualizados, redirigir a paz y salvo
-    if usuario.datos_actualizados:
-        return redirect("pazysalvo")
+    # ✅ Permitir re-actualización: comentar esta verificación
+    # if usuario.datos_actualizados:
+    #     return redirect("pazysalvo")
 
     # Obtener o crear registro de AgEmpleo
     ag_empleo, created = AgEmpleo.objects.get_or_create(id_aprendiz_FK=usuario)

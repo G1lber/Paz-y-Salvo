@@ -136,8 +136,29 @@
                             {% endif %}
                         </td>
                         <td>
-                            {% if  usuario.datos_actualizados %}
-                                Firmado
+                            {% if usuario.datos_actualizados %}
+                                <div class="estado-con-accion">
+                                    <span>Firmado</span>
+                                    <div class="dropdown-estado">
+                                        <button class="btn-dropdown" onclick="toggleDropdown(event)">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="1"></circle>
+                                                <circle cx="12" cy="5" r="1"></circle>
+                                                <circle cx="12" cy="19" r="1"></circle>
+                                            </svg>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a href="{% url 'actualizar_datos_aprendiz' %}" class="dropdown-item">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                </svg>
+                                                Actualizar datos
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            
                             {% endif %}
                         </td>
                     </tr>
@@ -147,5 +168,29 @@
 
         <a  class="download-btn">Descargar Formato</a>
     </div>
+
+    <script>
+        // Función para abrir/cerrar el menú desplegable
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const dropdown = event.currentTarget.nextElementSibling;
+            
+            // Cerrar otros dropdowns abiertos
+            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                if (menu !== dropdown) {
+                    menu.classList.remove('show');
+                }
+            });
+            
+            dropdown.classList.toggle('show');
+        }
+
+        // Cerrar dropdown al hacer clic fuera
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        });
+    </script>
 </body>
 </html>

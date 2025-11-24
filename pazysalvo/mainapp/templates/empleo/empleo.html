@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agencia Pública de Empleo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/empleo.css' %}">
+</head>
+<body>
+
+<div class="aprendices-container">
+
+    <!--  Barra superior -->
+    <div class="barra-superior">
+        <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+        <h1> Agencia Pública de Empleo</h1>
+        <div class="acciones-superior">
+            <a href="{% url 'descargar-reporte-empleo' %}" class="btn-crear">
+                Descargar Reporte
+            </a>
+        </div>
+    </div>
+
+    <!-- Buscador -->
+    <div class="busqueda-container">
+        <form method="get">
+            <input 
+                type="text"
+                name="busqueda"
+                placeholder="Buscar por documento, nombre o empresa..."
+                value="{{ busqueda }}"
+                class="input-busqueda"
+            >
+            <button class="btn-buscar" type="submit">Buscar</button>
+        </form>
+    </div>
+
+    <!--  Tabla -->
+    <div class="table-container">
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Tipo Doc</th>
+                    <th>Documento</th>
+                    <th>Aprendiz</th>
+                    <th>Fecha Nac.</th>
+                    <th>Correo</th>
+                    <th>Teléfono 1</th>
+                    <th>Teléfono 2</th>
+                    <th>Empresa</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for registro in registros %}
+                <tr>
+                    <td>
+                        {% if registro.id_aprendiz_FK.id_tipodoc_FK %}
+                            {{ registro.id_aprendiz_FK.id_tipodoc_FK.nombre_tipo }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    
+                    <td>{{ registro.id_aprendiz_FK.num_doc }}</td>
+                    
+                    <td>{{ registro.id_aprendiz_FK.nombre }} {{ registro.id_aprendiz_FK.apellidos }}</td>
+                    
+                    <td>
+                        {% if registro.fecha_nacimiento %}
+                            {{ registro.fecha_nacimiento|date:"Y-m-d" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    
+                    <td>{{ registro.correo|default:"-" }}</td>
+                    
+                    <td>{{ registro.telefono|default:"-" }}</td>
+                    
+                    <td>{{ registro.telefono_2|default:"-" }}</td>
+                    
+                    <td>{{ registro.nombre_empresa|default:"-" }}</td>
+                    
+                    <td>
+                        {% if registro.fecha_inicio_empresa %}
+                            {{ registro.fecha_inicio_empresa|date:"Y-m-d" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    
+                    <td>
+                        {% if registro.fecha_fin_empresa %}
+                            {{ registro.fecha_fin_empresa|date:"Y-m-d" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                </tr>
+
+            {% empty %}
+                <tr>
+                    <td colspan="10" class="no-data">
+                         No hay registros de empleo disponibles.
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    {% if registros.has_other_pages %}
+    <div class="pagination">
+        {% if registros.has_previous %}
+            <a href="?page=1{% if busqueda %}&busqueda={{ busqueda }}{% endif %}" class="page-link">« Primera</a>
+            <a href="?page={{ registros.previous_page_number }}{% if busqueda %}&busqueda={{ busqueda }}{% endif %}" class="page-link">‹ Anterior</a>
+        {% endif %}
+
+        <span class="page-info">
+            Página {{ registros.number }} de {{ registros.paginator.num_pages }}
+        </span>
+
+        {% if registros.has_next %}
+            <a href="?page={{ registros.next_page_number }}{% if busqueda %}&busqueda={{ busqueda }}{% endif %}" class="page-link">Siguiente ›</a>
+            <a href="?page={{ registros.paginator.num_pages }}{% if busqueda %}&busqueda={{ busqueda }}{% endif %}" class="page-link">Última »</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</div>
+</body>
+</html>

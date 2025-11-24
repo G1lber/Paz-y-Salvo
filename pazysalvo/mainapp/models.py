@@ -69,6 +69,7 @@ class Usuario(models.Model):
     id_ficha_FK = models.ForeignKey(Ficha, on_delete=models.SET_NULL, null=True)
 
     # 🔥 Nuevos campos
+    actualizo_datos = models.BooleanField(default=False)
     resultados = models.BooleanField(default=False)
     tyt = models.BooleanField(default=False)
 
@@ -249,6 +250,20 @@ class InstructorxAprendiz(models.Model):
 
     def __str__(self):
         return f'Instructor: {self.id_instructor_FK} - Aprendiz: {self.id_aprendiz_FK}'
+
+
+class AgEmpleo(models.Model):
+    id_aprendiz_FK = models.ForeignKey('Usuario', on_delete=models.CASCADE, null=True)
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    telefono = models.CharField(max_length=20, null=True, blank=True)
+    telefono_2 = models.CharField(max_length=20, null=True, blank=True)
+    correo = models.EmailField(max_length=254, null=True, blank=True)
+    nombre_empresa = models.CharField(max_length=200, null=True, blank=True)
+    fecha_inicio_empresa = models.DateField(null=True, blank=True)
+    fecha_fin_empresa = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f'Empleo - {self.id_aprendiz_FK} en {self.nombre_empresa}'
 
 
 @receiver(pre_save, sender=Usuario)

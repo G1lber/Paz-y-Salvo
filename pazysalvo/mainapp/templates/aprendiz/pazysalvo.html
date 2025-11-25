@@ -176,7 +176,15 @@
             </table>
         </div>
 
-        <a  class="download-btn">Descargar Formato</a>
+        {% if cumple_todos_requisitos %}
+            <a class="download-btn"> Descargar Formato</a>
+        {% else %}
+            <div style="text-align: center; margin-top: 40px; padding: 20px; background-color: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                <p style="color: #856404; font-weight: 600; margin: 0;">
+                    ⚠️ Debes cumplir con todos los requisitos para descargar el formato de Paz y Salvo.
+                </p>
+            </div>
+        {% endif %}
     </div>
 
     <script>

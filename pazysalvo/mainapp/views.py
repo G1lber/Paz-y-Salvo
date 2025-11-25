@@ -237,16 +237,33 @@ def pazysalvo(request):
     # Validación: ¿Tiene préstamos en biblioteca?
     tiene_prestamos = PrestamoLibro.objects.filter(id_usuario_FK=usuario).exists()
     
-    #  Validación: ¿Tiene préstamos en almacén?
+    # Validación: ¿Tiene préstamos en almacén?
     tiene_prestamos_almacen = PrestarEquipos.objects.filter(id_usuario_FK=usuario).exists()
+    
+    # Obtener estados individuales
+    cumple_horas = usuario.cumple_horas_bienestar()
+    tiene_bitacoras = usuario.tiene_bitacoras_completas()
+    cumple_academicos = usuario.cumple_requisitos_academicos()
+    tiene_datos_actualizados = usuario.datos_actualizados
+    
+    # ✅ Verificar si cumple TODOS los requisitos
+    cumple_todos_requisitos = (
+        cumple_academicos and 
+        tiene_bitacoras and 
+        cumple_horas and 
+        not tiene_prestamos and 
+        not tiene_prestamos_almacen and 
+        tiene_datos_actualizados
+    )
 
     return render(request, "aprendiz/pazysalvo.html", {
         "usuario": usuario,
         "tiene_prestamos": tiene_prestamos,
-        "tiene_prestamos_almacen": tiene_prestamos_almacen,  #  Nueva variable
-        "cumple_horas_bienestar": usuario.cumple_horas_bienestar(),
-        "tiene_bitacoras_completas": usuario.tiene_bitacoras_completas(),
-        "cumple_requisitos_academicos": usuario.cumple_requisitos_academicos(),
+        "tiene_prestamos_almacen": tiene_prestamos_almacen,
+        "cumple_horas_bienestar": cumple_horas,
+        "tiene_bitacoras_completas": tiene_bitacoras,
+        "cumple_requisitos_academicos": cumple_academicos,
+        "cumple_todos_requisitos": cumple_todos_requisitos,  # ✅ Nueva variable
     })
 
 

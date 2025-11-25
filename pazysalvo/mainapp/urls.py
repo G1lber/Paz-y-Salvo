@@ -36,5 +36,6 @@ urlpatterns = [
     path('actualizar-datos/', views.actualizar_datos_aprendiz, name='actualizar_datos_aprendiz'),
     path('agencia-publica-empleo/', views.agencia_empleo, name='agencia-publica-empleo'),
     path('descargar-reporte-empleo/', views.descargar_reporte_empleo, name='descargar-reporte-empleo'),
+    path('descargar-paz-y-salvo/', views.descargar_paz_y_salvo, name='descargar-paz-y-salvo'),
 ]
 

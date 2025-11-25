@@ -16,13 +16,15 @@ from django.utils import timezone
 from datetime import datetime, date
 from django.db.models import Sum
 from django.core.paginator import Paginator
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 import pandas as pd
 from django.contrib.auth.decorators import login_required
 from datetime import date
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
+import os
+from django.conf import settings
 
 # Create your views here.
 def index(request):
@@ -1248,4 +1250,110 @@ def descargar_reporte_empleo(request):
     wb.save(response)
 
     return response
+
+
+def descargar_paz_y_salvo(request):
+    """
+    Vista que descarga la plantilla de Paz y Salvo con los datos del usuario
+    """
+    usuario_id = request.session.get("usuario_id")
+    
+    if not usuario_id:
+        return redirect("index")
+    
+    # Verificar que el usuario cumple con todos los requisitos
+    usuario = Usuario.objects.get(id=usuario_id)
+    tiene_prestamos = PrestamoLibro.objects.filter(id_usuario_FK=usuario).exists()
+    tiene_prestamos_almacen = PrestarEquipos.objects.filter(id_usuario_FK=usuario).exists()
+    
+    cumple_todos_requisitos = (
+        usuario.cumple_requisitos_academicos() and 
+        usuario.tiene_bitacoras_completas() and 
+        usuario.cumple_horas_bienestar() and 
+        not tiene_prestamos and 
+        not tiene_prestamos_almacen and 
+        usuario.datos_actualizados
+    )
+    
+    # Si no cumple todos los requisitos, redirigir con mensaje de error
+    if not cumple_todos_requisitos:
+        messages.error(request, "No cumples con todos los requisitos para descargar el Paz y Salvo.")
+        return redirect("pazysalvo")
+    
+    # Ruta del archivo de plantilla
+    file_path = os.path.join(settings.BASE_DIR, 'mainapp', 'static', 'plantilla', 'paz_y_salvo.xlsx')
+    
+    # Verificar que el archivo existe
+    if not os.path.exists(file_path):
+        messages.error(request, f"No se encontró la plantilla del Paz y Salvo en: {file_path}")
+        return redirect("pazysalvo")
+    
+    try:
+        # ✅ Cargar el workbook de la plantilla
+        wb = load_workbook(file_path)
+        ws = wb.active
+        
+        # ✅ Preparar los datos del usuario
+        fecha_actual = date.today().strftime("%d/%m/%Y")
+        nombre_completo = f"{usuario.nombre} {usuario.apellidos}"
+        tipo_doc = usuario.id_tipodoc_FK.nombre_tipo if usuario.id_tipodoc_FK else "N/A"
+        numero_doc = str(usuario.num_doc)
+        
+        # Datos de ficha y programa
+        if usuario.id_ficha_FK and usuario.id_ficha_FK.programa_FK:
+            programa_nombre = usuario.id_ficha_FK.programa_FK.nombre_programa
+            nivel_programa = usuario.id_ficha_FK.programa_FK.get_tipo_programa_display()
+            numero_ficha = str(usuario.id_ficha_FK.num_ficha)
+        else:
+            programa_nombre = "Sin programa asignado"
+            nivel_programa = "N/A"
+            numero_ficha = "Sin ficha"
+        
+        # ✅ Diccionario de reemplazos
+        reemplazos = {
+            '{{FECHA}}': fecha_actual,
+            '{{NOMBRE}}': nombre_completo,
+            '{{TIPODOC}}': tipo_doc,
+            '{{NUMERODOC}}': numero_doc,
+            '{{PROGRAMAFORMACION}}': programa_nombre,
+            '{{NIVEL}}': nivel_programa,
+            '{{NUMEROFICHA}}': numero_ficha,
+        }
+        
+        # ✅ Recorrer todas las celdas y reemplazar etiquetas
+        for row in ws.iter_rows():
+            for cell in row:
+                if cell.value and isinstance(cell.value, str):
+                    for etiqueta, valor in reemplazos.items():
+                        if etiqueta in cell.value:
+                            cell.value = cell.value.replace(etiqueta, valor)
+                            
+                            # Aplicar estilo SOLO al texto reemplazado
+                            cell.font = Font(
+                                name="Calibri",   # Puedes cambiar la fuente
+                                size=12,          # Tamaño más grande
+                                bold=False         # Opcional (negrita)
+                            )
+        
+        # ✅ Guardar el archivo modificado en memoria
+        from io import BytesIO
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+        
+        # ✅ Crear respuesta HTTP con el archivo
+        response = HttpResponse(
+            output.read(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        
+        # Nombre del archivo descargado
+        nombre_archivo = f'Paz_y_Salvo_{usuario.nombre}_{usuario.apellidos}_{date.today().strftime("%Y%m%d")}.xlsx'
+        response['Content-Disposition'] = f'attachment; filename="{nombre_archivo}"'
+        
+        return response
+    
+    except Exception as e:
+        messages.error(request, f"Error al procesar el archivo: {str(e)}")
+        return redirect("pazysalvo")
 

@@ -236,13 +236,17 @@ def pazysalvo(request):
 
     # Validación: ¿Tiene préstamos en biblioteca?
     tiene_prestamos = PrestamoLibro.objects.filter(id_usuario_FK=usuario).exists()
+    
+    #  Validación: ¿Tiene préstamos en almacén?
+    tiene_prestamos_almacen = PrestarEquipos.objects.filter(id_usuario_FK=usuario).exists()
 
     return render(request, "aprendiz/pazysalvo.html", {
         "usuario": usuario,
         "tiene_prestamos": tiene_prestamos,
-        "cumple_horas_bienestar": usuario.cumple_horas_bienestar(),  # Nueva variable
-        "tiene_bitacoras_completas": usuario.tiene_bitacoras_completas(),  # Nueva variable
-        "cumple_requisitos_academicos": usuario.cumple_requisitos_academicos(),  # Nueva variable
+        "tiene_prestamos_almacen": tiene_prestamos_almacen,  #  Nueva variable
+        "cumple_horas_bienestar": usuario.cumple_horas_bienestar(),
+        "tiene_bitacoras_completas": usuario.tiene_bitacoras_completas(),
+        "cumple_requisitos_academicos": usuario.cumple_requisitos_academicos(),
     })
 
 

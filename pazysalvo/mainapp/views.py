@@ -1277,7 +1277,7 @@ def descargar_paz_y_salvo(request):
     
     # Si no cumple todos los requisitos, redirigir con mensaje de error
     if not cumple_todos_requisitos:
-        messages.error(request, "No cumples con todos los requisitos para descargar el Paz y Salvo.")
+        # messages.error(request, "No cumples con todos los requisitos para descargar el Paz y Salvo.")
         return redirect("pazysalvo")
     
     # Ruta del archivo de plantilla
@@ -1285,7 +1285,7 @@ def descargar_paz_y_salvo(request):
     
     # Verificar que el archivo existe
     if not os.path.exists(file_path):
-        messages.error(request, f"No se encontró la plantilla del Paz y Salvo en: {file_path}")
+        # messages.error(request, f"No se encontró la plantilla del Paz y Salvo en: {file_path}")
         return redirect("pazysalvo")
     
     try:

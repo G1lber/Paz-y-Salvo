@@ -18,9 +18,15 @@
         <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
         <h1> Agencia Pública de Empleo</h1>
         <div class="acciones-superior">
-            <a href="{% url 'descargar-reporte-empleo' %}" class="btn-crear">
-                Descargar Reporte
-            </a>
+            <form method="get" action="{% url 'descargar-reporte-empleo' %}" style="display: flex; gap: 10px; align-items: center;">
+                <select name="programa" style="padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                    <option value="">-- Todos los programas --</option>
+                    {% for programa in programas_unicos %}
+                        <option value="{{ programa }}">{{ programa }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn-crear" style="margin: 0;"> Descargar Reporte</button>
+            </form>
         </div>
     </div>
 

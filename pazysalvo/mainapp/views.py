@@ -1136,15 +1136,20 @@ def agencia_empleo(request):
     page_number = request.GET.get('page')
     registros_page = paginator.get_page(page_number)
 
+    # Obtener todos los programas para el select del reporte
+    programas = Programa.objects.all()
+
     return render(request, 'empleo/empleo.html', {
         'registros': registros_page,
         'busqueda': busqueda,
+        'programas': programas,  # ✅ Pasar programas al template
     })
 
 
 def descargar_reporte_empleo(request):
     """
     Vista que genera y descarga un archivo Excel con todos los datos de empleo.
+    Permite filtrar por programa de formación.
     """
     # Obtener todos los registros sin paginación
     registros_empleo = AgEmpleo.objects.select_related(
@@ -1152,7 +1157,15 @@ def descargar_reporte_empleo(request):
         'id_aprendiz_FK__id_tipodoc_FK',
         'id_aprendiz_FK__id_ficha_FK',
         'id_aprendiz_FK__id_ficha_FK__programa_FK'
-    ).order_by('id_aprendiz_FK__apellidos', 'id_aprendiz_FK__nombre')
+    ).all()
+    
+    # ✅ Filtrar por programa si se proporciona
+    programa_id = request.GET.get('programa')
+    
+    if programa_id:
+        registros_empleo = registros_empleo.filter(id_aprendiz_FK__id_ficha_FK__programa_FK__id_programa=programa_id)
+    
+    registros_empleo = registros_empleo.order_by('id_aprendiz_FK__apellidos', 'id_aprendiz_FK__nombre')
 
     # Crear un nuevo libro de Excel
     wb = Workbook()

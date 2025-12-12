@@ -1136,20 +1136,29 @@ def agencia_empleo(request):
     page_number = request.GET.get('page')
     registros_page = paginator.get_page(page_number)
 
-    # Obtener todos los programas para el select del reporte
-    programas = Programa.objects.all()
+    # ✅ Obtener nombres únicos de programas (limpiando variantes)
+    import re
+    todos_programas = Programa.objects.all().values_list('nombre_programa', flat=True)
+    
+    # Función para limpiar nombres (eliminar números, "Tarde", "Mañana", etc.)
+    def limpiar_nombre_programa(nombre):
+        # Eliminar palabras como "Tarde", "Mañana", "Noche", "v0", "v1", etc.
+        nombre = re.sub(r'\s+(Tarde|Mañana|Noche|v\d+|\d+)$', '', nombre, flags=re.IGNORECASE)
+        return nombre.strip()
+    
+    programas_unicos = sorted(set(limpiar_nombre_programa(p) for p in todos_programas if p))
 
     return render(request, 'empleo/empleo.html', {
         'registros': registros_page,
         'busqueda': busqueda,
-        'programas': programas,  # ✅ Pasar programas al template
+        'programas_unicos': programas_unicos,  # ✅ Pasar nombres únicos al template
     })
 
 
 def descargar_reporte_empleo(request):
     """
     Vista que genera y descarga un archivo Excel con todos los datos de empleo.
-    Permite filtrar por programa de formación.
+    Permite filtrar por programa de formación (agrupa versiones).
     """
     # Obtener todos los registros sin paginación
     registros_empleo = AgEmpleo.objects.select_related(
@@ -1159,11 +1168,11 @@ def descargar_reporte_empleo(request):
         'id_aprendiz_FK__id_ficha_FK__programa_FK'
     ).all()
     
-    # ✅ Filtrar por programa si se proporciona
-    programa_id = request.GET.get('programa')
+    # ✅ Filtrar por nombre de programa si se proporciona
+    programa_nombre = request.GET.get('programa')
     
-    if programa_id:
-        registros_empleo = registros_empleo.filter(id_aprendiz_FK__id_ficha_FK__programa_FK__id_programa=programa_id)
+    if programa_nombre:
+        registros_empleo = registros_empleo.filter(id_aprendiz_FK__id_ficha_FK__programa_FK__nombre_programa__icontains=programa_nombre)
     
     registros_empleo = registros_empleo.order_by('id_aprendiz_FK__apellidos', 'id_aprendiz_FK__nombre')
 

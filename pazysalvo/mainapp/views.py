@@ -805,96 +805,140 @@ def pendientesalmacen(request):
 
 
 def prestarlibro(request):
-    if request.method == 'POST' and 'subir_excel' in request.POST:
-        archivo = request.FILES.get('archivo_excel')
-        if not archivo:
-            messages.error(request, "Debes seleccionar un archivo Excel.")
+    if request.method == 'POST':
+        
+        # ====== FORMULARIO MANUAL ======
+        if 'aprendiz' in request.POST and 'libro' in request.POST and 'fecha_prestamo' in request.POST:
+            documento = request.POST.get('aprendiz')
+            titulo = request.POST.get('libro')
+            fecha_prestamo = request.POST.get('fecha_prestamo')
+            centro_formacion = request.POST.get('centro_formacion') or None
+            tipo_material = request.POST.get('tipo_material') or None
+            tiempo_prestamo = request.POST.get('tiempo_prestamo') or 0
+
+            # Convertir documento a entero
+            try:
+                documento = int(str(documento).strip())
+            except:
+                messages.error(request, "Documento inválido.")
+                return redirect('prestar-libro')
+
+            # Convertir fecha a datetime.date
+            try:
+                fecha_prestamo = pd.to_datetime(fecha_prestamo).date()
+            except:
+                messages.error(request, "Fecha inválida.")
+                return redirect('prestar-libro')
+
+            # Extraer número de días si tiempo_prestamo viene como texto
+            try:
+                numeros = re.findall(r'\d+', str(tiempo_prestamo))
+                if numeros:
+                    tiempo_prestamo = int(numeros[0])
+                else:
+                    tiempo_prestamo = 0
+            except:
+                tiempo_prestamo = 0
+
+            # Buscar usuario
+            try:
+                usuario = Usuario.objects.get(num_doc=documento)
+            except Usuario.DoesNotExist:
+                messages.error(request, f"No se encontró usuario con documento {documento}")
+                return redirect('prestar-libro')
+
+            # Crear registro
+            PrestamoLibro.objects.create(
+                id_usuario_FK=usuario,
+                fecha_prestamo=fecha_prestamo,
+                centro_formacion=centro_formacion,
+                titulo_libro=titulo,
+                tipo_material=tipo_material,
+                tiempo_prestamo=tiempo_prestamo
+            )
+            messages.success(request, "Préstamo registrado correctamente.")
             return redirect('prestar-libro')
 
-        try:
-            # Leer el Excel
-            df = pd.read_excel(archivo)
+        # ====== FORMULARIO EXCEL ======
+        elif 'subir_excel' in request.POST:
+            archivo = request.FILES.get('archivo_excel')
+            if not archivo:
+                messages.error(request, "Debes seleccionar un archivo Excel.")
+                return redirect('prestar-libro')
 
-            # Columnas que realmente vamos a usar
-            columnas_usadas = {
-                'Fecha de la transacción': 'fecha_prestamo',
-                'ID usuario': 'id_usuario_FK',
-                'Centro de Formación': 'centro_formacion',
-                'Tipo de material': 'tipo_material',
-                'Título': 'titulo_libro',
-                'Tiempo de préstamo': 'tiempo_prestamo'
-            }
+            try:
+                df = pd.read_excel(archivo)
 
-            # Verificar que el Excel tenga las columnas necesarias
-            for col in columnas_usadas.keys():
-                if col not in df.columns:
-                    messages.error(request, f"El archivo Excel debe tener la columna: {col}")
-                    return redirect('prestar-libro')
+                columnas_usadas = {
+                    'Fecha de la transacción': 'fecha_prestamo',
+                    'ID usuario': 'id_usuario_FK',
+                    'Centro de Formación': 'centro_formacion',
+                    'Tipo de material': 'tipo_material',
+                    'Título': 'titulo_libro',
+                    'Tiempo de préstamo': 'tiempo_prestamo'
+                }
 
-            registros_guardados = 0  # contador de registros guardados
+                # Verificar columnas
+                for col in columnas_usadas.keys():
+                    if col not in df.columns:
+                        messages.error(request, f"El archivo Excel debe tener la columna: {col}")
+                        return redirect('prestar-libro')
 
-            # Iterar por cada fila
-            for _, fila in df.iterrows():
-                # Obtener valores
-                fecha_transaccion = fila.get('Fecha de la transacción')
-                documento = fila.get('ID usuario')
-                centro_formacion = fila.get('Centro de Formación')
-                titulo = fila.get('Título')
-                tipo_material = fila.get('Tipo de material')
-                tiempo_texto = fila.get('Tiempo de préstamo')
+                registros_guardados = 0
+                for _, fila in df.iterrows():
+                    fecha_transaccion = fila.get('Fecha de la transacción')
+                    documento = fila.get('ID usuario')
+                    centro_formacion = fila.get('Centro de Formación')
+                    titulo = fila.get('Título')
+                    tipo_material = fila.get('Tipo de material')
+                    tiempo_texto = fila.get('Tiempo de préstamo')
 
-                # Validar datos esenciales
-                if pd.isna(fecha_transaccion) or pd.isna(documento) or pd.isna(titulo):
-                    continue
+                    if pd.isna(fecha_transaccion) or pd.isna(documento) or pd.isna(titulo):
+                        continue
 
-                # Convertir documento a entero
-                try:
-                    documento = int(float(str(documento).strip()))
-                except:
-                    continue  # ignorar fila si documento inválido
+                    try:
+                        documento = int(float(str(documento).strip()))
+                    except:
+                        continue
 
-                # Convertir fecha a datetime.date
-                try:
-                    fecha_transaccion = pd.to_datetime(fecha_transaccion).date()
-                except:
-                    continue  # ignorar fila si fecha inválida
+                    try:
+                        fecha_transaccion = pd.to_datetime(fecha_transaccion).date()
+                    except:
+                        continue
 
-                # Limpiar campos de texto de NaN
-                centro_formacion = None if pd.isna(centro_formacion) else str(centro_formacion).strip()
-                titulo = str(titulo).strip()
-                tipo_material = None if pd.isna(tipo_material) else str(tipo_material).strip()
+                    centro_formacion = None if pd.isna(centro_formacion) else str(centro_formacion).strip()
+                    titulo = str(titulo).strip()
+                    tipo_material = None if pd.isna(tipo_material) else str(tipo_material).strip()
 
-                # Extraer número de días de "Tiempo de préstamo"
-                tiempo_prestamo = 0
-                if pd.notna(tiempo_texto):
-                    numeros = re.findall(r'\d+', str(tiempo_texto))
-                    if numeros:
-                        tiempo_prestamo = int(numeros[0])
+                    tiempo_prestamo = 0
+                    if pd.notna(tiempo_texto):
+                        numeros = re.findall(r'\d+', str(tiempo_texto))
+                        if numeros:
+                            tiempo_prestamo = int(numeros[0])
 
-                # Buscar usuario
-                try:
-                    usuario = Usuario.objects.get(num_doc=documento)
-                except Usuario.DoesNotExist:
-                    continue  # ignorar fila si usuario no existe
+                    try:
+                        usuario = Usuario.objects.get(num_doc=documento)
+                    except Usuario.DoesNotExist:
+                        continue
 
-                # Crear registro
-                PrestamoLibro.objects.create(
-                    id_usuario_FK=usuario,
-                    fecha_prestamo=fecha_transaccion,
-                    centro_formacion=centro_formacion,
-                    titulo_libro=titulo,
-                    tipo_material=tipo_material,
-                    tiempo_prestamo=tiempo_prestamo
-                )
-                registros_guardados += 1
+                    PrestamoLibro.objects.create(
+                        id_usuario_FK=usuario,
+                        fecha_prestamo=fecha_transaccion,
+                        centro_formacion=centro_formacion,
+                        titulo_libro=titulo,
+                        tipo_material=tipo_material,
+                        tiempo_prestamo=tiempo_prestamo
+                    )
+                    registros_guardados += 1
 
-            messages.success(request, f"Archivo procesado correctamente. {registros_guardados} registros guardados.")
+                messages.success(request, f"Archivo procesado correctamente. {registros_guardados} registros guardados.")
 
-        except Exception as e:
-            messages.error(request, f"Error al procesar el archivo: {e}")
+            except Exception as e:
+                messages.error(request, f"Error al procesar el archivo: {e}")
 
-        return redirect('prestar-libro')
+            return redirect('prestar-libro')
 
+    # Renderizar template si GET
     return render(request, 'biblioteca/prestarlibro.html')
 
 def reportes_biblioteca(request):

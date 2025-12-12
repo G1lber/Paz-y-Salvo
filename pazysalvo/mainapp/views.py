@@ -24,6 +24,7 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
 import os
+import re
 from django.conf import settings
 
 # Create your views here.
@@ -804,92 +805,97 @@ def pendientesalmacen(request):
 
 
 def prestarlibro(request):
-    if request.method == 'POST':
-        # 🔹 Si viene un archivo Excel
-        if 'subir_excel' in request.POST:
-            archivo = request.FILES.get('archivo_excel')
-            if not archivo:
-                messages.error(request, "Debes seleccionar un archivo Excel.")
-                return redirect('prestar-libro')
-
-            try:
-                df = pd.read_excel(archivo)
-
-                # Se espera que el Excel tenga: documento, titulo_libro, fecha_prestamo, fecha_devolucion (opcional)
-                for _, fila in df.iterrows():
-                    documento = str(fila.get('documento')).strip() if fila.get('documento') else None
-                    titulo_libro = fila.get('titulo_libro')
-                    fecha_prestamo = fila.get('fecha_prestamo')
-                    fecha_devolucion = fila.get('fecha_devolucion')
-
-                    # Omitir filas vacías o incompletas
-                    if not documento or not titulo_libro or pd.isna(fecha_prestamo):
-                        continue
-
-                    # ✅ Asegurar que las fechas sean del tipo date (no Timestamp)
-                    if pd.notna(fecha_prestamo) and hasattr(fecha_prestamo, 'date'):
-                        fecha_prestamo = fecha_prestamo.date()
-                    if pd.notna(fecha_devolucion) and hasattr(fecha_devolucion, 'date'):
-                        fecha_devolucion = fecha_devolucion.date()
-
-                    try:
-                        usuario = Usuario.objects.get(num_doc=documento)
-
-                        # ✅ Determinar estado automáticamente según fechas
-                        hoy = date.today()
-                        if fecha_devolucion:
-                            if fecha_devolucion < hoy:
-                                estado = "Vencido"
-                            elif fecha_devolucion == hoy:
-                                estado = "Vence hoy"
-                            else:
-                                estado = "Activo"
-                        else:
-                            estado = "Activo"
-
-                        PrestamoLibro.objects.create(
-                            id_usuario_FK=usuario,
-                            titulo_libro=titulo_libro,
-                            fecha_prestamo=fecha_prestamo,
-                            fecha_devolucion=fecha_devolucion,
-                            estado=estado
-                        )
-
-                    except Usuario.DoesNotExist:
-                        messages.warning(request, f"No se encontró usuario con documento {documento}")
-
-                messages.success(request, "Archivo procesado correctamente.")
-            except Exception as e:
-                messages.error(request, f"Error al procesar el archivo: {e}")
-
+    if request.method == 'POST' and 'subir_excel' in request.POST:
+        archivo = request.FILES.get('archivo_excel')
+        if not archivo:
+            messages.error(request, "Debes seleccionar un archivo Excel.")
             return redirect('prestar-libro')
 
-        # 🔹 Si se registra manualmente
-        else:
-            documento = request.POST.get('aprendiz')
-            titulo_libro = request.POST.get('libro')
-            fecha_prestamo = request.POST.get('fecha_prestamo')
+        try:
+            # Leer el Excel
+            df = pd.read_excel(archivo)
 
-            if not (documento and titulo_libro and fecha_prestamo):
-                messages.error(request, "Todos los campos son obligatorios.")
-                return redirect('prestar-libro')
+            # Columnas que realmente vamos a usar
+            columnas_usadas = {
+                'Fecha de la transacción': 'fecha_prestamo',
+                'ID usuario': 'id_usuario_FK',
+                'Centro de Formación': 'centro_formacion',
+                'Tipo de material': 'tipo_material',
+                'Título': 'titulo_libro',
+                'Tiempo de préstamo': 'tiempo_prestamo'
+            }
 
-            try:
-                usuario = Usuario.objects.get(num_doc=documento)
+            # Verificar que el Excel tenga las columnas necesarias
+            for col in columnas_usadas.keys():
+                if col not in df.columns:
+                    messages.error(request, f"El archivo Excel debe tener la columna: {col}")
+                    return redirect('prestar-libro')
+
+            registros_guardados = 0  # contador de registros guardados
+
+            # Iterar por cada fila
+            for _, fila in df.iterrows():
+                # Obtener valores
+                fecha_transaccion = fila.get('Fecha de la transacción')
+                documento = fila.get('ID usuario')
+                centro_formacion = fila.get('Centro de Formación')
+                titulo = fila.get('Título')
+                tipo_material = fila.get('Tipo de material')
+                tiempo_texto = fila.get('Tiempo de préstamo')
+
+                # Validar datos esenciales
+                if pd.isna(fecha_transaccion) or pd.isna(documento) or pd.isna(titulo):
+                    continue
+
+                # Convertir documento a entero
+                try:
+                    documento = int(float(str(documento).strip()))
+                except:
+                    continue  # ignorar fila si documento inválido
+
+                # Convertir fecha a datetime.date
+                try:
+                    fecha_transaccion = pd.to_datetime(fecha_transaccion).date()
+                except:
+                    continue  # ignorar fila si fecha inválida
+
+                # Limpiar campos de texto de NaN
+                centro_formacion = None if pd.isna(centro_formacion) else str(centro_formacion).strip()
+                titulo = str(titulo).strip()
+                tipo_material = None if pd.isna(tipo_material) else str(tipo_material).strip()
+
+                # Extraer número de días de "Tiempo de préstamo"
+                tiempo_prestamo = 0
+                if pd.notna(tiempo_texto):
+                    numeros = re.findall(r'\d+', str(tiempo_texto))
+                    if numeros:
+                        tiempo_prestamo = int(numeros[0])
+
+                # Buscar usuario
+                try:
+                    usuario = Usuario.objects.get(num_doc=documento)
+                except Usuario.DoesNotExist:
+                    continue  # ignorar fila si usuario no existe
+
+                # Crear registro
                 PrestamoLibro.objects.create(
                     id_usuario_FK=usuario,
-                    titulo_libro=titulo_libro,
-                    fecha_prestamo=fecha_prestamo,
-                    estado='Activo'
+                    fecha_prestamo=fecha_transaccion,
+                    centro_formacion=centro_formacion,
+                    titulo_libro=titulo,
+                    tipo_material=tipo_material,
+                    tiempo_prestamo=tiempo_prestamo
                 )
-                messages.success(request, f"Se registró el préstamo del libro '{titulo_libro}' al aprendiz {usuario.nombre}.")
-            except Usuario.DoesNotExist:
-                messages.error(request, "No existe un aprendiz con ese documento.")
+                registros_guardados += 1
 
-            return redirect('prestar-libro')
+            messages.success(request, f"Archivo procesado correctamente. {registros_guardados} registros guardados.")
+
+        except Exception as e:
+            messages.error(request, f"Error al procesar el archivo: {e}")
+
+        return redirect('prestar-libro')
 
     return render(request, 'biblioteca/prestarlibro.html')
-
 
 def reportes_biblioteca(request):
     busqueda = request.GET.get("busqueda", "")

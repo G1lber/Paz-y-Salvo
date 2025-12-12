@@ -189,15 +189,9 @@ class PrestamoLibro(models.Model):
     id_usuario_FK = models.ForeignKey('Usuario', on_delete=models.CASCADE, null=True)
     titulo_libro = models.CharField(max_length=200)
     fecha_prestamo = models.DateField()
-    estado = models.CharField(
-        max_length=20,
-        choices=[
-            ('Pendiente', 'Pendiente'),
-            ('Activo', 'Activo'),
-            ('Vencido', 'Vencido')
-        ],
-        default='Pendiente'
-    )
+    centro_formacion = models.CharField(max_length=200, null=True, blank=True)
+    tipo_material = models.CharField(max_length=100, null=True, blank=True)
+    tiempo_prestamo = models.IntegerField(null=True, blank=True, help_text="Días de préstamo")
 
     def __str__(self):
         return f'{self.titulo_libro} - {self.id_usuario_FK}'

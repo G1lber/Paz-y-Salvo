@@ -1123,7 +1123,9 @@ def agencia_empleo(request):
             Q(id_aprendiz_FK__nombre__icontains=busqueda) |
             Q(id_aprendiz_FK__apellidos__icontains=busqueda) |
             Q(nombre_empresa__icontains=busqueda) |
-            Q(correo__icontains=busqueda)
+            Q(correo__icontains=busqueda) |
+            Q(id_aprendiz_FK__id_ficha_FK__programa_FK__nombre_programa__icontains=busqueda) |
+            Q(id_aprendiz_FK__id_ficha_FK__programa_FK__tipo_programa__icontains=busqueda)
         )
 
     # Ordenar por apellido del aprendiz

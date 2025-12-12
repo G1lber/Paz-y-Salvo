@@ -50,8 +50,8 @@
                     <th>Correo</th>
                     <th>Teléfono 1</th>
                     <th>Teléfono 2</th>
-                    <th>Empresa</th>
-                    <th>Fecha Inicio</th>
+                    <th>Nivel</th>
+                    <th>Programa</th>
                     <th>Fecha Fin</th>
                 </tr>
             </thead>
@@ -85,11 +85,17 @@
                     
                     <td>{{ registro.telefono_2|default:"-" }}</td>
                     
-                    <td>{{ registro.nombre_empresa|default:"-" }}</td>
+                    <td>
+                        {% if registro.id_aprendiz_FK.id_ficha_FK and registro.id_aprendiz_FK.id_ficha_FK.programa_FK %}
+                            {{ registro.id_aprendiz_FK.id_ficha_FK.programa_FK.get_tipo_programa_display }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
                     
                     <td>
-                        {% if registro.fecha_inicio_empresa %}
-                            {{ registro.fecha_inicio_empresa|date:"Y-m-d" }}
+                        {% if registro.id_aprendiz_FK.id_ficha_FK and registro.id_aprendiz_FK.id_ficha_FK.programa_FK %}
+                            {{ registro.id_aprendiz_FK.id_ficha_FK.programa_FK.nombre_programa }}
                         {% else %}
                             -
                         {% endif %}

@@ -1,9 +1,21 @@
 from django.contrib import admin
-from .models import Usuario, Login, Ficha, Roles,TipoDoc
+from .models import *
 
-admin.site.register(Ficha)
+admin.site.register(Centro)
 admin.site.register(Roles)
-admin.site.register(Usuario)
 admin.site.register(TipoDoc)
+admin.site.register(Programa)
+admin.site.register(Ficha)
+admin.site.register(Usuario)
 admin.site.register(Login)
-# Register your models here.
+admin.site.register(PazYSalvo)
+admin.site.register(ControlPazYSalvo)
+admin.site.register(Seguimiento)
+admin.site.register(InstructorxAprendiz)
+admin.site.register(PrestarEquipos)
+admin.site.register(RegistroHoras)
+admin.site.register(PrestamoLibro)
+admin.site.register(PrestamoBienestar)
+admin.site.register(ReporteCoordinacion)
+admin.site.register(ReporteSeguimiento)
+admin.site.register(AgEmpleo)

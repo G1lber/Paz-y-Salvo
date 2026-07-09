@@ -29,8 +29,6 @@ __pycache__/
 # Archivos de migraciones innecesarios
 **/migrations/*.pyc
 **/migrations/__pycache__/
-# (opcional: excluir todas las migraciones salvo el __init__.py)
-**/migrations/[!__init__]*.py
 
 # Archivos de Django
 staticfiles/
@@ -49,7 +47,5 @@ build/
 dist/
 
 
-req:
-mysql 
-workbench
-python
+# req.txt (notas informales)
+req.txt

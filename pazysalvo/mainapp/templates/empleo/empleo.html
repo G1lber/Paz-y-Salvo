@@ -1,22 +1,19 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agencia Pública de Empleo</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/empleo.css' %}">
-</head>
-<body>
 
+{% block title %}Agencia Pública de Empleo{% endblock %}
+
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/empleo.css' %}">
+{% endblock %}
+
+{% block content %}
 <div class="aprendices-container">
-
-    <!--  Barra superior -->
     <div class="barra-superior">
         <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
-        <h1> Agencia Pública de Empleo</h1>
+        <h1>Agencia Pública de Empleo</h1>
         <div class="acciones-superior">
             <form method="get" action="{% url 'descargar-reporte-empleo' %}" style="display: flex; gap: 10px; align-items: center;">
                 <select name="programa" style="padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
@@ -25,26 +22,18 @@
                         <option value="{{ programa }}">{{ programa }}</option>
                     {% endfor %}
                 </select>
-                <button type="submit" class="btn-crear" style="margin: 0;"> Descargar Reporte</button>
+                <button type="submit" class="btn-crear" style="margin: 0;">Descargar Reporte</button>
             </form>
         </div>
     </div>
 
-    <!-- Buscador -->
     <div class="busqueda-container">
         <form method="get">
-            <input 
-                type="text"
-                name="busqueda"
-                placeholder="Buscar por documento, nombre o empresa..."
-                value="{{ busqueda }}"
-                class="input-busqueda"
-            >
+            <input type="text" name="busqueda" placeholder="Buscar por documento, nombre o empresa..." value="{{ busqueda }}" class="input-busqueda">
             <button class="btn-buscar" type="submit">Buscar</button>
         </form>
     </div>
 
-    <!--  Tabla -->
     <div class="table-container">
         <table class="report-table">
             <thead>
@@ -61,91 +50,41 @@
                     <th>Fecha Fin</th>
                 </tr>
             </thead>
-
             <tbody>
             {% for registro in registros %}
                 <tr>
-                    <td>
-                        {% if registro.id_aprendiz_FK.id_tipodoc_FK %}
-                            {{ registro.id_aprendiz_FK.id_tipodoc_FK.nombre_tipo }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    
+                    <td>{% if registro.id_aprendiz_FK.id_tipodoc_FK %}{{ registro.id_aprendiz_FK.id_tipodoc_FK.nombre_tipo }}{% else %}-{% endif %}</td>
                     <td>{{ registro.id_aprendiz_FK.num_doc }}</td>
-                    
                     <td>{{ registro.id_aprendiz_FK.nombre }} {{ registro.id_aprendiz_FK.apellidos }}</td>
-                    
-                    <td>
-                        {% if registro.fecha_nacimiento %}
-                            {{ registro.fecha_nacimiento|date:"Y-m-d" }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    
+                    <td>{% if registro.fecha_nacimiento %}{{ registro.fecha_nacimiento|date:"Y-m-d" }}{% else %}-{% endif %}</td>
                     <td>{{ registro.correo|default:"-" }}</td>
-                    
                     <td>{{ registro.telefono|default:"-" }}</td>
-                    
                     <td>{{ registro.telefono_2|default:"-" }}</td>
-                    
-                    <td>
-                        {% if registro.id_aprendiz_FK.id_ficha_FK and registro.id_aprendiz_FK.id_ficha_FK.programa_FK %}
-                            {{ registro.id_aprendiz_FK.id_ficha_FK.programa_FK.get_tipo_programa_display }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    
-                    <td>
-                        {% if registro.id_aprendiz_FK.id_ficha_FK and registro.id_aprendiz_FK.id_ficha_FK.programa_FK %}
-                            {{ registro.id_aprendiz_FK.id_ficha_FK.programa_FK.nombre_programa }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
-                    
-                    <td>
-                        {% if registro.fecha_fin_empresa %}
-                            {{ registro.fecha_fin_empresa|date:"Y-m-d" }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </td>
+                    <td>{% if registro.id_aprendiz_FK.id_ficha_FK and registro.id_aprendiz_FK.id_ficha_FK.programa_FK %}{{ registro.id_aprendiz_FK.id_ficha_FK.programa_FK.get_tipo_programa_display }}{% else %}-{% endif %}</td>
+                    <td>{% if registro.id_aprendiz_FK.id_ficha_FK and registro.id_aprendiz_FK.id_ficha_FK.programa_FK %}{{ registro.id_aprendiz_FK.id_ficha_FK.programa_FK.nombre_programa }}{% else %}-{% endif %}</td>
+                    <td>{% if registro.fecha_fin_empresa %}{{ registro.fecha_fin_empresa|date:"Y-m-d" }}{% else %}-{% endif %}</td>
                 </tr>
-
             {% empty %}
                 <tr>
-                    <td colspan="10" class="no-data">
-                         No hay registros de empleo disponibles.
-                    </td>
+                    <td colspan="10" class="no-data">No hay registros de empleo disponibles.</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <!-- Paginación -->
     {% if registros.has_other_pages %}
     <div class="pagination">
         {% if registros.has_previous %}
             <a href="?page=1{% if busqueda %}&busqueda={{ busqueda }}{% endif %}" class="page-link">« Primera</a>
             <a href="?page={{ registros.previous_page_number }}{% if busqueda %}&busqueda={{ busqueda }}{% endif %}" class="page-link">‹ Anterior</a>
         {% endif %}
-
-        <span class="page-info">
-            Página {{ registros.number }} de {{ registros.paginator.num_pages }}
-        </span>
-
+        <span class="page-info">Página {{ registros.number }} de {{ registros.paginator.num_pages }}</span>
         {% if registros.has_next %}
             <a href="?page={{ registros.next_page_number }}{% if busqueda %}&busqueda={{ busqueda }}{% endif %}" class="page-link">Siguiente ›</a>
             <a href="?page={{ registros.paginator.num_pages }}{% if busqueda %}&busqueda={{ busqueda }}{% endif %}" class="page-link">Última »</a>
         {% endif %}
     </div>
     {% endif %}
-
 </div>
-</body>
-</html>
+{% endblock %}

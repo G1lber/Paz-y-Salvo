@@ -1,156 +1,109 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Prestar Equipos</title>
-  <link rel="stylesheet" href="{% static 'css/prestar-equipos.css' %}">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
 
-  <div class="container">
+{% block title %}Prestar Equipos{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/prestar-equipos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
     <div class="barra-superior">
-      <a href="{% url 'inicio' %}" class="btn-back">← Volver</a>
-      <h2 class="titulo-nuevo-reporte">Nuevo Reporte</h2>
+        <a href="{% url 'inicio' %}" class="btn-back">← Volver</a>
+        <h2 class="titulo-nuevo-reporte">Nuevo Reporte</h2>
     </div>
 
-    <!-- Mensajes de Django -->
-    {% if messages %}
-    <div class="messages">
-      {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">
-        {{ message }}
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- Pestañas para elegir el tipo de carga -->
     <div class="tabs">
-      <button type="button" class="tab-btn" onclick="showTab('individual')">Carga Individual</button>
-      <button type="button" class="tab-btn" onclick="showTab('masiva')">Carga Masiva (Excel)</button>
+        <button type="button" class="tab-btn" onclick="showTab('individual')">Carga Individual</button>
+        <button type="button" class="tab-btn" onclick="showTab('masiva')">Carga Masiva (Excel)</button>
     </div>
 
-    <!-- Mensaje inicial cuando no hay pestaña seleccionada -->
     <div id="inicio-message" class="welcome-message">
-      <h4>👋 ¡Bienvenido!</h4>
-      <p>Selecciona una opción para comenzar:</p>
-      <ul>
-        <li><strong>Carga Individual:</strong> Para crear un reporte de préstamo a la vez</li>
-        <li><strong>Carga Masiva:</strong> Para subir múltiples reportes desde un archivo Excel</li>
-      </ul>
+        <h4>👋 ¡Bienvenido!</h4>
+        <p>Selecciona una opción para comenzar:</p>
+        <ul>
+            <li><strong>Carga Individual:</strong> Para crear un reporte de préstamo a la vez</li>
+            <li><strong>Carga Masiva:</strong> Para subir múltiples reportes desde un archivo Excel</li>
+        </ul>
     </div>
 
-    <!-- Formulario Individual - OCULTO INICIALMENTE -->
     <form method="POST" id="individual-form" class="tab-form" enctype="multipart/form-data">
-      {% csrf_token %}
-      <input type="hidden" name="form_type" value="individual">
-      
-      <div class="form-grid">
-        <div class="form-section">
-          <label for="documento">Documento del Aprendiz</label>
-          <input type="text" id="documento" name="documento" required>
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="individual">
+        <div class="form-grid">
+            <div class="form-section">
+                <label for="documento">Documento del Aprendiz</label>
+                <input type="text" id="documento" name="documento" required>
+            </div>
+            <div class="form-section">
+                <label for="equipo">Equipo</label>
+                <select id="equipo" name="equipo" required>
+                    <option value="">-- Seleccione --</option>
+                    <option value="Balones">Balones</option>
+                    <option value="Petos">Petos</option>
+                    <option value="Materiales">Materiales</option>
+                </select>
+            </div>
+            <div class="form-section">
+                <label for="fecha_prestamo">Fecha Préstamo</label>
+                <input type="date" id="fecha_prestamo" name="fecha_prestamo" required>
+            </div>
+            <div class="form-section">
+                <label for="fecha_devolucion">Fecha Devolución</label>
+                <input type="date" id="fecha_devolucion" name="fecha_devolucion">
+            </div>
+            <div class="form-section full-width">
+                <label for="observaciones">Observaciones</label>
+                <textarea id="observaciones" name="observaciones" rows="3" placeholder="Observaciones adicionales..."></textarea>
+            </div>
         </div>
-        
-        <div class="form-section">
-          <label for="equipo">Equipo</label>
-          <select id="equipo" name="equipo" required>
-            <option value="">-- Seleccione --</option>
-            <option value="Balones">Balones</option>
-            <option value="Petos">Petos</option>
-            <option value="Materiales">Materiales</option>
-          </select>
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">Guardar Reporte Individual</button>
         </div>
-        
-        <div class="form-section">
-          <label for="fecha_prestamo">Fecha Préstamo</label>
-          <input type="date" id="fecha_prestamo" name="fecha_prestamo" required>
-        </div>
-        
-        <div class="form-section">
-          <label for="fecha_devolucion">Fecha Devolución</label>
-          <input type="date" id="fecha_devolucion" name="fecha_devolucion">
-        </div>
-        
-        <div class="form-section full-width">
-          <label for="observaciones">Observaciones</label>
-          <textarea id="observaciones" name="observaciones" rows="3" placeholder="Observaciones adicionales..."></textarea>
-        </div>
-      </div>
-      
-      <div class="form-actions">
-        <button type="submit" class="btn-submit">Guardar Reporte Individual</button>
-      </div>
     </form>
 
-    <!-- Formulario Carga Masiva - OCULTO INICIALMENTE -->
     <form method="POST" id="masiva-form" class="tab-form" enctype="multipart/form-data">
-      {% csrf_token %}
-      <input type="hidden" name="form_type" value="masiva">
-      
-      <div class="form-section">
-        <label for="excel_file">Seleccionar archivo Excel</label>
-        <div class="file-input-wrapper">
-          <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" required>
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="masiva">
+        <div class="form-section">
+            <label for="excel_file">Seleccionar archivo Excel</label>
+            <div class="file-input-wrapper">
+                <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" required>
+            </div>
+            <small class="file-info">Formatos aceptados: .xlsx, .xls</small>
         </div>
-        <small class="file-info">Formatos aceptados: .xlsx, .xls</small>
-      </div>
-
-      <div class="instructions">
-        <h4>📋 Instrucciones para el archivo Excel:</h4>
-        <ul>
-          <li><strong>Columnas requeridas:</strong> documento, equipo, fecha_prestamo, fecha_devolucion, observaciones</li>
-          <li><strong>Primera fila:</strong> debe contener los encabezados de columna</li>
-          <li><strong>Formato de fechas:</strong> YYYY-MM-DD (ejemplo: 2024-01-15)</li>
-          <li><strong>Equipos válidos:</strong> Balones, Petos, Materiales</li>
-          <li><strong>Documentos:</strong> deben pertenecer a aprendices registrados en el sistema</li>
-        </ul>
-      </div>
-      
-      <div class="form-actions">
-        <button type="submit" class="btn-submit">Subir y Procesar Excel</button>
-      </div>
+        <div class="instructions">
+            <h4>📋 Instrucciones para el archivo Excel:</h4>
+            <ul>
+                <li><strong>Columnas requeridas:</strong> documento, equipo, fecha_prestamo, fecha_devolucion, observaciones</li>
+                <li><strong>Primera fila:</strong> debe contener los encabezados de columna</li>
+                <li><strong>Formato de fechas:</strong> YYYY-MM-DD (ejemplo: 2024-01-15)</li>
+                <li><strong>Equipos válidos:</strong> Balones, Petos, Materiales</li>
+                <li><strong>Documentos:</strong> deben pertenecer a aprendices registrados en el sistema</li>
+            </ul>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">Subir y Procesar Excel</button>
+        </div>
     </form>
-  </div>
+</div>
 
-  <script>
+<script>
     function showTab(tabName) {
-      console.log('Mostrando pestaña:', tabName);
-      
-      // Ocultar todos los formularios y el mensaje inicial
-      document.querySelectorAll('.tab-form').forEach(form => {
-        form.style.display = 'none';
-      });
-      document.getElementById('inicio-message').style.display = 'none';
-      
-      // Remover clase active de todos los botones
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      
-      // Mostrar formulario seleccionado y activar botón
-      const selectedForm = document.getElementById(tabName + '-form');
-      if (selectedForm) {
-        selectedForm.style.display = 'block';
-      }
-      event.target.classList.add('active');
+        document.querySelectorAll('.tab-form').forEach(form => { form.style.display = 'none'; });
+        document.getElementById('inicio-message').style.display = 'none';
+        document.querySelectorAll('.tab-btn').forEach(btn => { btn.classList.remove('active'); });
+        const selectedForm = document.getElementById(tabName + '-form');
+        if (selectedForm) { selectedForm.style.display = 'block'; }
+        event.target.classList.add('active');
     }
 
-    // Inicializar - mostrar mensaje inicial, ocultar formularios
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('Página cargada');
-      document.getElementById('inicio-message').style.display = 'block';
-      document.getElementById('individual-form').style.display = 'none';
-      document.getElementById('masiva-form').style.display = 'none';
-      
-      // Ninguna pestaña activa inicialmente
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
+        document.getElementById('inicio-message').style.display = 'block';
+        document.getElementById('individual-form').style.display = 'none';
+        document.getElementById('masiva-form').style.display = 'none';
+        document.querySelectorAll('.tab-btn').forEach(btn => { btn.classList.remove('active'); });
     });
-
-    
-  </script>
-</body>
-</html>
+</script>
+{% endblock %}

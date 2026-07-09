@@ -1,68 +1,47 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Registrar Horas</title>
-  <link rel="stylesheet" href="{% static 'css/horas-ludicas.css' %}">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Fuente profesional -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <!-- Font Awesome para íconos -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-  <section class="prestamo-libro">
+
+{% block title %}Registrar Horas{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/horas-ludicas.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<section class="prestamo-libro">
     <div class="barra-superior">
-      <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
-      <h1 class="titulo">Registrar Horas</h1>
+        <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+        <h1 class="titulo">Registrar Horas</h1>
     </div>
 
-    {% if messages %}
-      <div class="alert-container">
-        {% for message in messages %}
-          <div class="alert {{ message.tags }}">
-            {{ message }}
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    <!-- FORMULARIO MANUAL -->
     <form method="post" enctype="multipart/form-data" id="form-manual">
-      {% csrf_token %}
-      
-      <!-- Campo Aprendiz -->
-      <div class="form-group input-icon">
-        <label for="aprendiz">Aprendiz</label>
-        <i class="fa-solid fa-user"></i>
-        <input type="text" id="aprendiz" name="aprendiz" placeholder="Documento del usuario" required>
-      </div>
-
-      <!-- Campo Horas -->
-      <div class="form-group input-icon">
-        <label for="horas">Horas</label>
-        <i class="fa-solid fa-clock"></i>
-        <input type="number" id="horas" name="horas" placeholder="Cantidad de horas" required>
-      </div>
-
-      <button type="submit" class="btn-submit">Registrar Horas</button>
+        {% csrf_token %}
+        <div class="form-group input-icon">
+            <label for="aprendiz">Aprendiz</label>
+            <i class="fa-solid fa-user"></i>
+            <input type="text" id="aprendiz" name="aprendiz" placeholder="Documento del usuario" required>
+        </div>
+        <div class="form-group input-icon">
+            <label for="horas">Horas</label>
+            <i class="fa-solid fa-clock"></i>
+            <input type="number" id="horas" name="horas" placeholder="Cantidad de horas" required>
+        </div>
+        <button type="submit" class="btn-submit">Registrar Horas</button>
     </form>
 
     <div class="separador"><span>o</span></div>
 
-    <!-- FORMULARIO EXCEL -->
     <form method="post" enctype="multipart/form-data" id="form-excel">
-      {% csrf_token %}
-      <div class="excel-section">
-        <div class="form-group input-icon">
-          <label for="archivo_excel">Subir Excel de horas</label>
-          <i class="fa-solid fa-file-excel"></i>
-          <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls" required>
+        {% csrf_token %}
+        <div class="excel-section">
+            <div class="form-group input-icon">
+                <label for="archivo_excel">Subir Excel de horas</label>
+                <i class="fa-solid fa-file-excel"></i>
+                <input type="file" id="archivo_excel" name="archivo_excel" accept=".xlsx, .xls" required>
+            </div>
+            <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de Horas</button>
         </div>
-        <button type="submit" name="subir_excel" value="1" class="btn-submit">Subir listado de Horas</button>
-      </div>
     </form>
-  </section>
-</body>
-</html>
+</section>
+{% endblock %}

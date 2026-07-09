@@ -1,214 +1,115 @@
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Paz y Salvo Académico</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/pazysalvo.css' %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Formato Paz y Salvo</h1>
-            <p>Académico - Administrativo</p>
-        </div>
+{% extends 'base.html' %}
+{% load static %}
 
-        <div class="section">
-            <p>
-                <span class="label">Nombre del Aprendiz:</span> 
-                {{ usuario.nombre }} {{ usuario.apellidos }}
-            </p>
+{% block title %}Paz y Salvo Académico{% endblock %}
 
-            <p>
-                <span class="label">Documento de identidad:</span> 
-                {{ usuario.num_doc }}
-            </p>
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/pazysalvo.css' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+{% endblock %}
 
-            <p>
-                <span class="label">Programa:</span> 
-                {{ usuario.id_ficha_FK.programa_FK.nombre_programa }}
-            </p>
-
-            <p>
-                <span class="label">Ficha:</span> 
-                {{ usuario.id_ficha_FK.num_ficha }}
-            </p>
-        </div>
-
-        <div class="section">
-            <h3 class="label">Revisión</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>SERVIDOR PÚBLICO QUE <br>
-                            INTERVIENE EN EL DILIGENCIAMIENTO</th>
-                        <th>DESCRIPCION DEL TRAMITE</th>
-                        <th>CUMPLE REQUISITO</th>
-                        <th>Estado</th>
-                    </tr>
-                    
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>COORDINADOR ACADEMICO</td>
-                        <td>Verificar que estén registrados la totalidad de los juicios evaluativos en el aplicativo de gestión académico administrativo institucional (etapa lectiva y productiva)
-                        Verificar evidencia de presentación de la prueba Saber TyT (Tecnólogos).
-                        </td>
-                        <td>
-                            {% if cumple_requisitos_academicos %}
-                                <img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">
-                            {% else %}
-                                <img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if cumple_requisitos_academicos %}
-                                Firmado
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>INSTRUCTOR SEGUIMIENTO ETAPA PRODUCTIVA</td>
-                        <td>Verificar el diligenciamiento del formato de seguimiento a etapa productiva
-                        Verificar la existencia de la bitácora del aprendiz en etapa productiva.</td>
-                        <td>
-                            {% if tiene_bitacoras_completas %}
-                                <img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">
-                            {% else %}
-                                <img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if tiene_bitacoras_completas %}
-                                Firmado
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>RESPONSABLE BIENESTAR AL APRENDIZ</td>
-                        <td>Verificar que se encuentre a paz y salvo con las actividades del programa de bienestar al aprendiz</td>
-                        <td>
-                            {% if cumple_horas_bienestar %}
-                                <img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">
-                            {% else %}
-                                <img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if cumple_horas_bienestar %}
-                                Firmado
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>BIBLIOTECA</td>
-                        <td>Verificar que está a paz y salvo con la biblioteca.</td>
-
-                        <td>
-                            {% if tiene_prestamos %}
-                                <img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">
-                            {% else %}
-                                <img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            {% if not tiene_prestamos %}
-                                Firmado
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>RESPONSABLE ALMACÉN</td>
-                        <td>Verificar que está a paz y salvo con almacén</td>
-                        <td>
-                            {% if tiene_prestamos_almacen %}
-                                <img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">
-                            {% else %}
-                                <img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if not tiene_prestamos_almacen %}
-                                Firmado
-                            {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>AGENCIA PÚBLICA DE EMPLEO</td>
-                        <td>Verificar que el aprendiz tenga sus datos actualizados en el sistema de empleo</td>
-                        <td>
-                            {% if usuario.datos_actualizados %}
-                                <img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">
-                            {% else %}
-                                <img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if usuario.datos_actualizados %}
-                                <div class="estado-con-accion">
-                                    <span>Firmado</span>
-                                    <div class="dropdown-estado">
-                                        <button class="btn-dropdown" onclick="toggleDropdown(event)">
-                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <circle cx="12" cy="12" r="1"></circle>
-                                                <circle cx="12" cy="5" r="1"></circle>
-                                                <circle cx="12" cy="19" r="1"></circle>
-                                            </svg>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a href="{% url 'actualizar_datos_aprendiz' %}" class="dropdown-item">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                                </svg>
-                                                Actualizar datos
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            
-                            {% endif %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        {% if cumple_todos_requisitos %}
-            <a href="{% url 'descargar-paz-y-salvo' %}" class="download-btn">📥 Descargar Formato</a>
-        {% else %}
-            <div style="text-align: center; margin-top: 40px; padding: 20px; background-color: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
-                <p style="color: #856404; font-weight: 600; margin: 0;">
-                    ⚠️ Debes cumplir con todos los requisitos para descargar el formato de Paz y Salvo.
-                </p>
-            </div>
-        {% endif %}
+{% block content %}
+<div class="container">
+    <div class="header">
+        <h1>Formato Paz y Salvo</h1>
+        <p>Académico - Administrativo</p>
     </div>
 
-    <script>
-        // Función para abrir/cerrar el menú desplegable
-        function toggleDropdown(event) {
-            event.stopPropagation();
-            const dropdown = event.currentTarget.nextElementSibling;
-            
-            // Cerrar otros dropdowns abiertos
-            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                if (menu !== dropdown) {
-                    menu.classList.remove('show');
-                }
-            });
-            
-            dropdown.classList.toggle('show');
-        }
+    <div class="section">
+        <p><span class="label">Nombre del Aprendiz:</span> {{ usuario.nombre }} {{ usuario.apellidos }}</p>
+        <p><span class="label">Documento de identidad:</span> {{ usuario.num_doc }}</p>
+        <p><span class="label">Programa:</span> {{ usuario.id_ficha_FK.programa_FK.nombre_programa }}</p>
+        <p><span class="label">Ficha:</span> {{ usuario.id_ficha_FK.num_ficha }}</p>
+    </div>
 
-        // Cerrar dropdown al hacer clic fuera
-        document.addEventListener('click', function() {
-            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                menu.classList.remove('show');
-            });
-        });
-    </script>
-</body>
-</html>
+    <div class="section">
+        <h3 class="label">Revisión</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>SERVIDOR PÚBLICO QUE INTERVIENE EN EL DILIGENCIAMIENTO</th>
+                    <th>DESCRIPCION DEL TRAMITE</th>
+                    <th>CUMPLE REQUISITO</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>COORDINADOR ACADEMICO</td>
+                    <td>Verificar que estén registrados la totalidad de los juicios evaluativos en el aplicativo de gestión académico administrativo institucional (etapa lectiva y productiva). Verificar evidencia de presentación de la prueba Saber TyT (Tecnólogos).</td>
+                    <td>{% if cumple_requisitos_academicos %}<img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">{% else %}<img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">{% endif %}</td>
+                    <td>{% if cumple_requisitos_academicos %}Firmado{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>INSTRUCTOR SEGUIMIENTO ETAPA PRODUCTIVA</td>
+                    <td>Verificar el diligenciamiento del formato de seguimiento a etapa productiva. Verificar la existencia de la bitácora del aprendiz en etapa productiva.</td>
+                    <td>{% if tiene_bitacoras_completas %}<img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">{% else %}<img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">{% endif %}</td>
+                    <td>{% if tiene_bitacoras_completas %}Firmado{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>RESPONSABLE BIENESTAR AL APRENDIZ</td>
+                    <td>Verificar que se encuentre a paz y salvo con las actividades del programa de bienestar al aprendiz</td>
+                    <td>{% if cumple_horas_bienestar %}<img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">{% else %}<img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">{% endif %}</td>
+                    <td>{% if cumple_horas_bienestar %}Firmado{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>BIBLIOTECA</td>
+                    <td>Verificar que está a paz y salvo con la biblioteca.</td>
+                    <td>{% if tiene_prestamos %}<img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">{% else %}<img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">{% endif %}</td>
+                    <td>{% if not tiene_prestamos %}Firmado{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>RESPONSABLE ALMACÉN</td>
+                    <td>Verificar que está a paz y salvo con almacén</td>
+                    <td>{% if tiene_prestamos_almacen %}<img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">{% else %}<img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">{% endif %}</td>
+                    <td>{% if not tiene_prestamos_almacen %}Firmado{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>AGENCIA PÚBLICA DE EMPLEO</td>
+                    <td>Verificar que el aprendiz tenga sus datos actualizados en el sistema de empleo</td>
+                    <td>{% if usuario.datos_actualizados %}<img src="{% static 'image/carafeliz.svg' %}" alt="Logo" width="150">{% else %}<img src="{% static 'image/caratriste.svg' %}" alt="Logo" width="150">{% endif %}</td>
+                    <td>
+                        {% if usuario.datos_actualizados %}
+                            <div class="estado-con-accion">
+                                <span>Firmado</span>
+                                <div class="dropdown-estado">
+                                    <button class="btn-dropdown" onclick="toggleDropdown(event)">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a href="{% url 'actualizar_datos_aprendiz' %}" class="dropdown-item">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                            Actualizar datos
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    {% if cumple_todos_requisitos %}
+        <a href="{% url 'descargar-paz-y-salvo' %}" class="download-btn">📥 Descargar Formato</a>
+    {% else %}
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background-color: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+            <p style="color: #856404; font-weight: 600; margin: 0;">⚠️ Debes cumplir con todos los requisitos para descargar el formato de Paz y Salvo.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    function toggleDropdown(event) {
+        event.stopPropagation();
+        const dropdown = event.currentTarget.nextElementSibling;
+        document.querySelectorAll('.dropdown-menu.show').forEach(menu => { if (menu !== dropdown) { menu.classList.remove('show'); } });
+        dropdown.classList.toggle('show');
+    }
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.dropdown-menu.show').forEach(menu => { menu.classList.remove('show'); });
+    });
+</script>
+{% endblock %}

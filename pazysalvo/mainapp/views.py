@@ -26,6 +26,15 @@ from openpyxl.utils import get_column_letter
 import os
 import re
 from django.conf import settings
+from functools import wraps
+
+def session_required(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.session.get("usuario_id"):
+            return redirect("login")
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 # Create your views here.
 def index(request):
@@ -90,6 +99,7 @@ def login_view(request):
     return render(request, 'login.html')
 # TODO: MODULO USUARIO
 
+@session_required
 def crear_usuario(request):
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
@@ -97,31 +107,28 @@ def crear_usuario(request):
         num_doc = request.POST.get('num_doc')
         id_tipodoc = request.POST.get('id_tipodoc_FK')
         id_rol = request.POST.get('id_rol_FK')
-        id_ficha = request.POST.get('id_ficha_FK')  # Puede ser None si no aplica
-        password = request.POST.get('password')  # Solo llegará si no es aprendiz
+        id_ficha = request.POST.get('id_ficha_FK')
+        password = request.POST.get('password')
 
-        # Validar si ya existe el número de documento
         if Usuario.objects.filter(num_doc=num_doc).exists():
             messages.error(request, 'Ya existe un usuario con ese número de documento.')
             return redirect('usuarios')
 
         try:
-            # Crear el usuario
             usuario = Usuario.objects.create(
                 nombre=nombre,
                 apellidos=apellidos,
                 num_doc=num_doc,
                 id_tipodoc_FK_id=id_tipodoc,
                 id_rol_FK_id=id_rol,
-                id_ficha_FK_id=id_ficha if id_rol == '1' else None  # Ficha solo si es aprendiz
+                id_ficha_FK_id=id_ficha if id_rol == '1' else None
             )
 
-            # Si el rol NO es aprendiz, se crea el Login con contraseña
-            if id_rol != '5':  # Asegúrate de que '5' sea el ID del rol "Aprendiz"
+            if id_rol != '5':
                 if password:
                     Login.objects.create(
                         id_usuario_FK=usuario,
-                        password=make_password(password) # Recomendado: usar make_password(password)
+                        password=make_password(password)
                     )
                 else:
                     messages.warning(request, 'Contraseña no proporcionada para un rol que la requiere.')
@@ -132,7 +139,10 @@ def crear_usuario(request):
             messages.error(request, 'Error de integridad al crear el usuario.')
 
         return redirect('usuarios')
+
+    return redirect('usuarios')
     
+@session_required
 def editar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)
     tipos_doc = TipoDoc.objects.all()
@@ -185,6 +195,7 @@ def editar_usuario(request, usuario_id):
         'roles': roles,
         'fichas': fichas,
     })
+@session_required
 def eliminar_usuario(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)
 
@@ -196,6 +207,7 @@ def eliminar_usuario(request, usuario_id):
     return render(request, 'eliminar_usuario.html', {'usuario': usuario})
 
     
+@session_required
 def lista_usuarios(request):
     busqueda = request.GET.get('busqueda', '')
 
@@ -270,11 +282,13 @@ def pazysalvo(request):
     })
 
 
+@session_required
 def inicio(request):
     return render(request, 'menu/dashboard.html')
 
 
 # TODO: MODULO APRENDICES 
+@session_required
 def aprendices(request):
     busqueda = request.GET.get('busqueda', '')
     aprendices_qs = Usuario.objects.filter(
@@ -349,6 +363,7 @@ def aprendices(request):
         'instructores': Usuario.objects.filter(id_rol_FK__nombre_rol="Instructor Seguimiento"),  # ✅ Cambio aquí
     })
 # TODO: FIN MODULO APRENDICES
+@session_required
 def editar_bitacoras(request):
     if request.method == "POST":
         # Debe coincidir con el name del input hidden del modal
@@ -359,6 +374,7 @@ def editar_bitacoras(request):
         messages.success(request, 'Bitácoras actualizadas correctamente.')
         return redirect('aprendices-instructor')
         
+@session_required
 def aprendicesxinstructor(request):
     instructor_id = request.session.get('usuario_id')
     if not instructor_id:
@@ -400,6 +416,7 @@ def aprendicesxinstructor(request):
         'aprendices': aprendices_page
     })
 
+@session_required
 def horasludicas(request):
     if request.method == 'POST':
         # Si viene un archivo Excel
@@ -459,6 +476,7 @@ def horasludicas(request):
 
     return render(request, 'bienestar/horas-ludicas.html')
 
+@session_required
 def horas_faltantes(request):
     # Obtener todos los aprendices (usuarios con rol de aprendiz)
     aprendices = Usuario.objects.filter(id_rol_FK__nombre_rol='Aprendiz')
@@ -502,6 +520,7 @@ def horas_faltantes(request):
         'horas_data': horas_data
     })
 
+@session_required
 def prestarequipos(request):
     if request.method == 'POST':
         form_type = request.POST.get('form_type')
@@ -642,6 +661,7 @@ def prestarequipos(request):
 
     return render(request, 'bienestar/prestar-equipos.html', {'reportes': reportes})
 
+@session_required
 def editar_prestamo(request, id):
     prestamo = get_object_or_404(PrestamoBienestar, id=id)
 
@@ -658,12 +678,14 @@ def editar_prestamo(request, id):
     return render(request, 'modales/modalEditarPrestamo.html', {'prestamo': prestamo})
 
 
+@session_required
 def eliminar_prestamo(request, id):
     prestamo = get_object_or_404(PrestamoBienestar, id=id)
     prestamo.delete()
     messages.success(request, 'El préstamo fue eliminado correctamente.')
     return redirect('prestar-equipos')  
 
+@session_required
 def equiposalmacen(request):  
     if request.method == 'POST':
         form_type = request.POST.get('form_type')
@@ -771,6 +793,7 @@ def equiposalmacen(request):
     
     return render(request, 'almacen/prestarequipos.html')
 
+@session_required
 def pendientesalmacen(request):
     # Obtener todos los equipos
     equipos = PrestarEquipos.objects.select_related("id_usuario_FK").all().order_by('-fecha_prestamo')
@@ -804,6 +827,7 @@ def pendientesalmacen(request):
 
 
 
+@session_required
 def prestarlibro(request):
     if request.method == 'POST':
         
@@ -941,6 +965,7 @@ def prestarlibro(request):
     # Renderizar template si GET
     return render(request, 'biblioteca/prestarlibro.html')
 
+@session_required
 def reportes_biblioteca(request):
     busqueda = request.GET.get("busqueda", "")
 
@@ -956,6 +981,7 @@ def reportes_biblioteca(request):
         "prestamos": prestamos
     })
 
+@session_required
 def eliminar_libro(request, id):
     prestamo = get_object_or_404(PrestamoLibro, id=id)
     prestamo.delete()
@@ -963,6 +989,7 @@ def eliminar_libro(request, id):
 
 
 
+@session_required
 def fichas(request):
     # 🔍 Captura el término de búsqueda
     busqueda = request.GET.get('busqueda', '')
@@ -994,6 +1021,7 @@ def fichas(request):
         'busqueda': busqueda
     })
 
+@session_required
 def crear_ficha(request):
     if request.method == 'POST':
         try:
@@ -1032,6 +1060,7 @@ def crear_ficha(request):
 
     return redirect('fichas')
 
+@session_required
 def editar_ficha(request):
     if request.method == "POST":
         ficha_id = request.POST.get("ficha_id")
@@ -1058,6 +1087,7 @@ def editar_ficha(request):
             messages.error(request, f"Error al editar la ficha: {str(e)}")
 
     return redirect('fichas')
+@session_required
 def crear_programa(request):
     if request.method == "POST":
 
@@ -1081,6 +1111,7 @@ def crear_programa(request):
     return redirect("fichas")
 
 
+@session_required
 def eliminar_ficha(request):
     if request.method == "POST":
         ficha_id = request.POST.get("ficha_id", "").strip()
@@ -1151,6 +1182,7 @@ def actualizar_datos_aprendiz(request):
     })
 
 
+@session_required
 def agencia_empleo(request):
     """
     Vista que muestra todos los registros de empleo de los aprendices.
@@ -1205,6 +1237,7 @@ def agencia_empleo(request):
     })
 
 
+@session_required
 def descargar_reporte_empleo(request):
     """
     Vista que genera y descarga un archivo Excel con todos los datos de empleo.
@@ -1326,6 +1359,7 @@ def descargar_reporte_empleo(request):
     return response
 
 
+@session_required
 def descargar_paz_y_salvo(request):
     """
     Vista que descarga la plantilla de Paz y Salvo con los datos del usuario

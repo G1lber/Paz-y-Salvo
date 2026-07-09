@@ -1,237 +1,195 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Paz y Salvo - SENA</title>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- Estilos personalizados -->
-    <link rel="stylesheet" href="{% static 'css/inicio.css' %}">
-  
-</head>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const detalles = document.querySelectorAll(".rol-section");
 
-  detalles.forEach(detalle => {
-    detalle.addEventListener("toggle", function () {
-      if (this.open) {
-        // Cierra todos los demás
-        detalles.forEach(otro => {
-          if (otro !== this && otro.open) {
-            otro.removeAttribute("open");
-          }
-        });
-      }
-    });
-  });
-});
-</script>
+{% block title %}Sistema de Paz y Salvo - SENA{% endblock %}
 
-<body>
-    <!-- Header con logo SENA (blanco) -->
-    <header class="sena-header">
-        <div class="container-header">
-            <!-- Logo + Nombre sistema -->
-            <div class="logo-container">
-                <img src="{% static 'image/sena-logo.png' %}" alt="Logo SENA" class="sena-logo">
-                <div class="system-info">
-                    
-                    <p>Servicio Nacional de Aprendizaje</p>
+{% block extra_head %}
+<style>
+    .detalles-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    .dashboard {
+        text-align: center;
+        padding: 2rem 1rem;
+    }
+    .dashboard h1 {
+        color: var(--color-secundario);
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    .dashboard .intro {
+        color: #666;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="dashboard">
+    <h1>Bienvenido al Sistema de Información - Paz y Salvo</h1>
+    <p class="intro">
+        Accede rápidamente a las herramientas esenciales del sistema.
+    </p>
+
+    <div class="detalles-container">
+        {% with rol=request.session.usuario_rol %}
+        
+        {% if rol == "Admin" %}
+        <details class="rol-section">
+            <summary><i class="fas fa-user-shield"></i> Opciones de Administrador</summary>
+            <div class="cards-container">
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3>Gestión de Usuarios</h3>
+                    <p>Gestiona los aprendices registrados.</p>
+                    <a href="{% url 'usuarios' %}" class="btn-sena">Ver Usuarios</a>
                 </div>
             </div>
+        </details>
+        {% endif %}
 
-            <!-- Info usuario -->
-            <div class="user-info">
-                <span class="user-name"><i class="fas fa-user-circle me-2"></i>{{ request.session.usuario_nombre|default:"Invitado" }}</span>
-                <span class="user-role"><i class="fas fa-user-tag me-2"></i>{{ request.session.usuario_rol }}</span>
-                <a href="{% url 'login' %}" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i> Salir
-                </a>
+        {% if rol == "Coordinador Academico" or rol == "Admin" %}
+        <details class="rol-section">
+            <summary><i class="fas fa-chalkboard-teacher"></i> Opciones del Coordinador</summary>
+            <div class="cards-container">
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Gestión de Aprendices</h3>
+                    <p>Administra los aprendices registrados en el sistema</p>
+                    <a href="{% url 'aprendices' %}" class="btn-sena">Ver Aprendices</a>
+                </div>
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <h3>Gestión de Fichas</h3>
+                    <p>Administra las fichas de formación</p>
+                    <a href="{% url 'fichas' %}" class="btn-sena">Crear Ficha</a>
+                </div>
             </div>
-        </div>
-    </header>
+        </details>
+        {% endif %}
 
-    <!-- Contenido principal -->
-    <section class="dashboard">
-        <h1>Bienvenido al Sistema de Información - Paz y Salvo</h1>
-        <p class="intro">
-            Accede rápidamente a las herramientas esenciales del sistema.
-        </p>
-
-        <div class="detalles-container">
-            {% with rol=request.session.usuario_rol %}
-            
-            {% if rol == "Admin" %}
-            <details class="rol-section">
-                <summary><i class="fas fa-user-shield"></i> Opciones de Administrador</summary>
-                <div class="cards-container">
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-user-graduate"></i>
-                        </div>
-                        <h3>Gestión de Usuarios</h3>
-                        <p>Gestiona los aprendices registrados.</p>
-                        <a href="{% url 'usuarios' %}" class="btn-sena">Ver Usuarios</a>
+        {% if rol == "Biblioteca" or rol == "Admin" %}
+        <details class="rol-section">
+            <summary><i class="fas fa-book"></i> Opciones de Biblioteca</summary>
+            <div class="cards-container">
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-book"></i>
                     </div>
-
-                    {% comment %} <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-chart-bar"></i>
-                        </div>
-                        <h3>Reportes y Estadísticas</h3>
-                        <p>Genera reportes y consulta estadísticas del sistema</p>
-                        <a href="{% url 'usuarios' %}" class="btn-sena">Ver Reportes</a>
-                    </div> {% endcomment %}
+                    <h3>Reportar por Libro</h3>
+                    <p>Reportar aprendices con mora en libros</p>
+                    <a href="{% url 'prestar-libro' %}" class="btn-sena">Reportar</a>
                 </div>
-            </details>
-            {% endif %}
-
-            {% if rol == "Coordinador Academico" or rol == "Admin" %}
-            <details class="rol-section">
-                <summary><i class="fas fa-chalkboard-teacher"></i> Opciones del Coordinador</summary>
-                <div class="cards-container">
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <h3>Gestión de Aprendices</h3>
-                        <p>Administra los aprendices registrados en el sistema</p>
-                        <a href="{% url 'aprendices' %}" class="btn-sena">Ver Aprendices</a>
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-clipboard-list"></i>
                     </div>
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-id-card"></i>
-                        </div>
-                        <h3>Gestión de Fichas</h3>
-                        <p>Administra las fichas de formación</p>
-                        <a href="{% url 'fichas' %}" class="btn-sena">Crear Ficha</a>
-                    </div>
+                    <h3>Pendientes en Biblioteca</h3>
+                    <p>Consulta reportes de libros prestados</p>
+                    <a href="{% url 'pendientes-biblioteca' %}" class="btn-sena">Ver Reportes</a>
                 </div>
-            </details>
-            {% endif %}
+            </div>
+        </details>
+        {% endif %}
 
-            {% if rol == "Biblioteca" or rol == "Admin" %}
-            <details class="rol-section">
-                <summary><i class="fas fa-book"></i> Opciones de Biblioteca</summary>
-                <div class="cards-container">
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <h3>Reportar por Libro</h3>
-                        <p>Reportar aprendices con mora en libros</p>
-                        <a href="{% url 'prestar-libro' %}" class="btn-sena">Reportar</a>
+        {% if rol == "Responsable Bienestar" or rol == "Admin" %}
+        <details class="rol-section">
+            <summary><i class="fas fa-heart"></i> Opciones de Bienestar</summary>
+            <div class="cards-container">
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
                     </div>
-
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-clipboard-list"></i>
-                        </div>
-                        <h3>Pendientes en Biblioteca</h3>
-                        <p>Consulta reportes de libros prestados</p>
-                        <a href="{% url 'pendientes-biblioteca' %}" class="btn-sena">Ver Reportes</a>
-                    </div>
+                    <h3>Horas Lúdicas Pendientes</h3>
+                    <p>Consulta reportes de personas con horas lúdicas pendientes</p>
+                    <a href="{% url 'horas-ludicas' %}" class="btn-sena">Ver Reportes</a>
                 </div>
-            </details>
-            {% endif %}
-
-            {% if rol == "Responsable Bienestar" or rol == "Admin" %}
-            <details class="rol-section">
-                <summary><i class="fas fa-heart"></i> Opciones de Bienestar</summary>
-                <div class="cards-container">
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <h3>Horas Lúdicas Pendientes</h3>
-                        <p>Consulta reportes de personas con horas lúdicas pendientes</p>
-                        <a href="{% url 'horas-ludicas' %}" class="btn-sena">Ver Reportes</a>
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-hourglass-half"></i>
                     </div>
-
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-hourglass-half"></i>
-                        </div>
-                        <h3>Horas Faltantes</h3>
-                        <p>Consulta aprendices con horas lúdicas faltantes por programa</p>
-                        <a href="{% url 'horas-faltantes' %}" class="btn-sena">Ver Horas</a>
-                    </div>
-                    
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-laptop"></i>
-                        </div>
-                        <h3>Equipos Prestados</h3>
-                        <p>Administra reportes de equipos prestados</p>
-                        <a href="{% url 'prestar-equipos' %}" class="btn-sena">Reportar</a>
-                    </div>
+                    <h3>Horas Faltantes</h3>
+                    <p>Consulta aprendices con horas lúdicas faltantes por programa</p>
+                    <a href="{% url 'horas-faltantes' %}" class="btn-sena">Ver Horas</a>
                 </div>
-            </details>
-            {% endif %}
-
-            {% if rol == "Responsable Almacen" or rol == "Admin" %}
-            <details class="rol-section">
-                <summary><i class="fas fa-box"></i> Opciones de Almacén</summary>
-                <div class="cards-container">
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-laptop"></i>
-                        </div>
-                        <h3>Reportar Equipos Prestados</h3>
-                        <p>Administra reportes de equipos prestados</p>
-                        <a href="{% url 'equipos-almacen' %}" class="btn-sena">Reportar</a>
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-laptop"></i>
                     </div>
-
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <h3>Pendientes en Almacén</h3>
-                        <p>Consulta reportes de almacén por mora de equipos</p>
-                        <a href="{% url 'pendientes-almacen' %}" class="btn-sena">Ver Reportes</a>
-                    </div>
+                    <h3>Equipos Prestados</h3>
+                    <p>Administra reportes de equipos prestados</p>
+                    <a href="{% url 'prestar-equipos' %}" class="btn-sena">Reportar</a>
                 </div>
-            </details>
-            {% endif %}
+            </div>
+        </details>
+        {% endif %}
 
-            {% if rol == "Instructor Seguimiento" or rol == "Admin" %}
-            <details class="rol-section">
-                <summary><i class="fas fa-clipboard-list"></i> Opciones de Seguimiento</summary>
-                <div class="cards-container">
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-user-graduate"></i>
-                        </div>
-                        <h3>Mis Aprendices</h3>
-                        <p>Consulta los aprendices asignados a tu seguimiento</p>
-                        <a href="{% url 'aprendices-instructor' %}" class="btn-sena">Ver Aprendices</a>
+        {% if rol == "Responsable Almacen" or rol == "Admin" %}
+        <details class="rol-section">
+            <summary><i class="fas fa-box"></i> Opciones de Almacén</summary>
+            <div class="cards-container">
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-laptop"></i>
                     </div>
+                    <h3>Reportar Equipos Prestados</h3>
+                    <p>Administra reportes de equipos prestados</p>
+                    <a href="{% url 'equipos-almacen' %}" class="btn-sena">Reportar</a>
                 </div>
-            </details>
-            {% endif %}
-
-            {% if rol == "Coordinador Empleo" or rol == "Admin" %}
-            <details class="rol-section">
-                <summary><i class="fas fa-clipboard-list"></i> Opciones Agencia publica de empleo</summary>
-                <div class="cards-container">
-                    <div class="feature-card">
-                        <div class="card-icon">
-                            <i class="fas fa-user-graduate"></i>
-                        </div>
-                        <h3>Informacion de aprendices</h3>
-                        <p>Consulta la informacion actulizada de los aprendices</p>
-                        <a href="{% url 'agencia-publica-empleo' %}" class="btn-sena">Ver Aprendices</a>
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
                     </div>
+                    <h3>Pendientes en Almacén</h3>
+                    <p>Consulta reportes de almacén por mora de equipos</p>
+                    <a href="{% url 'pendientes-almacen' %}" class="btn-sena">Ver Reportes</a>
                 </div>
-            </details>
-            {% endif %}
-            
-            {% endwith %}
-        </div>
-    </section>
+            </div>
+        </details>
+        {% endif %}
 
-</body>
-</html>
+        {% if rol == "Instructor Seguimiento" or rol == "Admin" %}
+        <details class="rol-section">
+            <summary><i class="fas fa-clipboard-list"></i> Opciones de Seguimiento</summary>
+            <div class="cards-container">
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3>Mis Aprendices</h3>
+                    <p>Consulta los aprendices asignados a tu seguimiento</p>
+                    <a href="{% url 'aprendices-instructor' %}" class="btn-sena">Ver Aprendices</a>
+                </div>
+            </div>
+        </details>
+        {% endif %}
+
+        {% if rol == "Coordinador Empleo" or rol == "Admin" %}
+        <details class="rol-section">
+            <summary><i class="fas fa-clipboard-list"></i> Opciones Agencia publica de empleo</summary>
+            <div class="cards-container">
+                <div class="feature-card">
+                    <div class="card-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3>Informacion de aprendices</h3>
+                    <p>Consulta la informacion actulizada de los aprendices</p>
+                    <a href="{% url 'agencia-publica-empleo' %}" class="btn-sena">Ver Aprendices</a>
+                </div>
+            </div>
+        </details>
+        {% endif %}
+        
+        {% endwith %}
+    </div>
+</section>
+{% endblock %}

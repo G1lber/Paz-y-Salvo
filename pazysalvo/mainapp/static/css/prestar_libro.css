@@ -14,19 +14,12 @@ body {
   font-family: 'Inter', sans-serif;
   background-color: var(--color-fondo);
   color: var(--color-texto);
-  margin: 0;
-  /* Centrado vertical y horizontal con Flexbox, compatible */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
 }
 
 .prestamo-libro {
   width: 100%;
   max-width: 650px;
+  margin: 0 auto;
   background-color: var(--color-blanco);
   padding: 35px 30px;
   border-radius: 14px;

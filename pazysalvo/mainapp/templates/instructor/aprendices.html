@@ -1,121 +1,82 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Aprendices</title>
-    <link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
-    <link rel="stylesheet" href="{% static 'css/modales.css' %}">
-</head>
-<body>
-    <div class="aprendices-container">
-        
-        <!-- 🔝 Barra superior -->
-        <div class="barra-superior">
-            <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
-            <h1>Lista de Aprendices</h1>
-        </div>
 
-        <!-- 🚨 Alertas -->
-        <div class="alertas-top">
-            {% if messages %}
-                <div class="alert-container">
-                    {% for message in messages %}
-                        <div class="alert {{ message.tags }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-                <script>
-                    setTimeout(() => {
-                        document.querySelectorAll('.alert').forEach(el => {
-                            el.classList.add('fade-out');
-                            setTimeout(() => el.remove(), 500);
-                        });
-                    }, 3000);
-                </script>
-            {% endif %}
-        </div>
+{% block title %}Gestión de Aprendices{% endblock %}
 
-        <!-- 🔍 Búsqueda -->
-        <div class="busqueda-container">
-            <form method="get">
-                <input 
-                    type="text" 
-                    name="busqueda" 
-                    id="busqueda" 
-                    placeholder="Buscar por nombre o documento..." 
-                    value="{{ request.GET.busqueda }}" 
-                    class="input-busqueda"
-                >
-                <button type="submit" class="btn-buscar">Buscar</button>
-            </form>
-        </div>
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+<link rel="stylesheet" href="{% static 'css/modales.css' %}">
+{% endblock %}
 
-        <!-- 📋 Tabla de aprendices -->
-        <div class="table-container">
-            <table id="tabla-aprendices">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Documento</th>
-                        <th>Ficha</th>
-                        <th>Bitácoras</th>
-                        <th class="acciones-header">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for aprendiz in aprendices %}
-                        {% for relacion in aprendiz.relaciones_instructor_filtradas %}
-                            <tr>
-                                <td>{{ aprendiz.nombre }} {{ aprendiz.apellidos }}</td>
-                                <td>{{ aprendiz.num_doc }}</td>
-                                <td><span class="badge-ficha">{{ aprendiz.id_ficha_FK }}</span></td>
-                                <td>
-                                    {% if relacion.bitacoras_completas %}
-                                        <span class="paz-salvo aprobado">Completas</span>
-                                    {% else %}
-                                        <span class="paz-salvo pendiente">Pendientes</span>
-                                    {% endif %}
-                                </td>
-                                <td class="acciones">
-                                    <a href="#"
-                                    class="btn-editar"
+{% block content %}
+<div class="aprendices-container">
+    <div class="barra-superior">
+        <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+        <h1>Lista de Aprendices</h1>
+    </div>
+
+    <div class="busqueda-container">
+        <form method="get">
+            <input type="text" name="busqueda" id="busqueda" placeholder="Buscar por nombre o documento..." value="{{ request.GET.busqueda }}" class="input-busqueda">
+            <button type="submit" class="btn-buscar">Buscar</button>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <table id="tabla-aprendices">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Ficha</th>
+                    <th>Bitácoras</th>
+                    <th class="acciones-header">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for aprendiz in aprendices %}
+                    {% for relacion in aprendiz.relaciones_instructor_filtradas %}
+                        <tr>
+                            <td>{{ aprendiz.nombre }} {{ aprendiz.apellidos }}</td>
+                            <td>{{ aprendiz.num_doc }}</td>
+                            <td><span class="badge-ficha">{{ aprendiz.id_ficha_FK }}</span></td>
+                            <td>
+                                {% if relacion.bitacoras_completas %}
+                                    <span class="paz-salvo aprobado">Completas</span>
+                                {% else %}
+                                    <span class="paz-salvo pendiente">Pendientes</span>
+                                {% endif %}
+                            </td>
+                            <td class="acciones">
+                                <a href="#" class="btn-editar"
                                     data-id="{{ relacion.id }}"
                                     data-bitacoras="{{ relacion.bitacoras_completas|yesno:'checked,' }}">
                                     Editar
-                                    </a>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="5" class="no-data">No hay aprendices registrados.</td>
-                            </tr>
-                        {% endfor %}
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="no-data">No hay aprendices registrados.</td>
+                        </tr>
                     {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-        <!-- 📄 Paginación -->
-        {% if aprendices.has_other_pages %}
-        <div class="pagination">
-            {% if aprendices.has_previous %}
-                <a href="?page={{ aprendices.previous_page_number }}{% if request.GET.busqueda %}&busqueda={{ request.GET.busqueda }}{% endif %}" class="page-btn">« Anterior</a>
-            {% endif %}
-            
-            <span class="page-info">Página {{ aprendices.number }} de {{ aprendices.paginator.num_pages }}</span>
-            
-            {% if aprendices.has_next %}
-                <a href="?page={{ aprendices.next_page_number }}{% if request.GET.busqueda %}&busqueda={{ request.GET.busqueda }}{% endif %}" class="page-btn">Siguiente »</a>
-            {% endif %}
-        </div>
+    {% if aprendices.has_other_pages %}
+    <div class="pagination">
+        {% if aprendices.has_previous %}
+            <a href="?page={{ aprendices.previous_page_number }}{% if request.GET.busqueda %}&busqueda={{ request.GET.busqueda }}{% endif %}" class="page-btn">« Anterior</a>
         {% endif %}
+        <span class="page-info">Página {{ aprendices.number }} de {{ aprendices.paginator.num_pages }}</span>
+        {% if aprendices.has_next %}
+            <a href="?page={{ aprendices.next_page_number }}{% if request.GET.busqueda %}&busqueda={{ request.GET.busqueda }}{% endif %}" class="page-btn">Siguiente »</a>
+        {% endif %}
+    </div>
+    {% endif %}
 
-        <!-- 🔹 Modal Editar Bitácoras -->
-        {% include 'modales/modal_editar_bitacoras.html' %}
-
-    </div> <!-- cierre de .aprendices-container -->
-</body>
-</html>
+    {% include 'modales/modal_editar_bitacoras.html' %}
+</div>
+{% endblock %}

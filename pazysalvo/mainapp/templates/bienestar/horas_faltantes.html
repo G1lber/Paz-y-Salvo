@@ -1,76 +1,68 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Horas Faltantes - Bienestar</title>
-    <link rel="stylesheet" href="{% static 'css/pendientesalmacen.css' %}">
-    <link rel="stylesheet" href="{% static 'css/horas_faltantes.css' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-    
-    <div class="container">
-        <!-- Cabecera -->
-        <div class="card-header">
-            <a href="{% url 'inicio' %}" class="btn-volver">
-                <i class="fas fa-arrow-left"></i> Volver
-            </a>
-            <h2 class="card-title">Horas Lúdicas Faltantes</h2>
-        </div>
 
-        <!-- Barra de búsqueda -->
-        <div class="toolbar">
-            <div class="input-wrapper">
-                <i class="fas fa-search"></i>
-                <input type="text" id="search" placeholder="Buscar aprendiz...">
-            </div>
-        </div>
+{% block title %}Horas Faltantes - Bienestar{% endblock %}
 
-        <!-- Tabla -->
-        <div class="table-wrapper">
-            <table class="report-table" id="tabla-horas">
-                <thead>
-                    <tr>
-                        <th>Documento</th>
-                        <th>Aprendiz</th>
-                        <th>Programa</th>
-                        <th>Horas Registradas</th>
-                        <th>Horas Requeridas</th>
-                        <th>Horas Faltantes</th>
-                        <th>Progreso</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for data in horas_data %}
-                    <tr>
-                        <td>{{ data.aprendiz.num_doc }}</td>
-                        <td>{{ data.aprendiz.nombre }} {{ data.aprendiz.apellidos }}</td>
-                        <td>{{ data.programa }}</td>
-                        <td>{{ data.horas_registradas }}</td>
-                        <td>{{ data.horas_requeridas }}</td>
-                        <td>
-                            <span class="status vencido">{{ data.horas_faltantes }}</span>
-                        </td>
-                        <td>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: {{ data.porcentaje_completado }}%"></div>
-                                <span class="progress-text">{{ data.porcentaje_completado|floatformat:0 }}%</span>
-                            </div>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="7" style="text-align:center;">No hay aprendices con horas faltantes.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/pendientesalmacen.css' %}">
+<link rel="stylesheet" href="{% static 'css/horas_faltantes.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card-header">
+        <a href="{% url 'inicio' %}" class="btn-volver">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+        <h2 class="card-title">Horas Lúdicas Faltantes</h2>
+    </div>
+
+    <div class="toolbar">
+        <div class="input-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search" placeholder="Buscar aprendiz...">
         </div>
     </div>
 
-    <script src="{% static 'js/horas_faltantes.js' %}"></script>
-</body>
-</html>
+    <div class="table-wrapper">
+        <table class="report-table" id="tabla-horas">
+            <thead>
+                <tr>
+                    <th>Documento</th>
+                    <th>Aprendiz</th>
+                    <th>Programa</th>
+                    <th>Horas Registradas</th>
+                    <th>Horas Requeridas</th>
+                    <th>Horas Faltantes</th>
+                    <th>Progreso</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in horas_data %}
+                <tr>
+                    <td>{{ data.aprendiz.num_doc }}</td>
+                    <td>{{ data.aprendiz.nombre }} {{ data.aprendiz.apellidos }}</td>
+                    <td>{{ data.programa }}</td>
+                    <td>{{ data.horas_registradas }}</td>
+                    <td>{{ data.horas_requeridas }}</td>
+                    <td><span class="status vencido">{{ data.horas_faltantes }}</span></td>
+                    <td>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ data.porcentaje_completado }}%"></div>
+                            <span class="progress-text">{{ data.porcentaje_completado|floatformat:0 }}%</span>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align:center;">No hay aprendices con horas faltantes.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="{% static 'js/horas_faltantes.js' %}"></script>
+{% endblock %}

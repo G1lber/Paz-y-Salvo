@@ -20,14 +20,25 @@
             background-color: var(--color-fondo);
             color: var(--color-texto);
             line-height: 1.6;
+            padding-top: 90px;
         }
 
         /* Header Styles */
         .sena-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
     background-color: var(--color-blanco);
     border-bottom: 2px solid var(--color-principal);
     box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     padding: 12px 0;
+}
+
+.main-content {
+    padding-top: 90px;
+    min-height: calc(100vh - 90px);
 }
 
 /* contenedor principal del header */
@@ -46,6 +57,8 @@
     display: flex;
     align-items: center;
     gap: 15px;
+    text-decoration: none;
+    color: inherit;
     transition: transform 0.3s ease;
 }
 

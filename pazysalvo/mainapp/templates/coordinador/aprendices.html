@@ -1,138 +1,96 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Aprendices</title>
-    <link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
-</head>
-<body>
-    <div class="aprendices-container">
-        
-        <!-- 🔝 Barra superior -->
-        <div class="barra-superior">
-            <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
-            <h1>Lista de Aprendices</h1>
-            <a href="#" id="btn-abrir-modal" class="btn-crear">+ Crear Aprendiz</a>
-        </div>
 
-        <!-- 🚨 Alertas -->
-        <div class="alertas-top">
-            {% if messages %}
-                <div class="alert-container">
-                    {% for message in messages %}
-                        <div class="alert {{ message.tags }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                </div>
-                <script>
-                    setTimeout(() => {
-                        document.querySelectorAll('.alert').forEach(el => {
-                            el.classList.add('fade-out');
-                            setTimeout(() => el.remove(), 500);
-                        });
-                    }, 3000);
-                </script>
-            {% endif %}
-        </div>
+{% block title %}Gestión de Aprendices{% endblock %}
 
-        <!-- 🔍 Búsqueda -->
-        <div class="busqueda-container">
-            <form method="get">
-                <input 
-                    type="text" 
-                    name="busqueda" 
-                    id="busqueda" 
-                    placeholder="Buscar por nombre o documento..." 
-                    value="{{ request.GET.busqueda }}" 
-                    class="input-busqueda"
-                >
-                <button type="submit" class="btn-buscar">Buscar</button>
-            </form>
-        </div>
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+{% endblock %}
 
-        <!-- 📋 Tabla de aprendices -->
-        <div class="table-container">
-            <table id="tabla-aprendices">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Documento</th>
-                        <th>Ficha</th>
-                        <th>Paz y Salvo</th>
-                        <th class="acciones-header">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for aprendiz in aprendices %}
-                        <tr>
-                            <td>{{ aprendiz.nombre }} {{ aprendiz.apellidos }}</td>
-                            <td>{{ aprendiz.num_doc }}</td>
-                            <td><span class="badge-ficha">{{ aprendiz.id_ficha_FK }}</span></td>
-                            <td>
-                                {% if aprendiz.paz_salvo %}
-                                    <span class="paz-salvo aprobado">Aprobado</span>
-                                {% else %}
-                                    <span class="paz-salvo pendiente">Pendiente</span>
-                                {% endif %}
-                            </td>
-                            <td class="acciones">
-                                <button 
-                                    class="btn-editar"
-                                    data-id="{{ aprendiz.id }}"
-                                    data-nombre="{{ aprendiz.nombre }}"
-                                    data-apellidos="{{ aprendiz.apellidos }}"
-                                    data-numdoc="{{ aprendiz.num_doc }}"
-                                    data-tipodoc="{{ aprendiz.id_tipodoc_FK.id|default:'' }}"
-                                    data-ficha="{{ aprendiz.id_ficha_FK.num_ficha|default:'' }}"
-                                    data-patrocinado="{{ aprendiz.es_patrocinado }}"
-                                    data-resultados="{{ aprendiz.resultados }}"
-                                    data-tyt="{{ aprendiz.tyt }}"
-                                    data-instructor="{% if aprendiz.aprendiz_en_seguimiento.first %}{{ aprendiz.aprendiz_en_seguimiento.first.id_instructor_FK.id }}{% endif %}">
-                                    Editar
-                                </button>
-                                
-                                <form method="post" action="{% url 'eliminar_usuario' aprendiz.id %}" class="form-eliminar">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este aprendiz?')">
-                                        Eliminar
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="5" class="no-data">No hay aprendices registrados.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 📄 Paginación -->
-        {% if aprendices.has_other_pages %}
-        <div class="pagination">
-            {% if aprendices.has_previous %}
-                <a href="?page={{ aprendices.previous_page_number }}{% if request.GET.busqueda %}&busqueda={{ request.GET.busqueda }}{% endif %}" class="page-btn">« Anterior</a>
-            {% endif %}
-            
-            <span class="page-info">Página {{ aprendices.number }} de {{ aprendices.paginator.num_pages }}</span>
-            
-            {% if aprendices.has_next %}
-                <a href="?page={{ aprendices.next_page_number }}{% if request.GET.busqueda %}&busqueda={{ request.GET.busqueda }}{% endif %}" class="page-btn">Siguiente »</a>
-            {% endif %}
-        </div>
-        {% endif %}
-
-        {% include 'modales/modalCrearAprendiz.html' %}
-        {% include 'modales/modalEditarAprendiz.html' %}
+{% block content %}
+<div class="aprendices-container">
+    <div class="barra-superior">
+        <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+        <h1>Lista de Aprendices</h1>
+        <a href="#" id="btn-abrir-modal" class="btn-crear">+ Crear Aprendiz</a>
     </div>
 
-    <!-- JS de modales -->
-    <script src="{% static 'js/aprendices.js' %}"></script>
-    <script src="{% static 'js/editar_aprendiz.js' %}"></script>
+    <div class="busqueda-container">
+        <form method="get">
+            <input type="text" name="busqueda" id="busqueda" placeholder="Buscar por nombre o documento..." value="{{ request.GET.busqueda }}" class="input-busqueda">
+            <button type="submit" class="btn-buscar">Buscar</button>
+        </form>
+    </div>
 
-</body>
-</html>
+    <div class="table-container">
+        <table id="tabla-aprendices">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Ficha</th>
+                    <th>Paz y Salvo</th>
+                    <th class="acciones-header">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for aprendiz in aprendices %}
+                    <tr>
+                        <td>{{ aprendiz.nombre }} {{ aprendiz.apellidos }}</td>
+                        <td>{{ aprendiz.num_doc }}</td>
+                        <td><span class="badge-ficha">{{ aprendiz.id_ficha_FK }}</span></td>
+                        <td>
+                            {% if aprendiz.paz_salvo %}
+                                <span class="paz-salvo aprobado">Aprobado</span>
+                            {% else %}
+                                <span class="paz-salvo pendiente">Pendiente</span>
+                            {% endif %}
+                        </td>
+                        <td class="acciones">
+                            <button class="btn-editar"
+                                data-id="{{ aprendiz.id }}"
+                                data-nombre="{{ aprendiz.nombre }}"
+                                data-apellidos="{{ aprendiz.apellidos }}"
+                                data-numdoc="{{ aprendiz.num_doc }}"
+                                data-tipodoc="{{ aprendiz.id_tipodoc_FK.id|default:'' }}"
+                                data-ficha="{{ aprendiz.id_ficha_FK.num_ficha|default:'' }}"
+                                data-patrocinado="{{ aprendiz.es_patrocinado }}"
+                                data-resultados="{{ aprendiz.resultados }}"
+                                data-tyt="{{ aprendiz.tyt }}"
+                                data-instructor="{% if aprendiz.aprendiz_en_seguimiento.first %}{{ aprendiz.aprendiz_en_seguimiento.first.id_instructor_FK.id }}{% endif %}">
+                                Editar
+                            </button>
+                            <form method="post" action="{% url 'eliminar_usuario' aprendiz.id %}" class="form-eliminar">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este aprendiz?')">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="no-data">No hay aprendices registrados.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if aprendices.has_other_pages %}
+    <div class="pagination">
+        {% if aprendices.has_previous %}
+            <a href="?page={{ aprendices.previous_page_number }}{% if request.GET.busqueda %}&busqueda={{ request.GET.busqueda }}{% endif %}" class="page-btn">« Anterior</a>
+        {% endif %}
+        <span class="page-info">Página {{ aprendices.number }} de {{ aprendices.paginator.num_pages }}</span>
+        {% if aprendices.has_next %}
+            <a href="?page={{ aprendices.next_page_number }}{% if request.GET.busqueda %}&busqueda={{ request.GET.busqueda }}{% endif %}" class="page-btn">Siguiente »</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% include 'modales/modalCrearAprendiz.html' %}
+    {% include 'modales/modalEditarAprendiz.html' %}
+</div>
+
+<script src="{% static 'js/aprendices.js' %}"></script>
+<script src="{% static 'js/editar_aprendiz.js' %}"></script>
+{% endblock %}

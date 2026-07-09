@@ -1,110 +1,85 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Pendientes Almacén</title>
-  <link rel="stylesheet" href="{% static 'css/pendientesalmacen.css' %}">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
-    
-  <div class="container">
 
-    <!-- Cabecera -->
+{% block title %}Pendientes Almacén{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/pendientesalmacen.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container">
     <div class="card-header">
-      <a href="{% url 'inicio' %}" class="btn-volver">
-        <i class="fas fa-arrow-left"></i> Volver
-      </a>
-      <h2 class="card-title">Reportes Almacén</h2>
+        <a href="{% url 'inicio' %}" class="btn-volver">
+            <i class="fas fa-arrow-left"></i> Volver
+        </a>
+        <h2 class="card-title">Reportes Almacén</h2>
     </div>
 
-    {% if messages %}
-      <div class="alert-container">
-        {% for message in messages %}
-          <div class="alert {{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    <!-- Barra de búsqueda -->
     <div class="toolbar">
-      <div class="input-wrapper">
-        <i class="fas fa-search"></i>
-        <input 
-          type="text" 
-          id="search" 
-          placeholder="Buscar reporte..." 
-          onkeyup="buscarReporte()" 
-        >
-      </div>
+        <div class="input-wrapper">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search" placeholder="Buscar reporte..." onkeyup="buscarReporte()">
+        </div>
     </div>
 
-    <!-- Filtros -->
     <div class="filters">
-      <button class="filter-btn active" onclick="filtrar('Todos')">Todos</button>
-      <button class="filter-btn" onclick="filtrar('Activo')">Activo</button>
-      <button class="filter-btn" onclick="filtrar('Vencido')">Vencido</button>
-      <button class="filter-btn" onclick="filtrar('Vence hoy')">Vence hoy</button>
+        <button class="filter-btn active" onclick="filtrar('Todos')">Todos</button>
+        <button class="filter-btn" onclick="filtrar('Activo')">Activo</button>
+        <button class="filter-btn" onclick="filtrar('Vencido')">Vencido</button>
+        <button class="filter-btn" onclick="filtrar('Vence hoy')">Vence hoy</button>
     </div>
 
-    <!-- Tabla -->
     <div class="table-wrapper">
-      <table class="report-table" id="tabla-reportes">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre del Equipo</th>
-            <th>Usuario</th>
-            <th>Estado</th>
-            <th>Fecha de Préstamo</th>
-            <th>Fecha de Devolución</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for equipo in equipos %}
-          <tr data-estado="{{ equipo.estado }}">
-            <td>{{ equipo.id }}</td>
-            <td>{{ equipo.nombre_equipo }}</td>
-            <td>{{ equipo.id_usuario_FK }}</td>
-            <td>
-              <span class="status 
-                {% if equipo.estado == 'Activo' %}activo
-                {% elif equipo.estado == 'Vencido' %}vencido
-                {% elif equipo.estado == 'Vence hoy' %}vencehoy
-                {% endif %}">
-                {{ equipo.estado }}
-              </span>
-            </td>
-            <td>{{ equipo.fecha_prestamo }}</td>
-            <td>{{ equipo.fecha_devolucion|default:"—" }}</td>
-            <td>
-              <form method="post" style="display:inline;">
-                {% csrf_token %}
-                <input type="hidden" name="equipo_id" value="{{ equipo.id }}">
-                <button type="submit" name="eliminar" value="1" class="btn delete">
-                  <i class="fas fa-trash"></i> Quitar
-                </button>
-              </form>
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="7" style="text-align:center;">No hay reportes registrados.</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+        <table class="report-table" id="tabla-reportes">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre del Equipo</th>
+                    <th>Usuario</th>
+                    <th>Estado</th>
+                    <th>Fecha de Préstamo</th>
+                    <th>Fecha de Devolución</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for equipo in equipos %}
+                <tr data-estado="{{ equipo.estado }}">
+                    <td>{{ equipo.id }}</td>
+                    <td>{{ equipo.nombre_equipo }}</td>
+                    <td>{{ equipo.id_usuario_FK }}</td>
+                    <td>
+                        <span class="status
+                            {% if equipo.estado == 'Activo' %}activo
+                            {% elif equipo.estado == 'Vencido' %}vencido
+                            {% elif equipo.estado == 'Vence hoy' %}vencehoy
+                            {% endif %}">
+                            {{ equipo.estado }}
+                        </span>
+                    </td>
+                    <td>{{ equipo.fecha_prestamo }}</td>
+                    <td>{{ equipo.fecha_devolucion|default:"—" }}</td>
+                    <td>
+                        <form method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="equipo_id" value="{{ equipo.id }}">
+                            <button type="submit" name="eliminar" value="1" class="btn delete">
+                                <i class="fas fa-trash"></i> Quitar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align:center;">No hay reportes registrados.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-  </div>
+</div>
 
-  <!-- Scripts -->
-
-  <script src="{% static 'js/almacen.js' %}"> </script>
-
-
-</body>
-</html>
+<script src="{% static 'js/almacen.js' %}"></script>
+{% endblock %}

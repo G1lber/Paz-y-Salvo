@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Paz y Salvo - SENA{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/inicio.css' %}">
+    <style>
+        body { padding-top: 90px !important; margin: 0 !important; }
+        .main-content { padding-top: 0; }
+        .logo-container { display: flex !important; align-items: center; gap: 15px; text-decoration: none; color: inherit; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="sena-header" style="position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 1000 !important;">
+        <div class="container-header">
+            <a href="{% url 'inicio' %}" class="logo-container">
+                <img src="{% static 'image/sena-logo.png' %}" alt="Logo SENA" class="sena-logo">
+                <div class="system-info">
+                    <p>Servicio Nacional de Aprendizaje - Regional Cauca</p>
+                </div>
+            </a>
+            <div class="user-info">
+                <span class="user-name"><i class="fas fa-user-circle me-2"></i>{{ request.session.usuario_nombre|default:"Invitado" }}</span>
+                <span class="user-role"><i class="fas fa-user-tag me-2"></i>{{ request.session.usuario_rol }}</span>
+                <a href="{% url 'login' %}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        {% if messages %}
+        <div class="alert-container" style="max-width: 1200px; margin: 1rem auto 0; padding: 0 1rem;">
+            {% for message in messages %}
+            <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        <script>
+            setTimeout(() => {
+                document.querySelectorAll('.alert').forEach(el => {
+                    el.classList.add('fade-out');
+                    setTimeout(() => el.remove(), 500);
+                });
+            }, 4000);
+        </script>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

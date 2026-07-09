@@ -1,112 +1,91 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Gestión de Fichas</title>
-    <link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
-    <link rel="stylesheet" href="{% static 'css/modales.css' %}">
-</head>
-<body>
-    <div class="aprendices-container">
-        <!-- Barra superior -->
-         
-        <div class="barra-superior">
-            <a href="{% url 'inicio' %}" class="btn-volver">Volver</a>
-            <h1>Listado de fichas</h1>
 
-            <div class="acciones-superior">
-                <button id="btn-abrir-modal-crear" class="btn-crear">Crear Ficha</button>
-                <button id="btn-abrir-modal-crear-programa" class="btn-crear">Crear Programa</button>
-            </div>
-        </div>
-        <!-- Mensajes -->
-        <div class="alert-container">
-            {% for message in messages %}
-                <div class="alert {% if message.tags %}{{ message.tags }}{% endif %}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
+{% block title %}Gestión de Fichas{% endblock %}
 
-        <!-- Búsqueda -->
-        <div class="busqueda-container">
-            <form method="get">
-                <input type="text" id="busqueda" name="busqueda" class="input-busqueda"
-                       placeholder="Buscar por número o programa..."
-                       value="{{ request.GET.busqueda }}">
-                <button class="btn-buscar">Buscar</button>
-            </form>
-        </div>
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+<link rel="stylesheet" href="{% static 'css/modales.css' %}">
+{% endblock %}
 
-        <!-- Tabla -->
-        <div class="table-container">
-            <table id="tabla-aprendices">
-                <thead>
-                    <tr>
-                        <th>N. Ficha</th>
-                        <th>Programa</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Fin</th>
-                        <th class="acciones-header">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ficha in fichas %}
-                        <tr>
-                            <td><span class="badge-ficha">{{ ficha.num_ficha }}</span></td>
-                            <td>{{ ficha.programa_FK.nombre_programa }}</td>
-                            <td>{{ ficha.fecha_inicio|date:"d/m/Y"|default:"No asignada" }}</td>
-                            <td>{{ ficha.fecha_fin|date:"d/m/Y"|default:"No asignada" }}</td>
-                            <td>
-                                <div class="acciones">
-                                    <button class="btn-editar"
-                                        data-ficha-id="{{ ficha.num_ficha }}"
-                                        data-programa="{{ ficha.programa_FK.id_programa }}"
-                                        data-fecha-inicio="{{ ficha.fecha_inicio|date:'Y-m-d' }}"
-                                        data-fecha-fin="{{ ficha.fecha_fin|date:'Y-m-d' }}">
-                                        Editar
-                                    </button>
-                                    <button class="btn-eliminar"
-                                            data-ficha-id="{{ ficha.num_ficha }}">
-                                        Eliminar
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="5" class="text-center">No hay fichas registradas</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+{% block content %}
+<div class="aprendices-container">
+    <div class="barra-superior">
+        <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+        <h1>Listado de fichas</h1>
+        <div class="acciones-superior">
+            <button id="btn-abrir-modal-crear" class="btn-crear">Crear Ficha</button>
+            <button id="btn-abrir-modal-crear-programa" class="btn-crear">Crear Programa</button>
         </div>
-
-        <!-- Paginación -->
-        {% if fichas.has_other_pages %}
-            <div class="pagination">
-                {% if fichas.has_previous %}
-                    <a href="?page={{ fichas.previous_page_number }}&busqueda={{ request.GET.busqueda }}" class="page-btn">Anterior</a>
-                {% endif %}
-                <span class="page-info">
-                    Página {{ fichas.number }} de {{ fichas.paginator.num_pages }}
-                </span>
-                {% if fichas.has_next %}
-                    <a href="?page={{ fichas.next_page_number }}&busqueda={{ request.GET.busqueda }}" class="page-btn">Siguiente</a>
-                {% endif %}
-            </div>
-        {% endif %}
     </div>
 
-    <!-- Incluir modales -->
-    {% include 'modales/modal_crear_ficha.html' %}
-    {% include 'modales/modal_editar_ficha.html' %}
-    {% include 'modales/modal_eliminar_ficha.html' %}
-    {% include 'modales/modal_crear_programa.html' %}
+    <div class="busqueda-container">
+        <form method="get">
+            <input type="text" id="busqueda" name="busqueda" class="input-busqueda"
+                   placeholder="Buscar por número o programa..."
+                   value="{{ request.GET.busqueda }}">
+            <button class="btn-buscar">Buscar</button>
+        </form>
+    </div>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{% static 'js/modales_fichas.js' %}"></script>
-</body>
-</html>
+    <div class="table-container">
+        <table id="tabla-aprendices">
+            <thead>
+                <tr>
+                    <th>N. Ficha</th>
+                    <th>Programa</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th class="acciones-header">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ficha in fichas %}
+                    <tr>
+                        <td><span class="badge-ficha">{{ ficha.num_ficha }}</span></td>
+                        <td>{{ ficha.programa_FK.nombre_programa }}</td>
+                        <td>{{ ficha.fecha_inicio|date:"d/m/Y"|default:"No asignada" }}</td>
+                        <td>{{ ficha.fecha_fin|date:"d/m/Y"|default:"No asignada" }}</td>
+                        <td>
+                            <div class="acciones">
+                                <button class="btn-editar"
+                                    data-ficha-id="{{ ficha.num_ficha }}"
+                                    data-programa="{{ ficha.programa_FK.id_programa }}"
+                                    data-fecha-inicio="{{ ficha.fecha_inicio|date:'Y-m-d' }}"
+                                    data-fecha-fin="{{ ficha.fecha_fin|date:'Y-m-d' }}">
+                                    Editar
+                                </button>
+                                <button class="btn-eliminar" data-ficha-id="{{ ficha.num_ficha }}">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No hay fichas registradas</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if fichas.has_other_pages %}
+        <div class="pagination">
+            {% if fichas.has_previous %}
+                <a href="?page={{ fichas.previous_page_number }}&busqueda={{ request.GET.busqueda }}" class="page-btn">Anterior</a>
+            {% endif %}
+            <span class="page-info">Página {{ fichas.number }} de {{ fichas.paginator.num_pages }}</span>
+            {% if fichas.has_next %}
+                <a href="?page={{ fichas.next_page_number }}&busqueda={{ request.GET.busqueda }}" class="page-btn">Siguiente</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+{% include 'modales/modal_crear_ficha.html' %}
+{% include 'modales/modal_editar_ficha.html' %}
+{% include 'modales/modal_eliminar_ficha.html' %}
+{% include 'modales/modal_crear_programa.html' %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'js/modales_fichas.js' %}"></script>
+{% endblock %}

@@ -1,286 +1,118 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Prestar Equipos</title>
-  <link rel="stylesheet" href="{% static 'css/prestar-equipos.css' %}">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
 
-  <div class="container">
+{% block title %}Prestar Equipos{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/prestar-equipos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
     <div class="barra-superior">
-      <a href="{% url 'inicio' %}" class="btn-back">← Volver</a>
-      <h2 class="titulo-nuevo-reporte">Nuevo Reporte</h2>
+        <a href="{% url 'inicio' %}" class="btn-back">← Volver</a>
+        <h2 class="titulo-nuevo-reporte">Nuevo Reporte</h2>
     </div>
 
-    <!-- Mensajes de Django -->
-    {% if messages %}
-    <div class="messages">
-      {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">
-        {{ message }}
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-
-    <!-- Pestañas para elegir el tipo de carga -->
     <div class="tabs">
-      <button type="button" class="tab-btn" onclick="showTab('individual')">Carga Individual</button>
-      <button type="button" class="tab-btn" onclick="showTab('masiva')">Carga Masiva (Excel)</button>
+        <button type="button" class="tab-btn" onclick="showTab('individual')">Carga Individual</button>
+        <button type="button" class="tab-btn" onclick="showTab('masiva')">Carga Masiva (Excel)</button>
     </div>
 
-    <!-- Mensaje inicial cuando no hay pestaña seleccionada -->
     <div id="inicio-message" class="welcome-message">
-      <h4>👋 ¡Bienvenido!</h4>
-      <p>Selecciona una opción para comenzar:</p>
-      <ul>
-        <li><strong>Carga Individual:</strong> Para crear un reporte de préstamo a la vez</li>
-        <li><strong>Carga Masiva:</strong> Para subir múltiples reportes desde un archivo Excel</li>
-      </ul>
+        <h4>👋 ¡Bienvenido!</h4>
+        <p>Selecciona una opción para comenzar:</p>
+        <ul>
+            <li><strong>Carga Individual:</strong> Para crear un reporte de préstamo a la vez</li>
+            <li><strong>Carga Masiva:</strong> Para subir múltiples reportes desde un archivo Excel</li>
+        </ul>
     </div>
 
-    <!-- Formulario Individual - OCULTO INICIALMENTE -->
     <form method="POST" id="individual-form" class="tab-form" enctype="multipart/form-data">
-      {% csrf_token %}
-      <input type="hidden" name="form_type" value="individual">
-      
-      <div class="form-grid">
-        <div class="form-section">
-          <label for="documento">Documento del Aprendiz</label>
-          <input type="text" id="documento" name="documento" required>
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="individual">
+        <div class="form-grid">
+            <div class="form-section">
+                <label for="documento">Documento del Aprendiz</label>
+                <input type="text" id="documento" name="documento" required>
+            </div>
+            <div class="form-section">
+                <label for="equipo">Equipo</label>
+                <select id="equipo" name="equipo" required>
+                    <option value="">-- Seleccione --</option>
+                    <option value="Portátil">Portátil</option>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Proyector">Proyector</option>
+                </select>
+            </div>
+            <div class="form-section">
+                <label for="serial">Serial</label>
+                <input type="text" id="serial" name="serial" required>
+            </div>
+            <div class="form-section">
+                <label for="fecha_prestamo">Fecha Préstamo</label>
+                <input type="date" id="fecha_prestamo" name="fecha_prestamo" required>
+            </div>
+            <div class="form-section">
+                <label for="fecha_devolucion">Fecha Devolución</label>
+                <input type="date" id="fecha_devolucion" name="fecha_devolucion">
+            </div>
+            <div class="form-section full-width">
+                <label for="observaciones">Observaciones</label>
+                <textarea id="observaciones" name="observaciones" rows="3" placeholder="Observaciones adicionales..."></textarea>
+            </div>
         </div>
-        
-        <div class="form-section">
-          <label for="equipo">Equipo</label>
-          <select id="equipo" name="equipo" required>
-            <option value="">-- Seleccione --</option>
-            <option value="Portátil">Portátil</option>
-            <option value="Tablet">Tablet</option>
-            <option value="Proyector">Proyector</option>
-          </select>
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">Guardar Reporte Individual</button>
         </div>
-        
-        <div class="form-section">
-          <label for="serial">Serial</label>
-          <input type="text" id="serial" name="serial" required>
-        </div>
-        
-        <div class="form-section">
-          <label for="fecha_prestamo">Fecha Préstamo</label>
-          <input type="date" id="fecha_prestamo" name="fecha_prestamo" required>
-        </div>
-        
-        <div class="form-section">
-          <label for="fecha_devolucion">Fecha Devolución</label>
-          <input type="date" id="fecha_devolucion" name="fecha_devolucion">
-        </div>
-        
-        <div class="form-section full-width">
-          <label for="observaciones">Observaciones</label>
-          <textarea id="observaciones" name="observaciones" rows="3" placeholder="Observaciones adicionales..."></textarea>
-        </div>
-      </div>
-      
-      <div class="form-actions">
-        <button type="submit" class="btn-submit">Guardar Reporte Individual</button>
-      </div>
     </form>
 
-    <!-- Formulario Carga Masiva - OCULTO INICIALMENTE -->
     <form method="POST" id="masiva-form" class="tab-form" enctype="multipart/form-data">
-      {% csrf_token %}
-      <input type="hidden" name="form_type" value="masiva">
-      
-      <div class="form-section">
-        <label for="excel_file">Seleccionar archivo Excel</label>
-        <div class="file-input-wrapper">
-          <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" required>
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="masiva">
+        <div class="form-section">
+            <label for="excel_file">Seleccionar archivo Excel</label>
+            <div class="file-input-wrapper">
+                <input type="file" id="excel_file" name="excel_file" accept=".xlsx, .xls" required>
+            </div>
+            <small class="file-info">Formatos aceptados: .xlsx, .xls</small>
         </div>
-        <small class="file-info">Formatos aceptados: .xlsx, .xls</small>
-      </div>
-
-      <div class="instructions">
-        <h4>📋 Instrucciones para el archivo Excel:</h4>
-        <ul>
-          <li><strong>Columnas requeridas:</strong> documento, equipo, serial, fecha_prestamo, fecha_devolucion, observaciones</li>
-          <li><strong>Primera fila:</strong> debe contener los encabezados de columna</li>
-          <li><strong>Formato de fechas:</strong> YYYY-MM-DD (ejemplo: 2024-01-15)</li>
-          <li><strong>Equipos válidos:</strong> Portátil, Tablet, Proyector</li>
-          <li><strong>Documentos:</strong> deben pertenecer a aprendices registrados en el sistema</li>
-          <li><strong>Serial:</strong> debe ser único, no puede repetirse en el sistema</li>
-        </ul>
-      </div>
-      
-      <div class="form-actions">
-        <button type="submit" class="btn-submit">Subir y Procesar Excel</button>
-      </div>
+        <div class="instructions">
+            <h4>📋 Instrucciones para el archivo Excel:</h4>
+            <ul>
+                <li><strong>Columnas requeridas:</strong> documento, equipo, serial, fecha_prestamo, fecha_devolucion, observaciones</li>
+                <li><strong>Primera fila:</strong> debe contener los encabezados de columna</li>
+                <li><strong>Formato de fechas:</strong> YYYY-MM-DD (ejemplo: 2024-01-15)</li>
+                <li><strong>Equipos válidos:</strong> Portátil, Tablet, Proyector</li>
+                <li><strong>Documentos:</strong> deben pertenecer a aprendices registrados en el sistema</li>
+                <li><strong>Serial:</strong> debe ser único, no puede repetirse en el sistema</li>
+            </ul>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-submit">Subir y Procesar Excel</button>
+        </div>
     </form>
+</div>
 
-    {% comment %} <!-- Listado de Reportes - OCULTO INICIALMENTE -->
-    <div id="tabla-reportes" class="tabla-container" style="display: none;">
-      <h2 class="titulo">Listado de Reportes</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Documento</th>
-            <th>Equipo</th>
-            <th>Serial</th>
-            <th>F. Préstamo</th>
-            <th>F. Devolución</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for reporte in reportes %}
-          <tr>
-            <td>{{ reporte.id }}</td>
-            <td>{{ reporte.id_usuario_FK.num_doc }}</td>
-            <td>{{ reporte.nombre_equipo }}</td>
-            <td>{{ reporte.serial}}</td>
-            <td>{{ reporte.fecha_prestamo }}</td>
-            <td>{{ reporte.fecha_devolucion|default:"—" }}</td>
-            <td>
-              <button class="btn btn-edit" onclick="abrirModalEditar('{{ reporte.id }}')">✏️</button>
-              <button class="btn btn-delete" onclick="confirmarEliminacion('{{ reporte.id }}')">🗑️</button>
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-            <td colspan="7">No hay reportes registrados.</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div> {% endcomment %}
-  </div>
-
-  <div id="modalEditar" style="display: none;"></div>
-
-  <script>
-    // Variable para controlar si ya se ha realizado alguna carga
+<script>
     let cargaRealizada = localStorage.getItem('cargaRealizada') === 'true';
 
     function showTab(tabName) {
-      console.log('Mostrando pestaña:', tabName);
-      
-      // Ocultar todos los formularios y el mensaje inicial
-      document.querySelectorAll('.tab-form').forEach(form => {
-        form.style.display = 'none';
-      });
-      document.getElementById('inicio-message').style.display = 'none';
-      
-      // Remover clase active de todos los botones
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      
-      // Mostrar formulario seleccionado y activar botón
-      const selectedForm = document.getElementById(tabName + '-form');
-      if (selectedForm) {
-        selectedForm.style.display = 'block';
-      }
-      event.target.classList.add('active');
-
-      // Mostrar tabla si ya se realizó alguna carga
-      if (cargaRealizada) {
-        document.getElementById('tabla-reportes').style.display = 'block';
-      }
+        document.querySelectorAll('.tab-form').forEach(form => { form.style.display = 'none'; });
+        document.getElementById('inicio-message').style.display = 'none';
+        document.querySelectorAll('.tab-btn').forEach(btn => { btn.classList.remove('active'); });
+        const selectedForm = document.getElementById(tabName + '-form');
+        if (selectedForm) { selectedForm.style.display = 'block'; }
+        event.target.classList.add('active');
+        if (cargaRealizada) { document.getElementById('tabla-reportes').style.display = 'block'; }
     }
 
-    // Función para mostrar la tabla después de una carga exitosa
-    function mostrarTabla() {
-      cargaRealizada = true;
-      localStorage.setItem('cargaRealizada', 'true');
-      document.getElementById('tabla-reportes').style.display = 'block';
-    }
-
-    // Verificar si hay reportes al cargar la página
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('Página cargada - Carga realizada:', cargaRealizada);
-      
-      // Ocultar elementos inicialmente
-      document.getElementById('inicio-message').style.display = 'block';
-      document.getElementById('individual-form').style.display = 'none';
-      document.getElementById('masiva-form').style.display = 'none';
-      document.getElementById('tabla-reportes').style.display = 'none';
-      
-      // Ninguna pestaña activa inicialmente
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-
-      // Solo mostrar tabla si ya se realizó una carga exitosa
-      if (cargaRealizada) {
-        document.getElementById('tabla-reportes').style.display = 'block';
-      }
+        document.getElementById('inicio-message').style.display = 'block';
+        document.getElementById('individual-form').style.display = 'none';
+        document.getElementById('masiva-form').style.display = 'none';
+        document.querySelectorAll('.tab-btn').forEach(btn => { btn.classList.remove('active'); });
+        if (cargaRealizada) { document.getElementById('tabla-reportes').style.display = 'block'; }
     });
-
-    // Interceptar envío de formularios para mostrar la tabla después
-    document.addEventListener('DOMContentLoaded', function() {
-      const forms = document.querySelectorAll('form');
-      forms.forEach(form => {
-        form.addEventListener('submit', function(event) {
-          // Solo marcar como carga realizada si el formulario es válido
-          if (form.checkValidity()) {
-            // Pequeño delay para asegurar que el envío se procese
-            setTimeout(() => {
-              mostrarTabla();
-            }, 500);
-          }
-        });
-      });
-    });
-
-    // También detectar cuando hay mensajes de éxito (por si se recarga la página)
-    document.addEventListener('DOMContentLoaded', function() {
-      const mensajesExito = document.querySelectorAll('.alert-success');
-      if (mensajesExito.length > 0) {
-        // Si hay mensajes de éxito, mostrar la tabla
-        mostrarTabla();
-      }
-    });
-
-    function abrirModalEditar(id) {
-      fetch(`/editar_prestamo/${id}/`)
-        .then(response => response.text())
-        .then(html => {
-          const modalContainer = document.querySelector('#modalEditar');
-          modalContainer.innerHTML = html;
-          modalContainer.style.display = 'block';
-        });
-    }
-
-    function cerrarModalEditar() {
-      const modalContainer = document.querySelector('#modalEditar');
-      modalContainer.style.display = 'none';
-      modalContainer.innerHTML = '';
-    }
-
-    function confirmarEliminacion(id) {
-      if (confirm('¿Estás seguro de eliminar este préstamo?')) {
-        window.location.href = `/eliminar_prestamo/${id}/`;
-      }
-    }
-
-    // Función para resetear (útil para testing)
-    function resetearEstado() {
-      cargaRealizada = false;
-      localStorage.removeItem('cargaRealizada');
-      document.getElementById('tabla-reportes').style.display = 'none';
-      document.getElementById('inicio-message').style.display = 'block';
-      document.querySelectorAll('.tab-form').forEach(form => {
-        form.style.display = 'none';
-      });
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-
-      
-    }
-  </script>
-</body>
-</html>
+</script>
+{% endblock %}

@@ -1,177 +1,111 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Usuarios</title>
-    <link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
-</head>
-<body>
-    <div class="aprendices-container">
-        <div class="barra-superior">
-            <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
-            <h1>Lista de Usuarios</h1>
-            
-            <div class="alertas-top">
-                {% if messages %}
-                    <div class="alert-container">
-                        {% for message in messages %}
-                            <div class="alert {{ message.tags }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <script>
-                        setTimeout(() => {
-                            document.querySelectorAll('.alert').forEach(el => {
-                                el.classList.add('fade-out');
-                                setTimeout(() => el.remove(), 500);
-                            });
-                        }, 3000);
-                    </script>
-                {% endif %}
-            </div>
 
-            <a href="#" id="btn-abrir-modal" class="btn-crear">+ Crear Usuario</a>
-        </div>
+{% block title %}Gestión de Usuarios{% endblock %}
 
-        <!-- 🔍 Campo de búsqueda -->
-        <div class="busqueda-container">
-            <form method="get">
-                <input 
-                    type="text" 
-                    name="busqueda" 
-                    placeholder="Buscar por nombre o documento..." 
-                    value="{{ busqueda }}"
-                    class="input-busqueda"
-                >
-                <button type="submit" class="btn-buscar">Buscar</button>
-            </form>
-        </div>
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/aprendices.css' %}">
+{% endblock %}
 
-        <!-- 📋 Tabla de usuarios -->
-        <div class="table-container">
-            <table id="tabla-aprendices">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Documento</th>
-                        <th>Rol</th>
-                        <th class="acciones-header">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for usuario in usuarios %}
-                        <tr>
-                            <td>{{ usuario.nombre }} {{ usuario.apellidos }}</td>
-                            <td>{{ usuario.num_doc }}</td>
-                            <td><span class="badge-rol">{{ usuario.id_rol_FK.nombre_rol }}</span></td>
-                            <td class="acciones">
-                                <button class="btn-editar"
-                                    data-id="{{ usuario.id }}"
-                                    data-nombre="{{ usuario.nombre }}"
-                                    data-apellidos="{{ usuario.apellidos }}"
-                                    data-num_doc="{{ usuario.num_doc }}"
-                                    data-tipodoc="{{ usuario.id_tipodoc_FK.id }}"
-                                    data-rol="{{ usuario.id_rol_FK.id }}"
-                                    data-ficha="{{ usuario.id_ficha_FK.id }}">
-                                    Editar
-                                </button>
-
-                                <form method="post" action="{% url 'eliminar_usuario' usuario.id %}" class="form-eliminar">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este usuario?')">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="4" class="no-data">No hay usuarios registrados.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 📄 Paginación -->
-        <div class="pagination">
-            {% if usuarios.has_previous %}
-                <a href="?page={{ usuarios.previous_page_number }}" class="page-btn">« Anterior</a>
-            {% endif %}
-            <span class="page-info">Página {{ usuarios.number }} de {{ usuarios.paginator.num_pages }}</span>
-            {% if usuarios.has_next %}
-                <a href="?page={{ usuarios.next_page_number }}" class="page-btn">Siguiente »</a>
-            {% endif %}
-        </div>
-
-        {% include 'modales/modalCrearUsuario.html' %}
-        {% include 'modales/modalEditarUsuario.html' %}
+{% block content %}
+<div class="aprendices-container">
+    <div class="barra-superior">
+        <a href="{% url 'inicio' %}" class="btn-volver">← Volver</a>
+        <h1>Lista de Usuarios</h1>
+        <a href="#" id="btn-abrir-modal" class="btn-crear">+ Crear Usuario</a>
     </div>
 
-    <!-- 🔧 Scripts -->
-    <script>
-        // 🧩 Modal Crear Usuario
-        const modal = document.getElementById('modal-crear');
-        const btnAbrir = document.getElementById('btn-abrir-modal');
-        const btnCancelar = document.getElementById('btn-cancelar');
+    <div class="busqueda-container">
+        <form method="get">
+            <input type="text" name="busqueda" placeholder="Buscar por nombre o documento..." value="{{ busqueda }}" class="input-busqueda">
+            <button type="submit" class="btn-buscar">Buscar</button>
+        </form>
+    </div>
 
-        btnAbrir.addEventListener('click', () => {
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Prevenir scroll
+    <div class="table-container">
+        <table id="tabla-aprendices">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Rol</th>
+                    <th class="acciones-header">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                    <tr>
+                        <td>{{ usuario.nombre }} {{ usuario.apellidos }}</td>
+                        <td>{{ usuario.num_doc }}</td>
+                        <td><span class="badge-rol">{{ usuario.id_rol_FK.nombre_rol }}</span></td>
+                        <td class="acciones">
+                            <button class="btn-editar"
+                                data-id="{{ usuario.id }}"
+                                data-nombre="{{ usuario.nombre }}"
+                                data-apellidos="{{ usuario.apellidos }}"
+                                data-num_doc="{{ usuario.num_doc }}"
+                                data-tipodoc="{{ usuario.id_tipodoc_FK.id }}"
+                                data-rol="{{ usuario.id_rol_FK.id }}"
+                                data-ficha="{{ usuario.id_ficha_FK.id }}">
+                                Editar
+                            </button>
+                            <form method="post" action="{% url 'eliminar_usuario' usuario.id %}" class="form-eliminar">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-eliminar" onclick="return confirm('¿Seguro que deseas eliminar este usuario?')">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="no-data">No hay usuarios registrados.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {% if usuarios.has_previous %}
+            <a href="?page={{ usuarios.previous_page_number }}" class="page-btn">« Anterior</a>
+        {% endif %}
+        <span class="page-info">Página {{ usuarios.number }} de {{ usuarios.paginator.num_pages }}</span>
+        {% if usuarios.has_next %}
+            <a href="?page={{ usuarios.next_page_number }}" class="page-btn">Siguiente »</a>
+        {% endif %}
+    </div>
+
+    {% include 'modales/modalCrearUsuario.html' %}
+    {% include 'modales/modalEditarUsuario.html' %}
+</div>
+
+<script>
+    const modal = document.getElementById('modal-crear');
+    const btnAbrir = document.getElementById('btn-abrir-modal');
+    const btnCancelar = document.getElementById('btn-cancelar');
+    btnAbrir.addEventListener('click', () => { modal.style.display = 'flex'; document.body.style.overflow = 'hidden'; });
+    btnCancelar.addEventListener('click', () => { modal.style.display = 'none'; document.body.style.overflow = 'auto'; });
+    modal.addEventListener('click', (e) => { if (e.target === modal) { modal.style.display = 'none'; document.body.style.overflow = 'auto'; } });
+
+    const modalEditar = document.getElementById('modal-editar');
+    const btnsEditar = document.querySelectorAll('.btn-editar');
+    const btnCancelarEditar = document.getElementById('btn-cancelar-editar');
+    const formEditar = document.getElementById('form-editar');
+    btnsEditar.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const { id, nombre, apellidos, num_doc, tipodoc, rol, ficha } = this.dataset;
+            document.getElementById('editar-usuario-id').value = id;
+            document.getElementById('editar-nombre').value = nombre;
+            document.getElementById('editar-apellidos').value = apellidos;
+            document.getElementById('editar-num_doc').value = num_doc;
+            document.getElementById('editar-id_tipodoc').value = tipodoc;
+            document.getElementById('editar-id_rol').value = rol;
+            document.getElementById('editar-id_ficha').value = ficha;
+            formEditar.action = `/usuarios/editar/${id}/`;
+            modalEditar.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         });
-
-        btnCancelar.addEventListener('click', () => {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Permitir scroll
-        });
-
-        // Cerrar modal al hacer clic fuera del contenido
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        });
-    </script>
-
-    <script>
-        // 🛠️ Modal Editar Usuario
-        const modalEditar = document.getElementById('modal-editar');
-        const btnsEditar = document.querySelectorAll('.btn-editar');
-        const btnCancelarEditar = document.getElementById('btn-cancelar-editar');
-        const formEditar = document.getElementById('form-editar');
-
-        btnsEditar.forEach(btn => {
-            btn.addEventListener('click', function () {
-                const { id, nombre, apellidos, num_doc, tipodoc, rol, ficha } = this.dataset;
-
-                document.getElementById('editar-usuario-id').value = id;
-                document.getElementById('editar-nombre').value = nombre;
-                document.getElementById('editar-apellidos').value = apellidos;
-                document.getElementById('editar-num_doc').value = num_doc;
-                document.getElementById('editar-id_tipodoc').value = tipodoc;
-                document.getElementById('editar-id_rol').value = rol;
-                document.getElementById('editar-id_ficha').value = ficha;
-
-                formEditar.action = `/usuarios/editar/${id}/`;
-                modalEditar.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-            });
-        });
-
-        btnCancelarEditar.addEventListener('click', () => {
-            modalEditar.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        });
-
-        // Cerrar modal al hacer clic fuera del contenido
-        modalEditar.addEventListener('click', (e) => {
-            if (e.target === modalEditar) {
-                modalEditar.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }
-        });
-    </script>
-</body>
-</html>
+    });
+    btnCancelarEditar.addEventListener('click', () => { modalEditar.style.display = 'none'; document.body.style.overflow = 'auto'; });
+    modalEditar.addEventListener('click', (e) => { if (e.target === modalEditar) { modalEditar.style.display = 'none'; document.body.style.overflow = 'auto'; } });
+</script>
+{% endblock %}

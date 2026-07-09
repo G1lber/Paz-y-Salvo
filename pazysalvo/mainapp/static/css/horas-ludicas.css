@@ -14,8 +14,6 @@ body {
   font-family: 'Inter', sans-serif;
   background-color: var(--color-fondo);
   color: var(--color-texto);
-  margin: 0;
-  padding: 40px 20px;
 }
 
 .prestamo-libro {

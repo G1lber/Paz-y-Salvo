@@ -3,3 +3,5 @@ pymysql
 pandas
 openpyxl
 django-environ
+gunicorn
+psycopg2-binary

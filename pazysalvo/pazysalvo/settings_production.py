@@ -1,7 +1,9 @@
+import os
 import pymysql
 pymysql.install_as_MySQLdb()
 
 import environ
+import dj_database_url
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -10,8 +12,6 @@ env = environ.Env(
     DJANGO_DEBUG=(bool, False),
     DJANGO_LANGUAGE_CODE=(str, 'es'),
     DJANGO_TIME_ZONE=(str, 'America/Bogota'),
-    DB_ENGINE=(str, 'django.db.backends.mysql'),
-    DB_PORT=(str, '3306'),
 )
 
 SECRET_KEY = env('DJANGO_SECRET_KEY')
@@ -61,7 +61,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'pazysalvo.wsgi.application'
 
 DATABASES = {
-    'default': env.db('DATABASE_URL'),
+    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL')),
 }
 
 AUTH_PASSWORD_VALIDATORS = [

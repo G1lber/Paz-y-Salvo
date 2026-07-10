@@ -2,3 +2,4 @@ Django>=5.1.3
 pymysql
 pandas
 openpyxl
+django-environ

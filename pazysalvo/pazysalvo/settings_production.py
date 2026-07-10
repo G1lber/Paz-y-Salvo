@@ -1,15 +1,24 @@
 import pymysql
 pymysql.install_as_MySQLdb()
 
+import environ
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'cambia-esta-clave-por-una-segura-en-pythonanywhere'
+env = environ.Env(
+    DJANGO_DEBUG=(bool, False),
+    DJANGO_LANGUAGE_CODE=(str, 'es'),
+    DJANGO_TIME_ZONE=(str, 'America/Bogota'),
+    DB_ENGINE=(str, 'django.db.backends.mysql'),
+    DB_PORT=(str, '3306'),
+)
+
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['tusuario.pythonanywhere.com']
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -52,14 +61,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'pazysalvo.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tusuario$pazysalvo',
-        'USER': 'tusuario',
-        'PASSWORD': 'tu-contrasena-mysql-pythonanywhere',
-        'HOST': 'tusuario.mysql.pythonanywhere-services.com',
-        'PORT': '3306',
-    }
+    'default': env.db('DATABASE_URL'),
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -77,9 +79,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = env('DJANGO_LANGUAGE_CODE')
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = env('DJANGO_TIME_ZONE')
 
 USE_I18N = True
 

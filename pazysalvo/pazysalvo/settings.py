@@ -63,8 +63,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'pazysalvo.wsgi.application'
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL')),
+    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
 }
+DATABASES['default']['OPTIONS'] = {'options': '-c statement_timeout=15000'}
+DATABASES['default'].setdefault('DISABLE_SERVER_SIDE_CURSORS', True)
 
 AUTH_PASSWORD_VALIDATORS = [
     {

@@ -4,6 +4,7 @@ pymysql.install_as_MySQLdb()
 
 import environ
 import dj_database_url
+
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent

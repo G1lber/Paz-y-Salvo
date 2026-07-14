@@ -36,6 +36,10 @@ def session_required(view_func):
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
+def logout_view(request):
+    request.session.flush()
+    return redirect("login")
+
 # Create your views here.
 def index(request):
     if request.method == "POST":

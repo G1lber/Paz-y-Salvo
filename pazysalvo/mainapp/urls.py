@@ -6,6 +6,7 @@ urlpatterns = [
     path('health/', lambda r: HttpResponse("ok"), name='health'),
     path('', views.index, name='index'),
     path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
     path('pazysalvo/', views.pazysalvo, name='pazysalvo'),
     path('inicio/', views.inicio, name='inicio'),
     path('aprendices/', views.aprendices, name='aprendices'),
